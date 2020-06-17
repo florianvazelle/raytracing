@@ -1,4 +1,33 @@
 #include "Scene.h"
+#include "Cube.h"
+#include "Light.h"
+
+Scene::Scene(Json::Value scene) {
+  const Json::Value objectsJSON = scene["objects"];
+  for (int i = 0; i < objectsJSON.size(); ++i) {
+    std::string type = objectsJSON[i]["type"].asString();
+    float x = objectsJSON[i]["position"]["x"].asFloat();
+    float y = objectsJSON[i]["position"]["y"].asFloat();
+    float z = objectsJSON[i]["position"]["z"].asFloat();
+
+    if (type == "Cube") {
+      Cube cube;
+      cube.translate(x, y, z);
+      objects.push_back(&cube);
+    }
+  }
+
+  const Json::Value lightsJSON = scene["lights"];
+  for (int i = 0; i < lights.size(); ++i) {
+    float x = lightsJSON[i]["position"]["x"].asFloat();
+    float y = lightsJSON[i]["position"]["y"].asFloat();
+    float z = lightsJSON[i]["position"]["z"].asFloat();
+
+    Light light;
+    light.translate(x, y, z);
+    lights.push_back(&light);
+  }
+}
 
 /**
  * Retourne la couleur d'arrière plan.

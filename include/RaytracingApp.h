@@ -3,18 +3,23 @@
 
 #include <fstream>
 #include <iostream>
-#include <json/value.h>
+#include <json/json.h>
 #include <memory>
 #include <nanogui/nanogui.h>
+#include <string>
 
 #include "Camera.h"
 #include "GLTexture.h"
+#include "Scene.h"
+#include "Vector.h"
 
 class RaytracingApp : public nanogui::Screen {
 public:
   RaytracingApp()
       : nanogui::Screen(Eigen::Vector2i(800, 600), "NanoGUI Test", false) {
     using namespace nanogui;
+
+    std::vector<Scene> scenes;
 
     // On crée une fenetre "action"
     auto actionWindow = new Window(this, "Actions");
@@ -40,25 +45,30 @@ public:
 
     // Load all of the images by creating a GLTexture object and saving the
     // pixel data.
-    for (auto &icon : icons) {
-      std::ifstream scene_file("people.json", std::ifstream::binary);
-      scene_file >> scene;
+    // for (auto &icon : icons) {
+    Json::Value root;
 
-      GLTexture texture(icon.second);
-      auto data =
-          texture.load(/* resourcesFolderPath + */ icon.second + ".png");
-      mImagesData.emplace_back(std::move(texture), std::move(data));
+    std::ifstream file;
+    file.open("assets/scene1.json");
+
+    Json::CharReaderBuilder builder;
+    JSONCPP_STRING errs;
+    if (!parseFromStream(builder, file, &root, &errs)) {
+      std::cout << errs << std::endl;
     }
 
-    // Set the first texture
-    auto imageView = new ImageView(imageWindow, mImagesData[0].first.texture());
-    mCurrentImage = 0;
-    // Change the active textures.
-    imgPanel->setCallback([this, imageView](int i) {
-      imageView->bindImage(mImagesData[i].first.texture());
-      mCurrentImage = i;
-      std::cout << "Selected item " << i << '\n';
-    });
+    scenes.push_back(Scene(root));
+    // }
+
+    // // Set the first texture
+    // auto imageView = new ImageView(imageWindow,
+    // mImagesData[0].first.texture()); mCurrentImage = 0;
+    // // Change the active textures.
+    // imgPanel->setCallback([this, imageView](int i) {
+    //   imageView->bindImage(mImagesData[i].first.texture());
+    //   mCurrentImage = i;
+    //   std::cout << "Selected item " << i << '\n';
+    // });
 
     /* Actions */
     Widget *tools = new Widget(actionWindow);

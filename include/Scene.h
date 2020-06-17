@@ -1,6 +1,7 @@
 #ifndef H_SCENE
 #define H_SCENE
 
+#include <json/json.h>
 #include <vector>
 
 #include "Color.h"
@@ -17,6 +18,8 @@
 struct Scene {
   std::vector<Object *> objects;
   std::vector<Light *> lights;
+
+  Scene(Json::Value scene);
 
   Color getBackground() const;
   Color getAmbiant() const;
