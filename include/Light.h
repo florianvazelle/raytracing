@@ -2,6 +2,7 @@
 #define H_LIGHT
 
 #include "Color.h"
+#include "Entity.h"
 #include "Ray.h"
 #include "Vector.h"
 
@@ -15,7 +16,7 @@
  * le référentiel global. Dans son référentiel, la lumière est positionnée à
  * l'origine (0,0,0).
  */
-struct Light {
+struct Light : public Entity {
   Color id, is;
 
   Ray getRayToLight(const Point &p) const;

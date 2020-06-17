@@ -50,8 +50,7 @@ bool Cube::intersect(const Ray &ray, Point &impact) const {
   return true;
 }
 
-Ray Cube::getNormal(const Point &impact,
-                    const Point &observator) const {
+Ray Cube::getNormal(const Point &impact, const Point &observator) const {
   Vector dir = globalToLocal(impact);
 
   Point p = localToGlobal(dir);
@@ -69,3 +68,5 @@ Ray Cube::getNormal(const Point &impact,
   r.vector = localToGlobal(dir).normalized();
   return r;
 }
+
+Material Cube::getMaterial(const Point &p) const { return Material(); }
