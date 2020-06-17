@@ -1,7 +1,9 @@
 #ifndef H_MATERIAL
 #define H_MATERIAL
 
-#include "Color.h"
+#include "Vector.h"
+
+namespace rtx {
 
 /**
  * Représente le matériau d'un objet.
@@ -30,5 +32,7 @@ struct Material {
    */
   int shininess;
 };
+
+} // namespace rtx
 
 #endif

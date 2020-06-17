@@ -1,5 +1,7 @@
 #include "Cube.h"
 
+using namespace rtx;
+
 bool Cube::intersect(const Ray &ray, Point &impact) const {
   Vector O = globalToLocal(ray.origin);
   Vector V = globalToLocal(ray.vector);

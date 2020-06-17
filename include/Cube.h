@@ -3,6 +3,8 @@
 
 #include "Object.h"
 
+namespace rtx {
+
 struct Cube : public Object {
   // Cube();
   // virtual ~Cube() {}
@@ -11,5 +13,7 @@ struct Cube : public Object {
   Ray getNormal(const Point &p, const Point &o) const;
   bool intersect(const Ray &ray, Point &impact) const;
 };
+
+} // namespace rtx
 
 #endif

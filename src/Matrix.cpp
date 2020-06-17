@@ -1,5 +1,7 @@
 #include "Matrix.h"
 
+using namespace rtx;
+
 float Matrix::operator()(int i, int j) const { return data[i + j * 4]; };
 float &Matrix::operator()(int i, int j) { return data[i + j * 4]; };
 

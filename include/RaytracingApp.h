@@ -9,7 +9,9 @@
 #include <string>
 
 #include "Camera.h"
+#include "Cube.h"
 #include "GLTexture.h"
+#include "Object.h"
 #include "Scene.h"
 #include "Vector.h"
 
@@ -19,7 +21,7 @@ public:
       : nanogui::Screen(Eigen::Vector2i(800, 600), "NanoGUI Test", false) {
     using namespace nanogui;
 
-    std::vector<Scene> scenes;
+    std::vector<rtx::Scene> scenes;
 
     // On crée une fenetre "action"
     auto actionWindow = new Window(this, "Actions");
@@ -57,7 +59,34 @@ public:
       std::cout << errs << std::endl;
     }
 
-    scenes.push_back(Scene(root));
+    rtx::Scene scene;
+
+    const Json::Value objectsJSON = root["objects"];
+    for (int i = 0; i < objectsJSON.size(); ++i) {
+      std::string type = objectsJSON[i]["type"].asString();
+      float x = objectsJSON[i]["position"]["x"].asFloat();
+      float y = objectsJSON[i]["position"]["y"].asFloat();
+      float z = objectsJSON[i]["position"]["z"].asFloat();
+
+      if (type == "Cube") {
+        rtx::Cube cube;
+        cube.translate(x, y, z);
+        scene.objects.push_back(&cube);
+      }
+    }
+
+    const Json::Value lightsJSON = root["lights"];
+    for (int i = 0; i < lightsJSON.size(); ++i) {
+      float x = lightsJSON[i]["position"]["x"].asFloat();
+      float y = lightsJSON[i]["position"]["y"].asFloat();
+      float z = lightsJSON[i]["position"]["z"].asFloat();
+
+      rtx::Light light;
+      light.translate(x, y, z);
+      scene.lights.push_back(&light);
+    }
+
+    scenes.push_back(scene);
     // }
 
     // // Set the first texture
@@ -124,15 +153,24 @@ public:
     Screen::draw(ctx);
   }
 
-  void raytracing() {
+  void raytracing(rtx::Scene scene) {
     const float width = 800.f;
     const float height = 600.f;
 
-    Camera cam;
+    rtx::Camera cam;
+    std::vector<rtx::Color> colors;
 
     for (float i = 0.f; i < width; i++) {
       for (float j = 0.f; j < height; j++) {
-        cam.getRay(i, j);
+        rtx::Point impact;
+        rtx::Ray ray = cam.getRay(i, j);
+        rtx::Object *obj = scene.closer_intersected(ray, impact);
+
+        if (obj) {
+          // colors.push_back(getImpactColor(ray, obj, impact, scene));
+        } else {
+          colors.push_back(scene.getBackground());
+        }
       }
     }
   }

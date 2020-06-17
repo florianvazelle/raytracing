@@ -4,10 +4,12 @@
 #include <json/json.h>
 #include <vector>
 
-#include "Color.h"
 #include "Light.h"
 #include "Object.h"
 #include "Ray.h"
+#include "Vector.h"
+
+namespace rtx {
 
 /**
  * Représente la scène a rendre.
@@ -19,13 +21,13 @@ struct Scene {
   std::vector<Object *> objects;
   std::vector<Light *> lights;
 
-  Scene(Json::Value scene);
-
   Color getBackground() const;
   Color getAmbiant() const;
   int nbLights() const;
   const Light *getLight(int index) const;
   Object *closer_intersected(const Ray &ray, Point &impact) const;
 };
+
+} // namespace rtx
 
 #endif

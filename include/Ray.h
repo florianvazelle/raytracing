@@ -3,6 +3,8 @@
 
 #include "Vector.h"
 
+namespace rtx {
+
 /**
  * Représente un rayon 3D.
  */
@@ -21,5 +23,7 @@ struct Ray {
   Ray(float ox, float oy, float oz, float vx, float vy, float vz);
   Ray(Point origin, Vector vector) : origin(origin), vector(vector){};
 };
+
+} // namespace rtx
 
 #endif

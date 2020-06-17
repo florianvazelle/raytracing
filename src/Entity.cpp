@@ -2,6 +2,8 @@
 
 #include "Entity.h"
 
+using namespace rtx;
+
 /**
  * Effectue une translation de vecteur (x,y,z)
  */

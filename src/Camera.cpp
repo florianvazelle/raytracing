@@ -1,11 +1,12 @@
 #include "Camera.h"
 
+using namespace rtx;
+
 /**
  * Retourne le rayon correspondant au point de l'écran (x,y). Ces coordonnées
  * sont exprimées en ratio de largeur et hauteur totale, et sont donc toutes
  * deux comprises dans l'intervalle [0;1].
  */
-
 Ray Camera::getRay(float x, float y) const {
   float w = 1, h = 1;
   float W = 2, H = 2;

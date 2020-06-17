@@ -1,10 +1,11 @@
 #ifndef H_LIGHT
 #define H_LIGHT
 
-#include "Color.h"
 #include "Entity.h"
 #include "Ray.h"
 #include "Vector.h"
+
+namespace rtx {
 
 /**
  * Hérite de Entity.
@@ -24,5 +25,7 @@ struct Light : public Entity {
   Vector getVectorToLight(const Point &p) const;
   Vector getVectorFromLight(const Point &p) const;
 };
+
+} // namespace rtx
 
 #endif

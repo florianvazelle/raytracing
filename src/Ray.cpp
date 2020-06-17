@@ -1,5 +1,7 @@
 #include "Ray.h"
 
+using namespace rtx;
+
 Ray::Ray() {
   origin = Point();
   vector = Vector();

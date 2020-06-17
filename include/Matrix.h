@@ -3,6 +3,8 @@
 
 #include "Vector.h"
 
+namespace rtx {
+
 /**
  * Représente une Matrice 4x4 de transformation.
  */
@@ -17,5 +19,7 @@ struct Matrix {
 
   Matrix inverse() const;
 };
+
+} // namespace rtx
 
 #endif

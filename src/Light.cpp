@@ -1,5 +1,7 @@
 #include "Light.h"
 
+using namespace rtx;
+
 /**
  * Retourne un Ray partant du Point passé en paramètre et orienté vers la
  * lumière.

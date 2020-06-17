@@ -3,6 +3,8 @@
 
 #include "Vector.h"
 
+using namespace rtx;
+
 Vector Vector::operator*(const float t) const { return {x * t, y * t, z * t}; }
 
 Vector Vector::operator+(const Vector &rhs) const {

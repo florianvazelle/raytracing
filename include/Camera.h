@@ -2,6 +2,9 @@
 #define H_CAMERA
 
 #include "Entity.h"
+#include "Ray.h"
+
+namespace rtx {
 
 /**
  * Hérite de Entity.
@@ -18,5 +21,7 @@ struct Camera : Entity {
 
   Ray getRay(float x, float y) const;
 };
+
+} // namespace rtx
 
 #endif

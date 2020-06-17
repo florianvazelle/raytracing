@@ -1,9 +1,11 @@
 #ifndef H_ENTITY
 #define H_ENTITY
 
+#include "Matrix.h"
 #include "Ray.h"
 #include "Vector.h"
-#include "Matrix.h"
+
+namespace rtx {
 
 /**
  * Base de tout objet déplacable dans la scène : objets, lumières, et caméras.
@@ -29,5 +31,7 @@ struct Entity {
   Vector globalToLocal(const Vector &v) const;
   Ray globalToLocal(const Ray &r) const;
 };
+
+} // namespace rtx
 
 #endif
