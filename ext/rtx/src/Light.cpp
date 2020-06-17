@@ -1,4 +1,4 @@
-#include "Light.h"
+#include <rtx/Light.h>
 
 using namespace rtx;
 

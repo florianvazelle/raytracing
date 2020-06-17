@@ -1,6 +1,6 @@
 #include <cmath>
 
-#include "Entity.h"
+#include <rtx/Entity.h>
 
 using namespace rtx;
 

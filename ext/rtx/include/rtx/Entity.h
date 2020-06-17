@@ -1,9 +1,9 @@
 #ifndef H_ENTITY
 #define H_ENTITY
 
-#include "Matrix.h"
-#include "Ray.h"
-#include "Vector.h"
+#include <rtx/Matrix.h>
+#include <rtx/Ray.h>
+#include <rtx/Vector.h>
 
 namespace rtx {
 

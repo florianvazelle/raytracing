@@ -1,7 +1,7 @@
 #include <cmath>
 #include <stdexcept>
 
-#include "Vector.h"
+#include <rtx/Vector.h>
 
 using namespace rtx;
 

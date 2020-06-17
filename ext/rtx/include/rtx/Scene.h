@@ -4,10 +4,10 @@
 #include <json/json.h>
 #include <vector>
 
-#include "Light.h"
-#include "Object.h"
-#include "Ray.h"
-#include "Vector.h"
+#include <rtx/Light.h>
+#include <rtx/Object.h>
+#include <rtx/Ray.h>
+#include <rtx/Vector.h>
 
 namespace rtx {
 

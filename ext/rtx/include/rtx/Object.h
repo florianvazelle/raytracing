@@ -1,9 +1,9 @@
 #ifndef H_OBJECT
 #define H_OBJECT
 
-#include "Entity.h"
-#include "Material.h"
-#include "Ray.h"
+#include <rtx/Entity.h>
+#include <rtx/Material.h>
+#include <rtx/Ray.h>
 
 namespace rtx {
 

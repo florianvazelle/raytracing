@@ -1,6 +1,6 @@
-#include "Scene.h"
-#include "Cube.h"
-#include "Light.h"
+#include <rtx/Cube.h>
+#include <rtx/Light.h>
+#include <rtx/Scene.h>
 
 using namespace rtx;
 

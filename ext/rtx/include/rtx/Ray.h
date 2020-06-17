@@ -1,7 +1,7 @@
 #ifndef H_RAY
 #define H_RAY
 
-#include "Vector.h"
+#include <rtx/Vector.h>
 
 namespace rtx {
 

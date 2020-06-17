@@ -1,4 +1,4 @@
-#include "Cube.h"
+#include <rtx/Cube.h>
 
 using namespace rtx;
 

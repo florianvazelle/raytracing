@@ -1,4 +1,4 @@
-#include "Ray.h"
+#include <rtx/Ray.h>
 
 using namespace rtx;
 

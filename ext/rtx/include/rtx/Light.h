@@ -1,9 +1,9 @@
 #ifndef H_LIGHT
 #define H_LIGHT
 
-#include "Entity.h"
-#include "Ray.h"
-#include "Vector.h"
+#include <rtx/Entity.h>
+#include <rtx/Ray.h>
+#include <rtx/Vector.h>
 
 namespace rtx {
 

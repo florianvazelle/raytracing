@@ -1,8 +1,8 @@
 #ifndef H_CAMERA
 #define H_CAMERA
 
-#include "Entity.h"
-#include "Ray.h"
+#include <rtx/Entity.h>
+#include <rtx/Ray.h>
 
 namespace rtx {
 

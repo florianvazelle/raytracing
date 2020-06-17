@@ -1,7 +1,7 @@
 #ifndef H_MATRIX
 #define H_MATRIX
 
-#include "Vector.h"
+#include <rtx/Vector.h>
 
 namespace rtx {
 

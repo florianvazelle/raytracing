@@ -1,7 +1,7 @@
 #ifndef H_MATERIAL
 #define H_MATERIAL
 
-#include "Vector.h"
+#include <rtx/Vector.h>
 
 namespace rtx {
 

@@ -1,7 +1,7 @@
 #ifndef H_CUBE
 #define H_CUBE
 
-#include "Object.h"
+#include <rtx/Object.h>
 
 namespace rtx {
 

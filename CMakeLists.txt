@@ -47,6 +47,10 @@ add_definitions(${NANOGUI_EXTRA_DEFS})
 add_subdirectory(${PROJECT_SOURCE_DIR}/ext/jsoncpp)
 include_directories(${PROJECT_SOURCE_DIR}/ext/jsoncpp/include)
 
+# Rtx  ------
+add_subdirectory(${PROJECT_SOURCE_DIR}/ext/rtx)
+include_directories(${PROJECT_SOURCE_DIR}/ext/rtx/include)
+
 # ┌──────────────────────────────────────────────────────────────────┐
 # │  Conan                                                           │
 # └──────────────────────────────────────────────────────────────────┘
@@ -69,7 +73,7 @@ add_executable(${PROJECT_NAME} ${${PROJECT_NAME}_SOURCES} ${${PROJECT_NAME}_HEAD
 # │  Link Libraries                                                  │
 # └──────────────────────────────────────────────────────────────────┘
 
-target_link_libraries(${PROJECT_NAME} nanogui jsoncpp_lib ${CONAN_LIBS})
+target_link_libraries(${PROJECT_NAME} nanogui jsoncpp_lib rtx ${CONAN_LIBS})
 
 # ┌──────────────────────────────────────────────────────────────────┐
 # │  Copy Assets                                                     │

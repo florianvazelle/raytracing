@@ -8,12 +8,12 @@
 #include <nanogui/nanogui.h>
 #include <string>
 
-#include "Camera.h"
-#include "Cube.h"
 #include "GLTexture.h"
-#include "Object.h"
-#include "Scene.h"
-#include "Vector.h"
+#include <rtx/Camera.h>
+#include <rtx/Cube.h>
+#include <rtx/Object.h>
+#include <rtx/Scene.h>
+#include <rtx/Vector.h>
 
 class RaytracingApp : public nanogui::Screen {
 public:
