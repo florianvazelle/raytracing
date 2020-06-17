@@ -1,6 +1,6 @@
 [submodule "ext/nanogui"]
 	path = ext/nanogui
-	url = git@github.com:wjakob/nanogui.git
+	url = https://github.com/wjakob/nanogui
 [submodule "ext/jsoncpp"]
 	path = ext/jsoncpp
-	url = git@github.com:open-source-parsers/jsoncpp.git
+	url = https://github.com/open-source-parsers/jsoncpp
