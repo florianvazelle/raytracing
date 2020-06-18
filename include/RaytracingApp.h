@@ -1,6 +1,8 @@
 #ifndef H_RAYTRACINGAPP
 #define H_RAYTRACINGAPP
 
+#include <cstdio>
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <memory>
@@ -16,6 +18,9 @@
 #include <rtx/Vector.h>
 
 #include "GLTexture.h"
+#include "Image.h"
+
+namespace fs = std::filesystem; // g++ -v >= 9
 
 class RaytracingApp : public nanogui::Screen {
 public:
@@ -23,31 +28,80 @@ public:
       : nanogui::Screen(Eigen::Vector2i(800, 600), "NanoGUI Test", true) {
     using namespace nanogui;
 
-    // On crée une fenetre "action"
-    auto actionWindow = new Window(this, "Actions");
-    actionWindow->setPosition(Vector2i(15, 15));
-    actionWindow->setLayout(new GroupLayout());
+    /**
+     * Pre-settings
+     */
 
+    // Convertie en image toute les scenes de assets/json/
+    for (const fs::directory_entry &p :
+         fs::directory_iterator("assets/json/")) {
+      fs::path path = p.path();
+      fs::path filename = path.filename();
+      fs::path ext = path.extension();
+
+      // On ne selectionne que des image
+      if (ext == ".json") {
+        std::string path_str = path.string();
+
+        rtx::Scene scene = openScene(path_str);
+        scenes.push_back(scene);
+
+        Image img = raytracing(scene);
+
+        char buff[100];
+        sprintf(buff, "assets/png/%s.png", filename.c_str());
+        img.save_png(buff);
+      }
+    }
+
+    // On récupère toute les images
     std::vector<std::pair<int, std::string>> icons =
         loadImageDirectory(mNVGContext, "assets/png");
-    std::string resourcesFolderPath("assets/png/");
 
-    // On crée une fenetre "image"
-    auto imageWindow = new Window(this, "Selected image");
-    imageWindow->setPosition(Vector2i(75, 75));
-    imageWindow->setLayout(new GroupLayout());
-
-    // Load all of the images by creating a GLTexture object and saving the
-    // pixel data.
+    // On les charges et les stock
     for (auto &icon : icons) {
       GLTexture texture(icon.second);
       auto data = texture.load(icon.second + ".png");
       mImagesData.emplace_back(std::move(texture), std::move(data));
     }
 
-    // Set the first texture
+    /**
+     * Image Window
+     */
+
+    // On crée une fenetre "image" pour afficher une image
+    auto imageWindow = new Window(this, "Selected image");
+    imageWindow->setPosition(Vector2i(250, 15));
+    imageWindow->setLayout(new GroupLayout());
+
+    // On définie l'image a affiché
     auto imageView = new ImageView(imageWindow, mImagesData[0].first.texture());
-    imageView->setSize(Vector2i(75, 75));
+    imageView->setScaleCentered(0.5);
+    imageView->setFixedSize(Vector2i(500, 500));
+    mCurrentImage = 0;
+
+    /**
+     * Action Window
+     */
+
+    // On crée une fenetre "action" pour avoir l'ensemble des actions
+    auto actionWindow = new Window(this, "Actions");
+    actionWindow->setPosition(Vector2i(15, 15));
+    actionWindow->setLayout(new GroupLayout());
+
+    // Popup bouton pour selectionner une scene
+    PopupButton *imagePanelBtn = new PopupButton(actionWindow, "Image Panel");
+    imagePanelBtn->setIcon(ENTYPO_ICON_FOLDER);
+    Popup *popup = imagePanelBtn->popup();
+    VScrollPanel *vscroll = new VScrollPanel(popup);
+    popup->setFixedSize(Vector2i(245, 150));
+    ImagePanel *imgPanel = new ImagePanel(vscroll);
+    imgPanel->setImages(icons);
+    imgPanel->setCallback([this, imageView](int i) {
+      imageView->bindImage(mImagesData[i].first.texture());
+      mCurrentImage = i;
+      std::cout << "Selected item " << i << '\n';
+    });
 
     /* Actions */
     Widget *tools = new Widget(actionWindow);
@@ -73,12 +127,17 @@ public:
           },
           true);
       std::cout << "File dialog result: " << jsonPath << std::endl;
-      std::string pngPath = this->openScene(jsonPath);
+      rtx::Scene scene = openScene(jsonPath);
+      scenes.push_back(scene);
 
-      GLTexture texture(pngPath);
-      auto data = texture.load(pngPath);
+      Image img = raytracing(scene);
+      img.save_png("assets/png/t2.png");
+
+      GLTexture texture("assets/png/t2.png");
+      auto data = texture.load("assets/png/t2.png");
       mImagesData.emplace_back(std::move(texture), std::move(data));
 
+      mCurrentImage = mImagesData.size() - 1;
       imageView->bindImage(mImagesData.back().first.texture());
     });
 
@@ -87,7 +146,7 @@ public:
       std::cout << "File dialog result: "
                 << file_dialog(
                        {
-                           {"json", "JavaScript Object Notation"},
+                           {"jpg", "JavaScript Object Notation"},
                        },
                        true)
                 << std::endl;
@@ -111,8 +170,8 @@ public:
     Screen::draw(ctx);
   }
 
-  std::string openScene(std::string);
-  std::string raytracing(rtx::Scene scene);
+  rtx::Scene openScene(std::string);
+  Image raytracing(rtx::Scene scene);
 
   rtx::Color getImpactColor(const rtx::Ray &ray, const rtx::Object &obj,
                             const rtx::Point &impact,
@@ -122,8 +181,10 @@ private:
   using imagesDataType =
       std::vector<std::pair<GLTexture, GLTexture::handleType>>;
   imagesDataType mImagesData;
+  int mCurrentImage;
 
   std::vector<rtx::Scene> scenes;
+  int mCurrentScene;
 };
 
 #endif

@@ -1,8 +1,7 @@
 #include "RaytracingApp.h"
-#include "Image.h"
 #include "JsonHelper.h"
 
-std::string RaytracingApp::openScene(std::string path) {
+rtx::Scene RaytracingApp::openScene(std::string path) {
   Json::Value root;
 
   std::ifstream file;
@@ -45,10 +44,7 @@ std::string RaytracingApp::openScene(std::string path) {
     scene.lights.push_back(&light);
   }
 
-  scenes.push_back(scene);
-
-  // Test
-  return raytracing(scene);
+  return scene;
 }
 
 rtx::Color RaytracingApp::getImpactColor(const rtx::Ray &ray,
@@ -72,7 +68,7 @@ rtx::Color RaytracingApp::getImpactColor(const rtx::Ray &ray,
   return ambiante + diffuse;
 }
 
-std::string RaytracingApp::raytracing(rtx::Scene scene) {
+Image RaytracingApp::raytracing(rtx::Scene scene) {
   const float width = 800.f;
   const float height = 600.f;
 
@@ -93,8 +89,5 @@ std::string RaytracingApp::raytracing(rtx::Scene scene) {
     }
   }
 
-  Image img(width, height, colors);
-
-  img.save_png("assets/png/t2.png");
-  return "assets/png/t2.png";
+  return Image(width, height, colors);
 }
