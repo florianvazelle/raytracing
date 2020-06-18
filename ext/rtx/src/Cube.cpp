@@ -71,4 +71,4 @@ Ray Cube::getNormal(const Point &impact, const Point &observator) const {
   return r;
 }
 
-Material Cube::getMaterial(const Point &p) const { return Material(); }
+Material Cube::getMaterial(const Point &p) const { return material; }

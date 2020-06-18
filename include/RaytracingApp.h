@@ -1,27 +1,27 @@
 #ifndef H_RAYTRACINGAPP
-#define H_RAYTRACING
+#define H_RAYTRACINGAPP
 
 #include <fstream>
 #include <iostream>
-#include <json/json.h>
 #include <memory>
-#include <nanogui/nanogui.h>
 #include <string>
 
-#include "GLTexture.h"
+#include <json/json.h>
+#include <nanogui/nanogui.h>
+
 #include <rtx/Camera.h>
 #include <rtx/Cube.h>
 #include <rtx/Object.h>
 #include <rtx/Scene.h>
 #include <rtx/Vector.h>
 
+#include "GLTexture.h"
+
 class RaytracingApp : public nanogui::Screen {
 public:
   RaytracingApp()
-      : nanogui::Screen(Eigen::Vector2i(800, 600), "NanoGUI Test", false) {
+      : nanogui::Screen(Eigen::Vector2i(800, 600), "NanoGUI Test", true) {
     using namespace nanogui;
-
-    std::vector<rtx::Scene> scenes;
 
     // On crée une fenetre "action"
     auto actionWindow = new Window(this, "Actions");
@@ -29,75 +29,25 @@ public:
     actionWindow->setLayout(new GroupLayout());
 
     std::vector<std::pair<int, std::string>> icons =
-        loadImageDirectory(mNVGContext, "assets");
-    std::string resourcesFolderPath("./assets/");
-
-    PopupButton *imagePanelBtn = new PopupButton(actionWindow, "Image Panel");
-    imagePanelBtn->setIcon(ENTYPO_ICON_FOLDER);
-    Popup *popup = imagePanelBtn->popup();
-    VScrollPanel *vscroll = new VScrollPanel(popup);
-    ImagePanel *imgPanel = new ImagePanel(vscroll);
-    imgPanel->setImages(icons);
-    popup->setFixedSize(Vector2i(245, 150));
+        loadImageDirectory(mNVGContext, "assets/png");
+    std::string resourcesFolderPath("assets/png/");
 
     // On crée une fenetre "image"
     auto imageWindow = new Window(this, "Selected image");
-    imageWindow->setPosition(Vector2i(50, 50));
+    imageWindow->setPosition(Vector2i(75, 75));
     imageWindow->setLayout(new GroupLayout());
 
     // Load all of the images by creating a GLTexture object and saving the
     // pixel data.
-    // for (auto &icon : icons) {
-    Json::Value root;
-
-    std::ifstream file;
-    file.open("assets/scene1.json");
-
-    Json::CharReaderBuilder builder;
-    JSONCPP_STRING errs;
-    if (!parseFromStream(builder, file, &root, &errs)) {
-      std::cout << errs << std::endl;
+    for (auto &icon : icons) {
+      GLTexture texture(icon.second);
+      auto data = texture.load(icon.second + ".png");
+      mImagesData.emplace_back(std::move(texture), std::move(data));
     }
 
-    rtx::Scene scene;
-
-    const Json::Value objectsJSON = root["objects"];
-    for (int i = 0; i < objectsJSON.size(); ++i) {
-      std::string type = objectsJSON[i]["type"].asString();
-      float x = objectsJSON[i]["position"]["x"].asFloat();
-      float y = objectsJSON[i]["position"]["y"].asFloat();
-      float z = objectsJSON[i]["position"]["z"].asFloat();
-
-      if (type == "Cube") {
-        rtx::Cube cube;
-        cube.translate(x, y, z);
-        scene.objects.push_back(&cube);
-      }
-    }
-
-    const Json::Value lightsJSON = root["lights"];
-    for (int i = 0; i < lightsJSON.size(); ++i) {
-      float x = lightsJSON[i]["position"]["x"].asFloat();
-      float y = lightsJSON[i]["position"]["y"].asFloat();
-      float z = lightsJSON[i]["position"]["z"].asFloat();
-
-      rtx::Light light;
-      light.translate(x, y, z);
-      scene.lights.push_back(&light);
-    }
-
-    scenes.push_back(scene);
-    // }
-
-    // // Set the first texture
-    // auto imageView = new ImageView(imageWindow,
-    // mImagesData[0].first.texture()); mCurrentImage = 0;
-    // // Change the active textures.
-    // imgPanel->setCallback([this, imageView](int i) {
-    //   imageView->bindImage(mImagesData[i].first.texture());
-    //   mCurrentImage = i;
-    //   std::cout << "Selected item " << i << '\n';
-    // });
+    // Set the first texture
+    auto imageView = new ImageView(imageWindow, mImagesData[0].first.texture());
+    imageView->setSize(Vector2i(75, 75));
 
     /* Actions */
     Widget *tools = new Widget(actionWindow);
@@ -115,21 +65,29 @@ public:
     tools->setLayout(
         new BoxLayout(Orientation::Horizontal, Alignment::Middle, 0, 6));
     b = new Button(tools, "Open");
-    b->setCallback([&] {
-      std::cout << "File dialog result: "
-                << file_dialog(
-                       {
-                           {"png", "Portable Network Graphics"},
-                       },
-                       false)
-                << std::endl;
+    b->setCallback([this, imageView] {
+      std::string jsonPath;
+      jsonPath = file_dialog(
+          {
+              {"json", "JavaScript Object Notation"},
+          },
+          true);
+      std::cout << "File dialog result: " << jsonPath << std::endl;
+      std::string pngPath = this->openScene(jsonPath);
+
+      GLTexture texture(pngPath);
+      auto data = texture.load(pngPath);
+      mImagesData.emplace_back(std::move(texture), std::move(data));
+
+      imageView->bindImage(mImagesData.back().first.texture());
     });
+
     b = new Button(tools, "Save");
     b->setCallback([&] {
       std::cout << "File dialog result: "
                 << file_dialog(
                        {
-                           {"png", "Portable Network Graphics"},
+                           {"json", "JavaScript Object Notation"},
                        },
                        true)
                 << std::endl;
@@ -153,33 +111,19 @@ public:
     Screen::draw(ctx);
   }
 
-  void raytracing(rtx::Scene scene) {
-    const float width = 800.f;
-    const float height = 600.f;
+  std::string openScene(std::string);
+  std::string raytracing(rtx::Scene scene);
 
-    rtx::Camera cam;
-    std::vector<rtx::Color> colors;
-
-    for (float i = 0.f; i < width; i++) {
-      for (float j = 0.f; j < height; j++) {
-        rtx::Point impact;
-        rtx::Ray ray = cam.getRay(i, j);
-        rtx::Object *obj = scene.closer_intersected(ray, impact);
-
-        if (obj) {
-          // colors.push_back(getImpactColor(ray, obj, impact, scene));
-        } else {
-          colors.push_back(scene.getBackground());
-        }
-      }
-    }
-  }
+  rtx::Color getImpactColor(const rtx::Ray &ray, const rtx::Object &obj,
+                            const rtx::Point &impact,
+                            const rtx::Scene &scene) const;
 
 private:
   using imagesDataType =
       std::vector<std::pair<GLTexture, GLTexture::handleType>>;
   imagesDataType mImagesData;
-  int mCurrentImage;
+
+  std::vector<rtx::Scene> scenes;
 };
 
 #endif

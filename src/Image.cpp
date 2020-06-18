@@ -2,9 +2,10 @@
 
 #include <SDL.h>
 #include <SDL_image.h>
+#include <iostream>
 #include <stdexcept>
 
-Image::Image(char const *filename, const std::string &type) {
+Image::Image(char const *filename) {
   SDL_Surface *surface = IMG_Load(filename);
   if (surface) {
     _h = surface->h;
@@ -19,9 +20,9 @@ Image::Image(char const *filename, const std::string &type) {
     auto pixels = static_cast<uint8_t *>(in_surface->pixels);
     for (int i = 0; i < _h * _w; ++i) {
       int j = 4 * i;
-      _pixels[i][0] = pixels[j + 1];
-      _pixels[i][1] = pixels[j + 2];
-      _pixels[i][2] = pixels[j + 3];
+      _pixels[i][0] = pixels[j + 1] / 255.0f;
+      _pixels[i][1] = pixels[j + 2] / 255.0f;
+      _pixels[i][2] = pixels[j + 3] / 255.0f;
     }
     SDL_UnlockSurface(in_surface);
 
@@ -37,6 +38,17 @@ Image::Image(int w, int h) {
   _pixels.resize(w * h);
 }
 
+Image::Image(int w, int h, std::vector<rtx::Color> colors) {
+  _h = h;
+  _w = w;
+  _pixels.resize(w * h);
+  for (int i = 0; i < colors.size(); i++) {
+    _pixels[i][0] = colors[i].r;
+    _pixels[i][1] = colors[i].g;
+    _pixels[i][2] = colors[i].b;
+  }
+}
+
 void Image::save_png(char const *filename) {
   SDL_Surface *out_surface;
   out_surface = SDL_CreateRGBSurface(0, _w, _h, 32, 0, 0, 0, 0);
@@ -48,9 +60,9 @@ void Image::save_png(char const *filename) {
   for (int i = 0; i < _h * _w; ++i) {
     int j = 4 * i;
     pixels[j] = 255.0f;
-    pixels[j + 1] = _pixels[i][0];
-    pixels[j + 2] = _pixels[i][1];
-    pixels[j + 3] = _pixels[i][2];
+    pixels[j + 1] = _pixels[i][0] * 255.0f;
+    pixels[j + 2] = _pixels[i][1] * 255.0f;
+    pixels[j + 3] = _pixels[i][2] * 255.0f;
   }
   SDL_UnlockSurface(out_surface);
 

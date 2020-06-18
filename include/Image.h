@@ -1,17 +1,17 @@
 #ifndef H_IMAGE
 #define H_IMAGE
 
-#include <vector>
-
 #include <array>
 #include <iostream>
+#include <rtx/Vector.h>
 #include <string>
 #include <vector>
 
 class Image {
 public:
-  Image(char const *filename, const std::string &type);
+  Image(char const *filename);
   Image(int w, int h);
+  Image(int w, int h, std::vector<rtx::Color> colors);
 
   auto operator[](int r) { return _pixels.data() + r * w(); }
   auto operator[](int r) const { return _pixels.data() + r * w(); }

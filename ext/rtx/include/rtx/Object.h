@@ -15,6 +15,8 @@ namespace rtx {
  * Tous les Point, Vector et Ray sont exprimés dans le référentiel global.
  */
 struct Object : public Entity {
+  Material material;
+
   /**
    * Retourne le Material correspondant au point de la surface de l'objet passé
    * en paramètre.
