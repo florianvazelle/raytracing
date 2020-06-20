@@ -4,3 +4,6 @@
 [submodule "ext/jsoncpp"]
 	path = ext/jsoncpp
 	url = https://github.com/open-source-parsers/jsoncpp
+[submodule "ext/rtx/ext/googletest"]
+	path = ext/rtx/ext/googletest
+	url = https://github.com/google/googletest/

@@ -17,6 +17,7 @@ struct Matrix {
   float operator()(int i, int j) const;
   float &operator()(int i, int j);
 
+  // int determinant(const float data[16], int n) const;
   Matrix inverse() const;
 };
 
