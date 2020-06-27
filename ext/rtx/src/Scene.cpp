@@ -7,12 +7,12 @@ using namespace rtx;
 /**
  * Retourne la couleur d'arrière plan.
  */
-Color Scene::getBackground() const { return {1.f, 0.f, 1.f}; };
+Color Scene::getBackground() const { return Color(); };
 
 /**
  * Retourne la valeur de lumière ambiante.
  */
-Color Scene::getAmbiant() const { return {1.f, 0.f, 1.f}; };
+Color Scene::getAmbiant() const { return Color(1.f, 0.f, 1.f); };
 
 /**
  * Retourne le nombre de lumières dans la scène.

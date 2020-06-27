@@ -19,6 +19,8 @@ namespace rtx {
 struct Entity {
   Matrix trans, transInv;
 
+  Entity(){};
+
   void translate(float x, float y, float z);
   void rotateX(float deg);
   void rotateY(float deg);

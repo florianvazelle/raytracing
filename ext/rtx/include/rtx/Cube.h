@@ -7,8 +7,8 @@ namespace rtx {
 
 struct Cube : public Object {
   Cube();
-  Cube(const Material &mat) { material = mat; };
-  // virtual ~Cube() {}
+  Cube(const Material &mat) : Object(mat){};
+  virtual ~Cube() {}
 
   Material getMaterial(const Point &p) const;
   Ray getNormal(const Point &p, const Point &o) const;

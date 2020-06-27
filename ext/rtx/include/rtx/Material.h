@@ -9,6 +9,12 @@ namespace rtx {
  * Représente le matériau d'un objet.
  */
 struct Material {
+
+  Material() : shininess(0){};
+  Material(int shininess) : shininess(shininess){};
+  Material(Color ka, Color kd, Color ks, int shininess)
+      : ka(ka), kd(kd), ks(ks), shininess(shininess){};
+
   /**
    * La composante ambiante, qui se multiplie par la lumière ambiante de la
    * scène.

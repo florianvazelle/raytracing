@@ -26,7 +26,7 @@ rtx::Scene RaytracingApp::openScene(std::string path) {
     rtx::Object *object;
 
     if (type == "Cube") {
-      object = new rtx::Cube{mat};
+      object = new rtx::Cube(mat);
     }
 
     object->translate(pos.x, pos.y, pos.z);
@@ -39,9 +39,9 @@ rtx::Scene RaytracingApp::openScene(std::string path) {
 
     rtx::Vector pos = JsonHelper::toVector(lig["position"]);
 
-    rtx::Light light;
-    light.translate(pos.x, pos.y, pos.z);
-    scene.lights.push_back(&light);
+    rtx::Light *light = new rtx::Light();
+    light->translate(pos.x, pos.y, pos.z);
+    scene.lights.push_back(light);
   }
 
   return scene;

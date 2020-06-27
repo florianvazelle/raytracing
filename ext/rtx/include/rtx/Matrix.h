@@ -11,6 +11,8 @@ namespace rtx {
 struct Matrix {
   float data[16];
 
+  Matrix();
+
   Matrix operator*(const Matrix &rhs) const;
   Vector operator*(const Vector &rhs) const;
 

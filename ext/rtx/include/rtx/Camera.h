@@ -19,6 +19,9 @@ namespace rtx {
 struct Camera : Entity {
   int focal;
 
+  Camera() : focal(0){};
+  Camera(int focal) : focal(focal){};
+
   Ray getRay(float x, float y) const;
 };
 

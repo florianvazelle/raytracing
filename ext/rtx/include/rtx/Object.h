@@ -17,6 +17,10 @@ namespace rtx {
 struct Object : public Entity {
   Material material;
 
+  Object(){};
+  Object(const Material &mat) : material(mat){};
+  virtual ~Object(){};
+
   /**
    * Retourne le Material correspondant au point de la surface de l'objet passé
    * en paramètre.
@@ -35,8 +39,6 @@ struct Object : public Entity {
    * true. Sinon, retourne false.
    */
   virtual bool intersect(const Ray &ray, Point &impact) const = 0;
-
-  virtual ~Object() {}
 };
 
 } // namespace rtx

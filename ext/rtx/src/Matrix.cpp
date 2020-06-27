@@ -6,6 +6,12 @@
 
 using namespace rtx;
 
+Matrix::Matrix() {
+  for (int i = 0; i < 16; i++) {
+    data[i] = (i % 5 == 0) ? 1.0f : 0.0f;
+  }
+}
+
 float Matrix::operator()(int i, int j) const { return data[i + j * 4]; };
 float &Matrix::operator()(int i, int j) { return data[i + j * 4]; };
 
