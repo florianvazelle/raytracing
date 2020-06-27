@@ -74,6 +74,8 @@ void Entity::scale(float f) {
 
 Vector Entity::localToGlobal(const Vector &v) const { return transInv * v; }
 
+Point Entity::localToGlobal(const Point &p) const { return transInv * p; }
+
 Ray Entity::localToGlobal(const Ray &r) const {
   Ray r1;
   r1.origin = transInv * r.origin;
@@ -82,6 +84,8 @@ Ray Entity::localToGlobal(const Ray &r) const {
 }
 
 Vector Entity::globalToLocal(const Vector &v) const { return trans * v; }
+
+Point Entity::globalToLocal(const Point &p) const { return trans * p; }
 
 Ray Entity::globalToLocal(const Ray &r) const {
   Ray r1;

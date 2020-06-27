@@ -1,4 +1,5 @@
 #include <rtx/Camera.h>
+#include <rtx/Point.h>
 
 using namespace rtx;
 

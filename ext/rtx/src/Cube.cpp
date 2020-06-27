@@ -55,7 +55,7 @@ bool Cube::intersect(const Ray &ray, Point &impact) const {
 Ray Cube::getNormal(const Point &impact, const Point &observator) const {
   Vector dir = globalToLocal(impact);
 
-  Point p = localToGlobal(dir);
+  Vector p = localToGlobal(dir);
   if (observator.dot(p) < -1)
     dir = -dir;
 

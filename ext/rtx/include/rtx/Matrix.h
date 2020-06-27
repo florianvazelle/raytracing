@@ -1,7 +1,7 @@
 #ifndef H_MATRIX
 #define H_MATRIX
 
-#include <rtx/Vector.h>
+#include <rtx/Point.h>
 
 namespace rtx {
 
@@ -15,6 +15,7 @@ struct Matrix {
 
   Matrix operator*(const Matrix &rhs) const;
   Vector operator*(const Vector &rhs) const;
+  Point operator*(const Point &rhs) const;
 
   float operator()(int i, int j) const;
   float &operator()(int i, int j);

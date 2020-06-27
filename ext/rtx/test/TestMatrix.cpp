@@ -2,6 +2,7 @@
 
 #include <rtx/Entity.h>
 #include <rtx/Matrix.h>
+#include <rtx/Point.h>
 #include <rtx/Vector.h>
 
 TEST(TestEntity, Translation) {
@@ -46,10 +47,10 @@ TEST(TestMatrix, Identity) {
 }
 
 TEST(TestVector, Distance) {
-  rtx::Vector v1(7, 4, 3);
-  rtx::Vector v2(17, 6, 2);
+  rtx::Point v1(7, 4, 3);
+  rtx::Point v2(17, 6, 2);
 
-  ASSERT_EQ(rtx::Vector::distance(v1, v2), 10.246951f);
+  ASSERT_EQ(rtx::Point::distance(v1, v2), 10.246951f);
 
   EXPECT_TRUE(true);
 }
@@ -77,11 +78,22 @@ TEST(TestMatrix, Inverse) {
   EXPECT_TRUE(true);
 }
 
-TEST(TestVector, Operator) {
+TEST(TestVector, Bracket) {
   rtx::Vector vec(1, 2, 3);
 
   for (int i = 0; i < 3; i++)
     ASSERT_EQ(vec[i], i + 1);
 
+  EXPECT_TRUE(true);
+}
+
+TEST(TestMatrixVector, Multiplication) {
+  rtx::Point vec(-1, -1, 0);
+  rtx::Point result(-1, -1, 3);
+
+  rtx::Entity e;
+  e.translate(0, 0, 3);
+
+  ASSERT_EQ(e.trans * vec, result);
   EXPECT_TRUE(true);
 }

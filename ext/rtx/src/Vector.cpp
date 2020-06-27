@@ -54,6 +54,10 @@ Vector Vector::operator/(const float &rhs) const {
   return {x / rhs, y / rhs, z / rhs};
 }
 
+bool Vector::operator==(const Vector &rhs) const {
+  return (rhs.x == x && rhs.y == y && rhs.z == z);
+}
+
 float Vector::operator[](const int &rhs) const {
   if (rhs == 0)
     return x;

@@ -31,6 +31,8 @@ struct Vector {
   Vector &operator*=(const float &rhs);
   Vector operator/(const float &rhs) const;
 
+  bool operator==(const Vector &rhs) const;
+
   float operator[](const int &rhs) const;
   float &operator[](const int &rhs);
 
@@ -41,7 +43,6 @@ struct Vector {
   friend std::ostream &operator<<(std::ostream &os, const Vector &p);
 };
 
-using Point = Vector;
 using Color = Vector;
 
 } // namespace rtx

@@ -3,7 +3,6 @@
 
 #include <rtx/Matrix.h>
 #include <rtx/Ray.h>
-#include <rtx/Vector.h>
 
 namespace rtx {
 
@@ -28,9 +27,11 @@ struct Entity {
   void scale(float factor);
 
   Vector localToGlobal(const Vector &v) const;
+  Point localToGlobal(const Point &p) const;
   Ray localToGlobal(const Ray &r) const;
 
   Vector globalToLocal(const Vector &v) const;
+  Point globalToLocal(const Point &p) const;
   Ray globalToLocal(const Ray &r) const;
 };
 

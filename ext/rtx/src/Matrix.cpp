@@ -32,15 +32,32 @@ Matrix Matrix::operator*(const Matrix &rhs) const {
 
 Vector Matrix::operator*(const Vector &rhs) const {
   float sum;
-  Vector res;
-  for (int i = 0; i < 3; i++) {
+  float result[4];
+  float rhsData[4] = {rhs.x, rhs.y, rhs.z, 0};
+
+  for (int i = 0; i < 4; i++) {
     sum = 0.0f;
-    for (int j = 0; j < 3; j++) {
-      sum = sum + data[i + j * 4] * rhs[j];
+    for (int j = 0; j < 4; j++) {
+      sum = sum + data[i + j * 4] * rhsData[j];
     }
-    res[i] = sum;
+    result[i] = sum;
   }
-  return res;
+  return Vector(result[0], result[1], result[2]);
+}
+
+Point Matrix::operator*(const Point &rhs) const {
+  float sum;
+  float result[4];
+  float rhsData[4] = {rhs.x, rhs.y, rhs.z, 1};
+
+  for (int i = 0; i < 4; i++) {
+    sum = 0.0f;
+    for (int j = 0; j < 4; j++) {
+      sum = sum + data[i + j * 4] * rhsData[j];
+    }
+    result[i] = sum;
+  }
+  return Point(result[0], result[1], result[2]);
 }
 
 // int Matrix::determinant(const float data[16], int n) const {

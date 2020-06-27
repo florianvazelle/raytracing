@@ -1,7 +1,9 @@
 #ifndef H_RAY
 #define H_RAY
 
-#include <rtx/Vector.h>
+#include <iostream>
+
+#include <rtx/Point.h>
 
 namespace rtx {
 
@@ -22,6 +24,8 @@ struct Ray {
   Ray();
   Ray(float ox, float oy, float oz, float vx, float vy, float vz);
   Ray(Point origin, Vector vector) : origin(origin), vector(vector){};
+
+  friend std::ostream &operator<<(std::ostream &os, const Ray &r);
 };
 
 } // namespace rtx
