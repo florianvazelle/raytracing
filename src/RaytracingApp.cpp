@@ -1,5 +1,7 @@
-#include "RaytracingApp.h"
+#include <iomanip>
+
 #include "JsonHelper.h"
+#include "RaytracingApp.h"
 
 rtx::Scene RaytracingApp::openScene(std::string path) {
   Json::Value root;
@@ -21,6 +23,7 @@ rtx::Scene RaytracingApp::openScene(std::string path) {
 
     std::string type = obj["type"].asString();
     rtx::Vector pos = JsonHelper::toVector(obj["position"]);
+    float scale = obj["scale"].asFloat();
     rtx::Material mat = JsonHelper::toMaterial(obj["material"]);
 
     rtx::Object *object;
@@ -29,6 +32,7 @@ rtx::Scene RaytracingApp::openScene(std::string path) {
       object = new rtx::Cube(mat);
     }
 
+    object->scale(scale);
     object->translate(pos.x, pos.y, pos.z);
     scene.objects.push_back(object);
   }
@@ -68,24 +72,42 @@ rtx::Color RaytracingApp::getImpactColor(const rtx::Ray &ray,
   return ambiante + diffuse;
 }
 
-Image RaytracingApp::raytracing(rtx::Scene scene) {
-  const float width = 800.f;
-  const float height = 600.f;
+rtx::Color RaytracingApp::tracer(const rtx::Scene &scene,
+                                 const rtx::Camera &cam, float i,
+                                 float j) const {
+  std::cout << std::fixed << std::setprecision(2);
+  std::cout << "pix(" << i << ", " << j << ")";
+  rtx::Color color;
+  rtx::Point impact;
+  rtx::Ray ray = cam.getRay(i, j);
+  rtx::Object *obj = scene.closer_intersected(ray, impact);
 
-  rtx::Camera cam;
+  if (obj) {
+    color = rtx::Color(0, 1, 0); // getImpactColor(ray, *obj, impact, scene);
+    std::cout << " : " << impact;
+  } else {
+    color = scene.getBackground();
+  }
+
+  std::cout << std::endl;
+
+  return color;
+}
+
+Image RaytracingApp::raytracing(const rtx::Scene &scene) const {
+  const float width = 4.f;
+  const float height = 4.f;
+
+  const float w = 1.f / width;
+  const float h = 1.f / height;
+
+  rtx::Camera cam(3.0f);
+  cam.translate(0, 0, 6);
   std::vector<rtx::Color> colors;
 
-  for (float i = 0.f; i < width; i++) {
-    for (float j = 0.f; j < height; j++) {
-      rtx::Point impact;
-      rtx::Ray ray = cam.getRay(i, j);
-      rtx::Object *obj = scene.closer_intersected(ray, impact);
-
-      if (obj) {
-        colors.push_back(getImpactColor(ray, *obj, impact, scene));
-      } else {
-        colors.push_back(scene.getBackground());
-      }
+  for (float i = 0.f; i <= 1.f; i += w) {
+    for (float j = 0.f; j <= 1.f; j += h) {
+      colors.push_back(tracer(scene, cam, i, j));
     }
   }
 

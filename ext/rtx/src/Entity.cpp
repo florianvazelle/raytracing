@@ -8,10 +8,12 @@ using namespace rtx;
  * Effectue une translation de vecteur (x,y,z)
  */
 void Entity::translate(float x, float y, float z) {
-  trans(0, 3) += x;
-  trans(1, 3) += y;
-  trans(2, 3) += z;
+  Matrix translation;
+  translation(0, 3) = x;
+  translation(1, 3) = y;
+  translation(2, 3) = z;
 
+  trans = translation * trans;
   transInv = trans.inverse();
 }
 
@@ -20,12 +22,10 @@ void Entity::translate(float x, float y, float z) {
  */
 void Entity::rotateX(float deg) {
   Matrix rotate;
-  rotate(0, 0) = 1.0f;
   rotate(1, 1) = std::cos(deg);
   rotate(1, 2) = -sin(deg);
   rotate(2, 1) = sin(deg);
   rotate(2, 2) = std::cos(deg);
-  rotate(3, 3) = 1.0f;
 
   trans = rotate * trans;
   transInv = trans.inverse();
@@ -37,11 +37,9 @@ void Entity::rotateX(float deg) {
 void Entity::rotateY(float deg) {
   Matrix rotate;
   rotate(0, 0) = std::cos(deg);
-  rotate(1, 1) = 1.0f;
   rotate(2, 0) = -sin(deg);
   rotate(0, 2) = sin(deg);
   rotate(2, 2) = std::cos(deg);
-  rotate(3, 3) = 1.0f;
 
   trans = rotate * trans;
   transInv = trans.inverse();
@@ -53,11 +51,9 @@ void Entity::rotateY(float deg) {
 void Entity::rotateZ(float deg) {
   Matrix rotate;
   rotate(0, 0) = std::cos(deg);
-  rotate(1, 1) = 1.0f;
   rotate(0, 1) = -sin(deg);
   rotate(1, 0) = sin(deg);
   rotate(1, 1) = std::cos(deg);
-  rotate(3, 3) = 1.0f;
 
   trans = rotate * trans;
   transInv = trans.inverse();
@@ -67,19 +63,16 @@ void Entity::rotateZ(float deg) {
  * Effectue un redimensionnement de facteur factor
  */
 void Entity::scale(float f) {
-  for (int i = 0; i < 3; i++) {
-    for (int j = 0; j < 4; j++) {
-      trans(i, j) *= f;
-    }
-  }
+  Matrix scale;
+  scale(0, 0) = f;
+  scale(1, 1) = f;
+  scale(2, 2) = f;
 
+  trans = scale * trans;
   transInv = trans.inverse();
 }
 
-Vector Entity::localToGlobal(const Vector &v) const {
-  Vector v1 = transInv * v;
-  return v1;
-}
+Vector Entity::localToGlobal(const Vector &v) const { return transInv * v; }
 
 Ray Entity::localToGlobal(const Ray &r) const {
   Ray r1;
@@ -88,10 +81,7 @@ Ray Entity::localToGlobal(const Ray &r) const {
   return r1;
 }
 
-Vector Entity::globalToLocal(const Vector &v) const {
-  Vector v1 = trans * v;
-  return v1;
-}
+Vector Entity::globalToLocal(const Vector &v) const { return trans * v; }
 
 Ray Entity::globalToLocal(const Ray &r) const {
   Ray r1;

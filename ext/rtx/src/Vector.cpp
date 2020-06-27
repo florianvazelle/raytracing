@@ -85,3 +85,14 @@ Vector &Vector::normalized() {
 float Vector::dot(const Vector &rhs) const {
   return x * rhs.x + y * rhs.y + z * rhs.z;
 }
+
+float Vector::distance(const Vector &v1, const Vector &v2) {
+  float x = v1.x - v2.x;
+  float y = v1.y - v2.y;
+  float z = v1.z - v2.z;
+  return std::sqrt((x * x) + (y * y) + (z * z));
+}
+
+std::ostream &rtx::operator<<(std::ostream &os, const Vector &v) {
+  return os << "(" << v.x << ", " << v.y << ", " << v.z << ")";
+}

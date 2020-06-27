@@ -42,7 +42,7 @@ Image::Image(int w, int h, std::vector<rtx::Color> colors) {
   _h = h;
   _w = w;
   _pixels.resize(w * h);
-  for (int i = 0; i < colors.size(); i++) {
+  for (int i = 0; i < _pixels.size(); i++) {
     _pixels[i][0] = colors[i].r;
     _pixels[i][1] = colors[i].g;
     _pixels[i][2] = colors[i].b;

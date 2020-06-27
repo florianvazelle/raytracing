@@ -171,7 +171,9 @@ public:
   }
 
   rtx::Scene openScene(std::string);
-  Image raytracing(rtx::Scene scene);
+  rtx::Color tracer(const rtx::Scene &scene, const rtx::Camera &cam, float i,
+                    float j) const;
+  Image raytracing(const rtx::Scene &scene) const;
 
   rtx::Color getImpactColor(const rtx::Ray &ray, const rtx::Object &obj,
                             const rtx::Point &impact,

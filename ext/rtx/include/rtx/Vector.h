@@ -1,6 +1,8 @@
 #ifndef H_VECTOR
 #define H_VECTOR
 
+#include <ostream>
+
 namespace rtx {
 
 struct Vector {
@@ -34,6 +36,9 @@ struct Vector {
 
   Vector &normalized();
   float dot(const Vector &rhs) const;
+
+  static float distance(const Vector &v1, const Vector &v2);
+  friend std::ostream &operator<<(std::ostream &os, const Vector &p);
 };
 
 using Point = Vector;

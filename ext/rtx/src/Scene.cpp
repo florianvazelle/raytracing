@@ -1,3 +1,6 @@
+#include <iostream>
+#include <limits>
+
 #include <rtx/Cube.h>
 #include <rtx/Light.h>
 #include <rtx/Scene.h>
@@ -30,10 +33,18 @@ const Light *Scene::getLight(int index) const { return lights.at(index); };
  * passé en paramètre par référence.
  */
 Object *Scene::closer_intersected(const Ray &ray, Point &impact) const {
+  Object *closer_obj = nullptr;
+  float minDist = std::numeric_limits<float>::max();
+
   for (Object *obj : objects) {
     if (obj->intersect(ray, impact)) {
-      return obj; // TODO : faire le calcule de distance
+      float dist = Vector::distance(ray.origin, impact);
+      if (minDist > dist) {
+        minDist = dist;
+        closer_obj = obj;
+      }
     }
   }
-  return nullptr;
+
+  return closer_obj;
 };
