@@ -1,8 +1,8 @@
 #include "JsonHelper.h"
 
-rtx::Vector JsonHelper::toVector(Json::Value vector) {
-  return rtx::Vector(vector["x"].asFloat(), vector["y"].asFloat(),
-                     vector["z"].asFloat());
+rtx::Point JsonHelper::toPoint(Json::Value point) {
+  return rtx::Point(point["x"].asFloat(), point["y"].asFloat(),
+                    point["z"].asFloat());
 }
 
 rtx::Color JsonHelper::toColor(Json::Value color) {

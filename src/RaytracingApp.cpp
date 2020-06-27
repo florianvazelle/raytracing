@@ -1,4 +1,5 @@
 #include <iomanip>
+#include <thread>
 
 #include "JsonHelper.h"
 #include "RaytracingApp.h"
@@ -22,7 +23,8 @@ rtx::Scene RaytracingApp::openScene(std::string path) {
     const Json::Value obj = objs[i];
 
     std::string type = obj["type"].asString();
-    rtx::Vector pos = JsonHelper::toVector(obj["position"]);
+    rtx::Point pos = JsonHelper::toPoint(obj["position"]);
+    rtx::Point rot = JsonHelper::toPoint(obj["rotation"]);
     float scale = obj["scale"].asFloat();
     rtx::Material mat = JsonHelper::toMaterial(obj["material"]);
 
@@ -33,6 +35,9 @@ rtx::Scene RaytracingApp::openScene(std::string path) {
     }
 
     object->scale(scale);
+    object->rotateX(rot.x);
+    object->rotateY(rot.y);
+    object->rotateZ(rot.z);
     object->translate(pos.x, pos.y, pos.z);
     scene.objects.push_back(object);
   }
@@ -41,9 +46,11 @@ rtx::Scene RaytracingApp::openScene(std::string path) {
   for (int i = 0; i < ligs.size(); ++i) {
     const Json::Value lig = ligs[i];
 
-    rtx::Vector pos = JsonHelper::toVector(lig["position"]);
+    rtx::Point pos = JsonHelper::toPoint(lig["position"]);
+    rtx::Color id = JsonHelper::toColor(lig["id"]);
+    rtx::Color is = JsonHelper::toColor(lig["is"]);
 
-    rtx::Light *light = new rtx::Light();
+    rtx::Light *light = new rtx::Light(id, is);
     light->translate(pos.x, pos.y, pos.z);
     scene.lights.push_back(light);
   }
@@ -81,7 +88,8 @@ rtx::Color RaytracingApp::tracer(const rtx::Scene &scene,
   rtx::Object *obj = scene.closer_intersected(ray, impact);
 
   if (obj) {
-    color = rtx::Color(0, 1, 0); // getImpactColor(ray, *obj, impact, scene);
+    color = rtx::Color(0, 1, 0); // getImpactColor(ray, *obj, impact,
+                                 // scene);
   } else {
     color = scene.getBackground();
   }
@@ -90,21 +98,58 @@ rtx::Color RaytracingApp::tracer(const rtx::Scene &scene,
 }
 
 Image RaytracingApp::raytracing(const rtx::Scene &scene) const {
-  const float width = 4.f;
-  const float height = 6.f;
+  const float width = 25.f;
+  const float height = 25.f;
 
   const float w = 1.f / width;
   const float h = 1.f / height;
 
   rtx::Camera cam(3.0f);
   cam.translate(0, 0, -3);
-  std::vector<rtx::Color> colors;
 
-  for (float j = h / 2.f; j < 1.f; j += h) {
-    for (float i = w / 2.f; i < 1.f; i += w) {
-      colors.push_back(tracer(scene, cam, i, j));
+  std::vector<rtx::Color> colors;
+  colors.resize(width * height);
+
+  // std::vector<std::thread> threads;
+
+  // const float spp = 3.f; // sample par pixels
+  const float ws = w / (spp + 1.f);
+  const float hs = h / (spp + 1.f);
+
+  for (float j = 0; j < 1.f; j += h) {
+    // threads.push_back(std::thread([&] {
+    for (float i = 0; i < 1.f; i += w) {
+      rtx::Color color;
+
+      // super-sampling
+      for (int l = 1.f; l <= spp; l++) {
+        for (float k = 1.f; k <= spp; k++) {
+          float x = i + (k * ws);
+          float y = j + (l * hs);
+
+          color += tracer(scene, cam, x, y);
+        }
+      }
+      color = color / (spp * spp);
+
+      // Correction Gamma
+      // color.r = std::min(1.0f, color.r);
+      // color.g = std::min(1.0f, color.g);
+      // color.b = std::min(1.0f, color.b);
+
+      // float r = powf(color.r, 1.f / 2.2f);
+      // float g = powf(color.g, 1.f / 2.2f);
+      // float b = powf(color.b, 1.f / 2.2f);
+
+      // colors.push_back(color);
+      colors.at((i * width) + (j * height) * width) =
+          color; // rtx::Color(r, g, b);
     }
+    // }));
   }
+
+  // for (auto &th : threads)
+  // th.join();
 
   return Image(width, height, colors);
 }

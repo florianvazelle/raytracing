@@ -45,11 +45,12 @@ public:
 
         rtx::Scene scene = openScene(path_str);
         scenes.push_back(scene);
+        mCurrentScene = scenes.size() - 1;
 
         Image img = raytracing(scene);
 
         char buff[100];
-        sprintf(buff, "assets/png/%s.png", filename.c_str());
+        sprintf(buff, "assets/png/scene%d.json.png", mCurrentScene);
         img.save_png(buff);
       }
     }
@@ -57,6 +58,13 @@ public:
     // On récupère toute les images
     std::vector<std::pair<int, std::string>> icons =
         loadImageDirectory(mNVGContext, "assets/png");
+
+    std::sort(icons.begin(), icons.end(),
+              [](const std::pair<int, std::string> &lhs,
+                 const std::pair<int, std::string> &rhs) {
+                return lhs.second < rhs.second;
+              });
+    icons.resize(scenes.size());
 
     // On les charges et les stock
     for (auto &icon : icons) {
@@ -75,10 +83,10 @@ public:
     imageWindow->setLayout(new GroupLayout());
 
     // On définie l'image a affiché
-    auto imageView = new ImageView(imageWindow, mImagesData[0].first.texture());
+    ImageView *imageView =
+        new ImageView(imageWindow, mImagesData[mCurrentScene].first.texture());
     imageView->setScaleCentered(0.5);
     imageView->setFixedSize(Vector2i(500, 500));
-    mCurrentImage = 0;
 
     /**
      * Action Window
@@ -99,7 +107,7 @@ public:
     imgPanel->setImages(icons);
     imgPanel->setCallback([this, imageView](int i) {
       imageView->bindImage(mImagesData[i].first.texture());
-      mCurrentImage = i;
+      mCurrentScene = i;
       std::cout << "Selected item " << i << '\n';
     });
 
@@ -112,6 +120,30 @@ public:
     Button *b = new Button(tools, "Lance les rayons !");
     b->setCallback([this]() {});
 
+    new Label(actionWindow, "Sample per pixels");
+    tools = new Widget(actionWindow);
+    tools->setLayout(
+        new BoxLayout(Orientation::Horizontal, Alignment::Middle, 0, 6));
+
+    Slider *slider = new Slider(tools);
+    slider->setValue(0.3f);
+    slider->setFixedWidth(80);
+
+    TextBox *textBox = new TextBox(tools);
+    textBox->setFixedSize(Vector2i(60, 25));
+    textBox->setValue("3");
+    slider->setCallback([textBox](float value) {
+      textBox->setValue(std::to_string((int)(value * 10)));
+    });
+    slider->setFinalCallback([this, imageView, imgPanel](float value) {
+      spp = value * 10;
+
+      updateView(scenes[mCurrentScene], imageView, imgPanel);
+    });
+    textBox->setFixedSize(Vector2i(60, 25));
+    textBox->setFontSize(20);
+    textBox->setAlignment(TextBox::Alignment::Right);
+
     /* Import & export file */
 
     new Label(actionWindow, "File dialog", "sans-bold");
@@ -119,7 +151,7 @@ public:
     tools->setLayout(
         new BoxLayout(Orientation::Horizontal, Alignment::Middle, 0, 6));
     b = new Button(tools, "Open");
-    b->setCallback([this, imageView] {
+    b->setCallback([this, imageView, imgPanel] {
       std::string jsonPath;
       jsonPath = file_dialog(
           {
@@ -129,16 +161,9 @@ public:
       std::cout << "File dialog result: " << jsonPath << std::endl;
       rtx::Scene scene = openScene(jsonPath);
       scenes.push_back(scene);
+      mCurrentScene = scenes.size() - 1;
 
-      Image img = raytracing(scene);
-      img.save_png("assets/png/t2.png");
-
-      GLTexture texture("assets/png/t2.png");
-      auto data = texture.load("assets/png/t2.png");
-      mImagesData.emplace_back(std::move(texture), std::move(data));
-
-      mCurrentImage = mImagesData.size() - 1;
-      imageView->bindImage(mImagesData.back().first.texture());
+      updateView(scene, imageView, imgPanel);
     });
 
     b = new Button(tools, "Save");
@@ -170,6 +195,40 @@ public:
     Screen::draw(ctx);
   }
 
+  void updateView(const rtx::Scene &scene, nanogui::ImageView *imageView,
+                  nanogui::ImagePanel *imgPanel) {
+    // Execute les lancers de rayon pour determiner l'image grace a la scene
+    // passé en parametre
+    Image img = raytracing(scene);
+
+    // Défini le nom du fichier
+    char buff[100];
+    sprintf(buff, "assets/png/scene%d.json.png", mCurrentScene);
+    // Enregistre l'image en PNG
+    img.save_png(buff);
+
+    // Lit l'image en OpenGL et la stocke
+    GLTexture texture(buff);
+    auto data = texture.load(buff);
+    mImagesData.emplace_back(std::move(texture), std::move(data));
+
+    // On affiche l'image que l'on vient de calculer
+    imageView->bindImage(mImagesData.back().first.texture());
+
+    // On met a jour la popup des miniatures des images
+    std::vector<std::pair<int, std::string>> icons =
+        nanogui::loadImageDirectory(mNVGContext, "assets/png");
+
+    std::sort(icons.begin(), icons.end(),
+              [](const std::pair<int, std::string> &lhs,
+                 const std::pair<int, std::string> &rhs) {
+                return lhs.second < rhs.second;
+              });
+    icons.resize(scenes.size());
+
+    imgPanel->setImages(icons);
+  }
+
   rtx::Scene openScene(std::string);
   rtx::Color tracer(const rtx::Scene &scene, const rtx::Camera &cam, float i,
                     float j) const;
@@ -183,10 +242,11 @@ private:
   using imagesDataType =
       std::vector<std::pair<GLTexture, GLTexture::handleType>>;
   imagesDataType mImagesData;
-  int mCurrentImage;
 
   std::vector<rtx::Scene> scenes;
   int mCurrentScene;
+
+  float spp = 3.f; // sample par pixels
 };
 
 #endif
