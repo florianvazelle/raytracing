@@ -25,7 +25,7 @@ struct Object : public Entity {
    * Retourne le Material correspondant au point de la surface de l'objet passé
    * en paramètre.
    */
-  virtual Material getMaterial(const Point &p) const = 0;
+  virtual Material getMaterial(const Point &p) const { return material; };
 
   /**
    * Retourne la normale correspondant au point de la surface de l'objet passé

@@ -1,6 +1,12 @@
 #include <iomanip>
 #include <thread>
 
+#include <rtx/Cube.h>
+#include <rtx/InfiniteCylinder.h>
+#include <rtx/Plan.h>
+#include <rtx/Sphere.h>
+#include <rtx/Square.h>
+
 #include "JsonHelper.h"
 #include "RaytracingApp.h"
 
@@ -32,13 +38,21 @@ rtx::Scene RaytracingApp::openScene(std::string path) {
 
     if (type == "Cube") {
       object = new rtx::Cube(mat);
+    } else if (type == "Plan") {
+      object = new rtx::Plan(mat);
+    } else if (type == "Square") {
+      object = new rtx::Square(mat);
+    } else if (type == "Sphere") {
+      object = new rtx::Sphere(mat);
+    } else if (type == "InfiniteCylinder") {
+      object = new rtx::InfiniteCylinder(mat);
     }
 
     object->scale(scale);
+    object->translate(pos.x, pos.y, pos.z);
     object->rotateX(rot.x);
     object->rotateY(rot.y);
     object->rotateZ(rot.z);
-    object->translate(pos.x, pos.y, pos.z);
     scene.objects.push_back(object);
   }
 
@@ -88,8 +102,7 @@ rtx::Color RaytracingApp::tracer(const rtx::Scene &scene,
   rtx::Object *obj = scene.closer_intersected(ray, impact);
 
   if (obj) {
-    color = rtx::Color(0, 1, 0); // getImpactColor(ray, *obj, impact,
-                                 // scene);
+    color = getImpactColor(ray, *obj, impact, scene);
   } else {
     color = scene.getBackground();
   }
@@ -104,8 +117,6 @@ void RaytracingApp::ray(Image::View view, const rtx::Scene &scene,
 
   const float ws = w / (spp + 1.f);
   const float hs = h / (spp + 1.f);
-
-  std::cout << view.x << " " << view.y << "\n";
 
   for (int j = 0; j < view.h; j++) {
     auto row = view[j];
@@ -126,13 +137,13 @@ void RaytracingApp::ray(Image::View view, const rtx::Scene &scene,
       color = color / (spp * spp);
 
       // Correction Gamma
-      // color.r = std::min(1.0f, color.r);
-      // color.g = std::min(1.0f, color.g);
-      // color.b = std::min(1.0f, color.b);
+      color.r = std::min(1.0f, color.r);
+      color.g = std::min(1.0f, color.g);
+      color.b = std::min(1.0f, color.b);
 
-      // float r = powf(color.r, 1.f / 2.2f);
-      // float g = powf(color.g, 1.f / 2.2f);
-      // float b = powf(color.b, 1.f / 2.2f);
+      color.r = powf(color.r, 1.f / 2.2f);
+      color.g = powf(color.g, 1.f / 2.2f);
+      color.b = powf(color.b, 1.f / 2.2f);
 
       row[i] = color;
     }

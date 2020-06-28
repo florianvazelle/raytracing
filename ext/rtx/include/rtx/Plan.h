@@ -1,14 +1,14 @@
-#ifndef H_CUBE
-#define H_CUBE
+#ifndef H_PLAN
+#define H_PLAN
 
 #include <rtx/Object.h>
 
 namespace rtx {
 
-struct Cube : public Object {
-  Cube();
-  Cube(const Material &mat) : Object(mat){};
-  virtual ~Cube() {}
+struct Plan : public Object {
+  Plan();
+  Plan(const Material &mat) : Object(mat){};
+  virtual ~Plan() {}
 
   Ray getNormal(const Point &p, const Point &o) const;
   bool intersect(const Ray &ray, Point &impact) const;

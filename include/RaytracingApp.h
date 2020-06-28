@@ -12,7 +12,6 @@
 #include <nanogui/nanogui.h>
 
 #include <rtx/Camera.h>
-#include <rtx/Cube.h>
 #include <rtx/Object.h>
 #include <rtx/Scene.h>
 #include <rtx/Vector.h>

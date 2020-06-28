@@ -1,14 +1,14 @@
-#ifndef H_CUBE
-#define H_CUBE
+#ifndef H_INFINITECYLINDER
+#define H_INFINITECYLINDER
 
 #include <rtx/Object.h>
 
 namespace rtx {
 
-struct Cube : public Object {
-  Cube();
-  Cube(const Material &mat) : Object(mat){};
-  virtual ~Cube() {}
+struct InfiniteCylinder : public Object {
+  InfiniteCylinder();
+  InfiniteCylinder(const Material &mat) : Object(mat){};
+  virtual ~InfiniteCylinder() {}
 
   Ray getNormal(const Point &p, const Point &o) const;
   bool intersect(const Ray &ray, Point &impact) const;
