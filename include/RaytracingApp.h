@@ -47,7 +47,7 @@ public:
         scenes.push_back(scene);
         mCurrentScene = scenes.size() - 1;
 
-        Image img = raytracing(scene);
+        Image img = raytracing(scene, 2);
 
         char buff[100];
         sprintf(buff, "assets/png/scene%d.json.png", mCurrentScene);
@@ -116,11 +116,10 @@ public:
     tools->setLayout(
         new BoxLayout(Orientation::Horizontal, Alignment::Middle, 0, 5));
 
-    new CheckBox(actionWindow, "Multithreading");
-    Button *b = new Button(tools, "Lance les rayons !");
-    b->setCallback([this]() {});
+    CheckBox *c = new CheckBox(actionWindow, "Multithreading");
+    c->setCallback([this](bool isChecked) { useMultithreading = isChecked; });
 
-    new Label(actionWindow, "Sample per pixels");
+    new Label(actionWindow, "Sample per pixels", "sans-bold");
     tools = new Widget(actionWindow);
     tools->setLayout(
         new BoxLayout(Orientation::Horizontal, Alignment::Middle, 0, 6));
@@ -144,13 +143,47 @@ public:
     textBox->setFontSize(20);
     textBox->setAlignment(TextBox::Alignment::Right);
 
+    /* Positive integer widget */ {
+      new Label(actionWindow, "Width :", "sans-bold");
+      auto intBox = new IntBox<int>(actionWindow);
+      intBox->setEditable(true);
+      intBox->setFixedSize(Vector2i(100, 20));
+      intBox->setValue(250);
+      intBox->setDefaultValue("250");
+      intBox->setFontSize(16);
+      intBox->setFormat("[1-9][0-9]*");
+      intBox->setSpinnable(true);
+      intBox->setMinValue(1);
+      intBox->setCallback([this, imageView, imgPanel](float value) {
+        _width = value;
+
+        updateView(scenes[mCurrentScene], imageView, imgPanel);
+      });
+
+      new Label(actionWindow, "Height :", "sans-bold");
+      intBox = new IntBox<int>(actionWindow);
+      intBox->setEditable(true);
+      intBox->setFixedSize(Vector2i(100, 20));
+      intBox->setValue(250);
+      intBox->setDefaultValue("250");
+      intBox->setFontSize(16);
+      intBox->setFormat("[1-9][0-9]*");
+      intBox->setSpinnable(true);
+      intBox->setMinValue(1);
+      intBox->setCallback([this, imageView, imgPanel](float value) {
+        _height = value;
+
+        updateView(scenes[mCurrentScene], imageView, imgPanel);
+      });
+    }
+
     /* Import & export file */
 
     new Label(actionWindow, "File dialog", "sans-bold");
     tools = new Widget(actionWindow);
     tools->setLayout(
         new BoxLayout(Orientation::Horizontal, Alignment::Middle, 0, 6));
-    b = new Button(tools, "Open");
+    Button *b = new Button(tools, "Open");
     b->setCallback([this, imageView, imgPanel] {
       std::string jsonPath;
       jsonPath = file_dialog(
@@ -159,11 +192,13 @@ public:
           },
           true);
       std::cout << "File dialog result: " << jsonPath << std::endl;
-      rtx::Scene scene = openScene(jsonPath);
-      scenes.push_back(scene);
-      mCurrentScene = scenes.size() - 1;
+      if (jsonPath.size() > 1) {
+        rtx::Scene scene = openScene(jsonPath);
+        scenes.push_back(scene);
+        mCurrentScene = scenes.size() - 1;
 
-      updateView(scene, imageView, imgPanel);
+        updateView(scene, imageView, imgPanel);
+      }
     });
 
     b = new Button(tools, "Save");
@@ -199,7 +234,7 @@ public:
                   nanogui::ImagePanel *imgPanel) {
     // Execute les lancers de rayon pour determiner l'image grace a la scene
     // passé en parametre
-    Image img = raytracing(scene);
+    Image img = raytracing(scene, (useMultithreading) ? 8 : 1);
 
     // Défini le nom du fichier
     char buff[100];
@@ -232,7 +267,10 @@ public:
   rtx::Scene openScene(std::string);
   rtx::Color tracer(const rtx::Scene &scene, const rtx::Camera &cam, float i,
                     float j) const;
-  Image raytracing(const rtx::Scene &scene) const;
+
+  void ray(Image::View view, const rtx::Scene &scene,
+           const rtx::Camera &cam) const;
+  Image raytracing(const rtx::Scene &scene, int threadsCount) const;
 
   rtx::Color getImpactColor(const rtx::Ray &ray, const rtx::Object &obj,
                             const rtx::Point &impact,
@@ -246,7 +284,10 @@ private:
   std::vector<rtx::Scene> scenes;
   int mCurrentScene;
 
+  float _width = 250.0f;
+  float _height = 250.0f;
   float spp = 3.f; // sample par pixels
+  bool useMultithreading = false;
 };
 
 #endif

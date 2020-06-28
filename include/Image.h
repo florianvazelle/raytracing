@@ -11,7 +11,6 @@ class Image {
 public:
   Image(char const *filename);
   Image(int w, int h);
-  Image(int w, int h, std::vector<rtx::Color> colors);
 
   auto operator[](int r) { return _pixels.data() + r * w(); }
   auto operator[](int r) const { return _pixels.data() + r * w(); }
@@ -22,8 +21,21 @@ public:
   int w() const { return _w; }
   int h() const { return _h; }
 
+  class View {
+  public:
+    auto operator[](int r) { return image.pixels() + (y + r) * image.w() + x; }
+
+    int x;
+    int y;
+    int w;
+    int h;
+    Image &image;
+  };
+
+  auto view(int x, int y, int w, int h) { return View{x, y, w, h, *this}; }
+
 private:
-  std::vector<std::array<float, 3>> _pixels;
+  std::vector<rtx::Color> _pixels;
   int _w;
   int _h;
 };

@@ -97,37 +97,30 @@ rtx::Color RaytracingApp::tracer(const rtx::Scene &scene,
   return color;
 }
 
-Image RaytracingApp::raytracing(const rtx::Scene &scene) const {
-  const float width = 25.f;
-  const float height = 25.f;
+void RaytracingApp::ray(Image::View view, const rtx::Scene &scene,
+                        const rtx::Camera &cam) const {
+  const float w = 1.f / _width;
+  const float h = 1.f / _height;
 
-  const float w = 1.f / width;
-  const float h = 1.f / height;
-
-  rtx::Camera cam(3.0f);
-  cam.translate(0, 0, -3);
-
-  std::vector<rtx::Color> colors;
-  colors.resize(width * height);
-
-  // std::vector<std::thread> threads;
-
-  // const float spp = 3.f; // sample par pixels
   const float ws = w / (spp + 1.f);
   const float hs = h / (spp + 1.f);
 
-  for (float j = 0; j < 1.f; j += h) {
-    // threads.push_back(std::thread([&] {
-    for (float i = 0; i < 1.f; i += w) {
+  std::cout << view.x << " " << view.y << "\n";
+
+  for (int j = 0; j < view.h; j++) {
+    auto row = view[j];
+    for (int i = 0; i < view.w; i++) {
       rtx::Color color;
+      float x = (i + view.x) * w;
+      float y = (j + view.y) * h;
 
       // super-sampling
       for (int l = 1.f; l <= spp; l++) {
-        for (float k = 1.f; k <= spp; k++) {
-          float x = i + (k * ws);
-          float y = j + (l * hs);
+        for (int k = 1.f; k <= spp; k++) {
+          float cx = x + (k * ws);
+          float cy = y + (l * hs);
 
-          color += tracer(scene, cam, x, y);
+          color += tracer(scene, cam, cx, cy);
         }
       }
       color = color / (spp * spp);
@@ -141,15 +134,34 @@ Image RaytracingApp::raytracing(const rtx::Scene &scene) const {
       // float g = powf(color.g, 1.f / 2.2f);
       // float b = powf(color.b, 1.f / 2.2f);
 
-      // colors.push_back(color);
-      colors.at((i * width) + (j * height) * width) =
-          color; // rtx::Color(r, g, b);
+      row[i] = color;
     }
-    // }));
+  }
+}
+
+Image RaytracingApp::raytracing(const rtx::Scene &scene,
+                                int threadsCount = 1) const {
+
+  rtx::Camera cam(3.0f);
+  cam.translate(0, 0, -3);
+
+  std::vector<std::thread> threads;
+
+  Image image(_width, _height);
+
+  int x = 0;
+  int y = 0;
+  int w = _width;
+  int h = _height / threadsCount;
+
+  for (int i = 0; i < threadsCount; i++) {
+    threads.push_back(std::thread(&RaytracingApp::ray, this,
+                                  image.view(x, y, w, h), scene, cam));
+    y = y + h;
   }
 
-  // for (auto &th : threads)
-  // th.join();
+  for (auto &th : threads)
+    th.join();
 
-  return Image(width, height, colors);
+  return image;
 }
