@@ -2,6 +2,7 @@
 #include <thread>
 
 #include <rtx/Cube.h>
+#include <rtx/Illumination.h>
 #include <rtx/InfiniteCylinder.h>
 #include <rtx/Plan.h>
 #include <rtx/Sphere.h>
@@ -72,27 +73,6 @@ rtx::Scene RaytracingApp::openScene(std::string path) {
   return scene;
 }
 
-rtx::Color RaytracingApp::getImpactColor(const rtx::Ray &ray,
-                                         const rtx::Object &obj,
-                                         const rtx::Point &impact,
-                                         const rtx::Scene &scene) const {
-  rtx::Material mat = obj.getMaterial(impact);
-  rtx::Color ambiante = mat.ka * scene.getAmbiant();
-
-  rtx::Color diffuse;
-  const rtx::Ray normal = obj.getNormal(impact, ray.origin);
-  for (int i = 0; i < scene.nbLights(); i++) {
-    const rtx::Light *l = scene.getLight(i);
-
-    rtx::Vector N = normal.vector;
-    rtx::Vector L = l->getVectorToLight(impact);
-
-    float lambertian = std::max(0.f, N.dot(L));
-    diffuse += (mat.kd * l->id) * lambertian;
-  }
-  return ambiante + diffuse;
-}
-
 rtx::Color RaytracingApp::tracer(const rtx::Scene &scene,
                                  const rtx::Camera &cam, float i,
                                  float j) const {
@@ -102,7 +82,7 @@ rtx::Color RaytracingApp::tracer(const rtx::Scene &scene,
   rtx::Object *obj = scene.closer_intersected(ray, impact);
 
   if (obj) {
-    color = getImpactColor(ray, *obj, impact, scene);
+    color = rtx::Illumination::Lambert(ray, *obj, impact, scene);
   } else {
     color = scene.getBackground();
   }
