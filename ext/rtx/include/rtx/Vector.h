@@ -38,6 +38,9 @@ struct Vector {
 
   Vector &normalized();
   float dot(const Vector &rhs) const;
+  Vector cross(const Vector &v) const;
+  float norm() const;
+  float length() const;
 
   static float distance(const Vector &v1, const Vector &v2);
   friend std::ostream &operator<<(std::ostream &os, const Vector &p);

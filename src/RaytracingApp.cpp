@@ -1,4 +1,5 @@
 #include <iomanip>
+#include <stdexcept>
 #include <thread>
 
 #include <rtx/Cube.h>
@@ -7,6 +8,7 @@
 #include <rtx/Plan.h>
 #include <rtx/Sphere.h>
 #include <rtx/Square.h>
+#include <rtx/Triangle.h>
 
 #include "JsonHelper.h"
 #include "RaytracingApp.h"
@@ -47,6 +49,10 @@ rtx::Scene RaytracingApp::openScene(std::string path) {
       object = new rtx::Sphere(mat);
     } else if (type == "InfiniteCylinder") {
       object = new rtx::InfiniteCylinder(mat);
+    } else if (type == "Triangle") {
+      object = new rtx::Triangle(mat);
+    } else {
+      throw std::invalid_argument("Type not supported");
     }
 
     object->scale(scale);
