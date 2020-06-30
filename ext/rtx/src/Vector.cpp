@@ -79,7 +79,7 @@ float &Vector::operator[](const int &rhs) {
 }
 
 Vector &Vector::normalized() {
-  float inv_length = 1.f / sqrtf(x * x + y * y + z * z);
+  float inv_length = 1.f / length();
   x *= inv_length;
   y *= inv_length;
   z *= inv_length;
@@ -96,6 +96,13 @@ float Vector::distance(const Vector &v1, const Vector &v2) {
   float z = v1.z - v2.z;
   return std::sqrt((x * x) + (y * y) + (z * z));
 }
+
+Vector Vector::cross(const Vector &v) const {
+  return {(y * v.z - z * v.y), -(x * v.z - z * v.x), (x * v.y - y * v.x)};
+}
+
+float Vector::norm() const { return x * x + y * y + z * z; }
+float Vector::length() const { return std::sqrt(norm()); }
 
 std::ostream &rtx::operator<<(std::ostream &os, const Vector &v) {
   return os << "(" << v.x << ", " << v.y << ", " << v.z << ")";
