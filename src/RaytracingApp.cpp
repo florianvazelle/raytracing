@@ -3,7 +3,6 @@
 #include <thread>
 
 #include <rtx/Cube.h>
-#include <rtx/Illumination.h>
 #include <rtx/InfiniteCylinder.h>
 #include <rtx/Plan.h>
 #include <rtx/Sphere.h>
@@ -79,16 +78,16 @@ rtx::Scene RaytracingApp::openScene(std::string path) {
   return scene;
 }
 
-rtx::Color RaytracingApp::tracer(const rtx::Scene &scene,
-                                 const rtx::Camera &cam, float i,
-                                 float j) const {
+rtx::Color RaytracingApp::castRayForPixel(const rtx::Scene &scene,
+                                          const rtx::Camera &cam, float i,
+                                          float j) const {
   rtx::Color color;
   rtx::Point impact;
   rtx::Ray ray = cam.getRay(i, j);
-  rtx::Object *obj = scene.closer_intersected(ray, impact);
+  rtx::Object *obj = scene.getClosestIntersection(ray, impact);
 
   if (obj) {
-    color = rtx::Illumination::Lambert(ray, *obj, impact, scene);
+    color = scene.performLighting(ray, *obj, impact);
   } else {
     color = scene.getBackground();
   }
@@ -96,8 +95,8 @@ rtx::Color RaytracingApp::tracer(const rtx::Scene &scene,
   return color;
 }
 
-void RaytracingApp::ray(Image::View view, const rtx::Scene &scene,
-                        const rtx::Camera &cam) const {
+void RaytracingApp::traceRays(Image::View view, const rtx::Scene &scene,
+                              const rtx::Camera &cam) const {
   const float w = 1.f / _width;
   const float h = 1.f / _height;
 
@@ -117,7 +116,7 @@ void RaytracingApp::ray(Image::View view, const rtx::Scene &scene,
           float cx = x + (k * ws);
           float cy = y + (l * hs);
 
-          color += tracer(scene, cam, cx, cy);
+          color += castRayForPixel(scene, cam, cx, cy);
         }
       }
       color = color / (spp * spp);
@@ -152,7 +151,7 @@ Image RaytracingApp::raytracing(const rtx::Scene &scene,
   int h = _height / threadsCount;
 
   for (int i = 0; i < threadsCount; i++) {
-    threads.push_back(std::thread(&RaytracingApp::ray, this,
+    threads.push_back(std::thread(&RaytracingApp::traceRays, this,
                                   image.view(x, y, w, h), scene, cam));
     y = y + h;
   }
