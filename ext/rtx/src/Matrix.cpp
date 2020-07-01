@@ -23,19 +23,30 @@ bool Matrix::operator==(const Matrix &m) const {
 float Matrix::operator()(int i, int j) const { return data[i + j * 4]; };
 float &Matrix::operator()(int i, int j) { return data[i + j * 4]; };
 
-Matrix Matrix::operator*(const Matrix &rhs) const {
-  float sum;
-  Matrix res;
-  for (int i = 0; i < 4; i++) {
-    for (int j = 0; j < 4; j++) {
-      sum = 0.0f;
-      for (int k = 0; k < 4; k++) {
-        sum = sum + data[i + k * 4] * rhs(k, j);
-      }
-      res(i, j) = sum;
+Matrix &Matrix::operator=(const Matrix &rhs) {
+  if (this == &rhs)
+    return (*this);
+
+  for (int x = 0; x < 16; x++)
+    data[x] = rhs.data[x];
+
+  return (*this);
+}
+
+Matrix Matrix::operator*(const Matrix &mat) const {
+  Matrix product;
+
+  for (int y = 0; y < 4; y++)
+    for (int x = 0; x < 4; x++) {
+      double sum = 0.0;
+
+      for (int j = 0; j < 4; j++)
+        sum += (*this)(x, j) * mat(j, y);
+
+      product(x, y) = sum;
     }
-  }
-  return res;
+
+  return (product);
 }
 
 Vector Matrix::operator*(const Vector &rhs) const {
@@ -46,7 +57,7 @@ Vector Matrix::operator*(const Vector &rhs) const {
   for (int i = 0; i < 4; i++) {
     sum = 0.0f;
     for (int j = 0; j < 4; j++) {
-      sum = sum + data[i + j * 4] * rhsData[j];
+      sum += data[i + j * 4] * rhsData[j];
     }
     result[i] = sum;
   }
@@ -61,7 +72,7 @@ Point Matrix::operator*(const Point &rhs) const {
   for (int i = 0; i < 4; i++) {
     sum = 0.0f;
     for (int j = 0; j < 4; j++) {
-      sum = sum + data[i + j * 4] * rhsData[j];
+      sum += data[i + j * 4] * rhsData[j];
     }
     result[i] = sum;
   }
@@ -179,10 +190,11 @@ Matrix Matrix::inverse() const {
 }
 
 std::ostream &rtx::operator<<(std::ostream &os, const Matrix &m) {
-  for (int i = 0; i < 16; i++) {
-    os << m.data[i] << " ";
-    if (i + 1 % 4 == 0)
-      os << "\n";
+  for (int i = 0; i < 4; i++) {
+    for (int j = 0; j < 4; j++) {
+      os << m(i, j) << " ";
+    }
+    os << "\n";
   }
 
   return os;

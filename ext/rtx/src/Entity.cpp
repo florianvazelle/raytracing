@@ -72,24 +72,24 @@ void Entity::scale(float f) {
   transInv = trans.inverse();
 }
 
-Vector Entity::localToGlobal(const Vector &v) const { return transInv * v; }
+Vector Entity::localToGlobal(const Vector &v) const { return trans * v; }
 
-Point Entity::localToGlobal(const Point &p) const { return transInv * p; }
+Point Entity::localToGlobal(const Point &p) const { return trans * p; }
 
 Ray Entity::localToGlobal(const Ray &r) const {
   Ray r1;
-  r1.origin = transInv * r.origin;
-  r1.vector = transInv * r.vector;
+  r1.origin = trans * r.origin;
+  r1.vector = trans * r.vector;
   return r1;
 }
 
-Vector Entity::globalToLocal(const Vector &v) const { return trans * v; }
+Vector Entity::globalToLocal(const Vector &v) const { return transInv * v; }
 
-Point Entity::globalToLocal(const Point &p) const { return trans * p; }
+Point Entity::globalToLocal(const Point &p) const { return transInv * p; }
 
 Ray Entity::globalToLocal(const Ray &r) const {
   Ray r1;
-  r1.origin = trans * r.origin;
-  r1.vector = trans * r.vector;
+  r1.origin = transInv * r.origin;
+  r1.vector = transInv * r.vector;
   return r1;
 }

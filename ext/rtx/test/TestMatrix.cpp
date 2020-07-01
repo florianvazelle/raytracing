@@ -87,7 +87,7 @@ TEST(TestVector, Bracket) {
   EXPECT_TRUE(true);
 }
 
-TEST(TestMatrixPoint, Multiplication) {
+TEST(TestMatrix, PointMultiplication) {
   rtx::Point p(-1, -1, 0);
   rtx::Point result(-1, -1, 3);
 
@@ -95,5 +95,16 @@ TEST(TestMatrixPoint, Multiplication) {
   e.translate(0, 0, 3);
 
   ASSERT_EQ(e.trans * p, result);
+  EXPECT_TRUE(true);
+}
+
+TEST(TestMatrix, VectorMultiplication) {
+  rtx::Vector v(-1, -1, 0);
+  rtx::Point result(-1, -1, 0);
+
+  rtx::Entity e;
+  e.translate(0, 0, 3);
+
+  ASSERT_EQ(e.trans * v, result);
   EXPECT_TRUE(true);
 }

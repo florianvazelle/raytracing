@@ -12,8 +12,9 @@ struct Matrix {
   float data[16];
 
   Matrix();
+  Matrix &operator=(const Matrix &mat);
 
-  Matrix operator*(const Matrix &rhs) const;
+  Matrix operator*(const Matrix &mat) const;
   Vector operator*(const Vector &rhs) const;
   Point operator*(const Point &rhs) const;
   bool operator==(const Matrix &m) const;
