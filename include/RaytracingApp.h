@@ -46,7 +46,7 @@ public:
         scenes.push_back(scene);
         mCurrentScene = scenes.size() - 1;
 
-        Image img = raytracing(scene, 2);
+        Image img = raytracing(scene, (useMultithreading) ? 2 : 1);
 
         char buff[100];
         sprintf(buff, "assets/png/scene%d.json.png", mCurrentScene);

@@ -56,10 +56,10 @@ rtx::Scene RaytracingApp::openScene(std::string path) {
     }
 
     object->scale(scale);
-    object->translate(pos.x, pos.y, pos.z);
     object->rotateX(rot.x);
     object->rotateY(rot.y);
     object->rotateZ(rot.z);
+    object->translate(pos.x, pos.y, pos.z);
     scene.objects.push_back(object);
   }
 
@@ -123,7 +123,7 @@ Image RaytracingApp::raytracing(const rtx::Scene &scene,
                                 int threadsCount = 1) const {
 
   rtx::Camera cam(3.0f);
-  cam.translate(0, 0, -3);
+  cam.translate(0, 0, 3);
 
   std::vector<std::thread> threads;
 

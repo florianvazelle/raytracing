@@ -15,7 +15,7 @@ Ray Camera::getRay(float x, float y) const {
   float X = x * (W / w) - W / 2;
   float Y = y * (H / h) - H / 2;
 
-  Vector O(X, Y, 0);
+  Vector O(X, -Y, 0);
   Vector F(0, 0, focal);
   Vector V = (O - F).normalized();
 

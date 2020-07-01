@@ -3,7 +3,7 @@
 using namespace rtx;
 
 bool Square::intersect(const Ray &ray, Point &impact) const {
-  Vector O = globalToLocal(ray.origin);
+  Point O = globalToLocal(ray.origin);
   Vector V = globalToLocal(ray.vector);
 
   float t = -O[2] / V[2];
