@@ -34,7 +34,8 @@ const Light *Scene::getLight(int index) const { return lights.at(index); };
  * passé en paramètre par référence.
  */
 Object *Scene::getClosestIntersection(const Ray &ray, Point &impact) const {
-  Object *closer_obj = nullptr;
+  Point closestImpact;
+  Object *closestObject = nullptr;
   float minDist = std::numeric_limits<float>::max();
 
   for (Object *obj : objects) {
@@ -42,12 +43,14 @@ Object *Scene::getClosestIntersection(const Ray &ray, Point &impact) const {
       float dist = Vector::distance(ray.origin, impact);
       if (minDist > dist) {
         minDist = dist;
-        closer_obj = obj;
+        closestObject = obj;
+        closestImpact = impact;
       }
     }
   }
 
-  return closer_obj;
+  impact = closestImpact;
+  return closestObject;
 };
 
 /**
