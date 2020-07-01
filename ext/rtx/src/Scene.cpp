@@ -1,3 +1,4 @@
+#include <cmath>
 #include <iostream>
 #include <limits>
 
@@ -32,7 +33,7 @@ const Light *Scene::getLight(int index) const { return lights.at(index); };
  * le plus proche, et nullptr si il n'y en a pas. Met à jour le point d'impact
  * passé en paramètre par référence.
  */
-Object *Scene::closer_intersected(const Ray &ray, Point &impact) const {
+Object *Scene::getClosestIntersection(const Ray &ray, Point &impact) const {
   Object *closer_obj = nullptr;
   float minDist = std::numeric_limits<float>::max();
 
@@ -48,3 +49,82 @@ Object *Scene::closer_intersected(const Ray &ray, Point &impact) const {
 
   return closer_obj;
 };
+
+Color Scene::performLighting(const Ray &ray, const Object &obj,
+                             const Point &impact) const {
+  Color ambiante = getAmbianteLighting(obj, impact);
+  Color diffuse = getDiffuseLighting(ray, obj, impact);
+  Color specular = getSpecularLighting(ray, obj, impact);
+
+  return ambiante + diffuse + specular;
+}
+
+bool Scene::isInShadow(const Light &light, const Point &impact) const {
+  Ray R = light.getRayToLight(impact);
+  Point lightPosition = light.getRayFromLight(impact).origin;
+
+  Point shadowImpact;
+  Object *obj = getClosestIntersection(R, shadowImpact);
+  if (obj) {
+    float objectDistance = Vector::distance(R.origin, shadowImpact);
+    float lightDistance = Vector::distance(R.origin, lightPosition);
+
+    return objectDistance < lightDistance;
+  }
+  return false;
+}
+
+Color Scene::getAmbianteLighting(const Object &obj, const Point &impact) const {
+  Material mat = obj.getMaterial(impact);
+  return mat.ka * getAmbiant();
+}
+
+Color Scene::getDiffuseLighting(const Ray &ray, const Object &obj,
+                                const Point &impact) const {
+  Material mat = obj.getMaterial(impact);
+
+  Color diffuse;
+  const Ray normal = obj.getNormal(impact, ray.origin);
+
+  for (int i = 0; i < nbLights(); i++) {
+    const Light *l = getLight(i);
+
+    if (isInShadow(*l, impact))
+      continue;
+
+    Vector N = normal.vector;
+    Vector L = l->getVectorToLight(impact);
+
+    float lambertian = std::max(0.f, N.dot(L));
+    diffuse += (mat.kd * l->id) * lambertian;
+  }
+
+  return diffuse;
+}
+
+Color Scene::getSpecularLighting(const Ray &ray, const Object &obj,
+                                 const Point &impact) const {
+  Material mat = obj.getMaterial(impact);
+
+  Color specular;
+  const Ray normal = obj.getNormal(impact, ray.origin);
+
+  for (int i = 0; i < nbLights(); i++) {
+    const Light *l = getLight(i);
+
+    if (isInShadow(*l, impact))
+      continue;
+
+    Vector N = normal.vector;
+    Vector L = l->getVectorToLight(impact);
+    Vector V = -ray.vector;
+    Vector R = (N * 2.0f * L.dot(N)) - L;
+
+    float dot = std::max(R.dot(V), 0.0f);
+
+    float specAngle = std::pow(dot, mat.shininess);
+    specular += (mat.ks * l->is) * specAngle;
+  }
+
+  return specular;
+}

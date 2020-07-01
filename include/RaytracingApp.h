@@ -264,11 +264,11 @@ public:
   }
 
   rtx::Scene openScene(std::string);
-  rtx::Color tracer(const rtx::Scene &scene, const rtx::Camera &cam, float i,
-                    float j) const;
 
-  void ray(Image::View view, const rtx::Scene &scene,
-           const rtx::Camera &cam) const;
+  rtx::Color castRayForPixel(const rtx::Scene &scene, const rtx::Camera &cam,
+                             float i, float j) const;
+  void traceRays(Image::View view, const rtx::Scene &scene,
+                 const rtx::Camera &cam) const;
   Image raytracing(const rtx::Scene &scene, int threadsCount) const;
 
   rtx::Color getImpactColor(const rtx::Ray &ray, const rtx::Object &obj,

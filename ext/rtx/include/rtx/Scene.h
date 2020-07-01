@@ -25,7 +25,17 @@ struct Scene {
   Color getAmbiant() const;
   int nbLights() const;
   const Light *getLight(int index) const;
-  Object *closer_intersected(const Ray &ray, Point &impact) const;
+  Object *getClosestIntersection(const Ray &ray, Point &impact) const;
+
+  Color performLighting(const Ray &ray, const Object &obj,
+                        const Point &impact) const;
+  bool isInShadow(const Light &light, const Point &impact) const;
+
+  Color getAmbianteLighting(const Object &obj, const Point &impact) const;
+  Color getDiffuseLighting(const Ray &ray, const Object &obj,
+                           const Point &impact) const;
+  Color getSpecularLighting(const Ray &ray, const Object &obj,
+                            const Point &impact) const;
 };
 
 } // namespace rtx
