@@ -12,6 +12,14 @@ Matrix::Matrix() {
   }
 }
 
+bool Matrix::operator==(const Matrix &m) const {
+  bool res = true;
+  for (int i = 0; i < 16; i++) {
+    res = res && (data[i] == m.data[i]);
+  }
+  return res;
+}
+
 float Matrix::operator()(int i, int j) const { return data[i + j * 4]; };
 float &Matrix::operator()(int i, int j) { return data[i + j * 4]; };
 
@@ -168,4 +176,14 @@ Matrix Matrix::inverse() const {
   }
 
   return out;
+}
+
+std::ostream &rtx::operator<<(std::ostream &os, const Matrix &m) {
+  for (int i = 0; i < 16; i++) {
+    os << m.data[i] << " ";
+    if (i + 1 % 4 == 0)
+      os << "\n";
+  }
+
+  return os;
 }
