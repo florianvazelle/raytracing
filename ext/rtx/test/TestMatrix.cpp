@@ -87,13 +87,13 @@ TEST(TestVector, Bracket) {
   EXPECT_TRUE(true);
 }
 
-TEST(TestMatrixVector, Multiplication) {
-  rtx::Point vec(-1, -1, 0);
+TEST(TestMatrixPoint, Multiplication) {
+  rtx::Point p(-1, -1, 0);
   rtx::Point result(-1, -1, 3);
 
   rtx::Entity e;
   e.translate(0, 0, 3);
 
-  ASSERT_EQ(e.trans * vec, result);
+  ASSERT_EQ(e.trans * p, result);
   EXPECT_TRUE(true);
 }

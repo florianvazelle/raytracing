@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <iomanip>
 #include <stdexcept>
 #include <thread>
@@ -105,9 +106,9 @@ void RaytracingApp::traceRays(Image::View view, const rtx::Scene &scene,
       color = color / (spp * spp);
 
       // Correction Gamma
-      color.r = std::min(1.0f, color.r);
-      color.g = std::min(1.0f, color.g);
-      color.b = std::min(1.0f, color.b);
+      color.r = std::clamp(color.r, 0.f, 1.f);
+      color.g = std::clamp(color.g, 0.f, 1.f);
+      color.b = std::clamp(color.b, 0.f, 1.f);
 
       color.r = powf(color.r, 1.f / 2.2f);
       color.g = powf(color.g, 1.f / 2.2f);

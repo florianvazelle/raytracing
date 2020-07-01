@@ -116,39 +116,73 @@ public:
         new BoxLayout(Orientation::Horizontal, Alignment::Middle, 0, 5));
 
     CheckBox *c = new CheckBox(actionWindow, "Multithreading");
+    c->setChecked(useMultithreading);
     c->setCallback([this](bool isChecked) { useMultithreading = isChecked; });
 
-    new Label(actionWindow, "Sample per pixels", "sans-bold");
-    tools = new Widget(actionWindow);
-    tools->setLayout(
-        new BoxLayout(Orientation::Horizontal, Alignment::Middle, 0, 6));
+    /* Super sample slider */
+    {
+      new Label(actionWindow, "Sample per pixels", "sans-bold");
+      tools = new Widget(actionWindow);
+      tools->setLayout(
+          new BoxLayout(Orientation::Horizontal, Alignment::Middle, 0, 6));
 
-    Slider *slider = new Slider(tools);
-    slider->setValue(0.3f);
-    slider->setFixedWidth(80);
+      Slider *slider = new Slider(tools);
+      slider->setValue(spp / 10);
+      slider->setFixedWidth(80);
 
-    TextBox *textBox = new TextBox(tools);
-    textBox->setFixedSize(Vector2i(60, 25));
-    textBox->setValue("3");
-    slider->setCallback([textBox](float value) {
-      textBox->setValue(std::to_string((int)(value * 10)));
-    });
-    slider->setFinalCallback([this, imageView, imgPanel](float value) {
-      spp = value * 10;
+      TextBox *textBox = new TextBox(tools);
+      textBox->setFixedSize(Vector2i(60, 25));
+      textBox->setValue(std::to_string((int)spp));
+      slider->setCallback([textBox](float value) {
+        textBox->setValue(std::to_string((int)(value * 10)));
+      });
+      slider->setFinalCallback([this, imageView, imgPanel](float value) {
+        spp = value * 10;
 
-      updateView(scenes[mCurrentScene], imageView, imgPanel);
-    });
-    textBox->setFixedSize(Vector2i(60, 25));
-    textBox->setFontSize(20);
-    textBox->setAlignment(TextBox::Alignment::Right);
+        updateView(scenes[mCurrentScene], imageView, imgPanel);
+      });
+      textBox->setFixedSize(Vector2i(60, 25));
+      textBox->setFontSize(20);
+      textBox->setAlignment(TextBox::Alignment::Right);
+    }
 
-    /* Positive integer widget */ {
+    /* FOV slider */
+    // {
+    //   new Label(actionWindow, "Field of view", "sans-bold");
+    //   tools = new Widget(actionWindow);
+    //   tools->setLayout(
+    //       new BoxLayout(Orientation::Horizontal, Alignment::Middle, 0, 6));
+
+    //   Slider *slider = new Slider(tools);
+    //   slider->setValue(0.5f);
+    //   slider->setFixedWidth(80);
+
+    //   TextBox *textBox = new TextBox(tools);
+    //   textBox->setFixedSize(Vector2i(60, 25));
+    //   textBox->setValue("90");
+    //   slider->setCallback([textBox](float value) {
+    //     float i = value * 3;
+    //     textBox->setValue(std::to_string((int)(60 + (i * 30))));
+    //   });
+    //   slider->setFinalCallback([this, imageView, imgPanel](float value) {
+    //     float i = value * 3;
+    //     fov = 60 + (i * 30);
+
+    //     updateView(scenes[mCurrentScene], imageView, imgPanel);
+    //   });
+    //   textBox->setFixedSize(Vector2i(60, 25));
+    //   textBox->setFontSize(20);
+    //   textBox->setAlignment(TextBox::Alignment::Right);
+    // }
+
+    /* Positive integer widget */
+    {
       new Label(actionWindow, "Width :", "sans-bold");
       auto intBox = new IntBox<int>(actionWindow);
       intBox->setEditable(true);
       intBox->setFixedSize(Vector2i(100, 20));
-      intBox->setValue(250);
-      intBox->setDefaultValue("250");
+      intBox->setValue(_width);
+      intBox->setDefaultValue(std::to_string(_width));
       intBox->setFontSize(16);
       intBox->setFormat("[1-9][0-9]*");
       intBox->setSpinnable(true);
@@ -163,8 +197,8 @@ public:
       intBox = new IntBox<int>(actionWindow);
       intBox->setEditable(true);
       intBox->setFixedSize(Vector2i(100, 20));
-      intBox->setValue(250);
-      intBox->setDefaultValue("250");
+      intBox->setValue(_height);
+      intBox->setDefaultValue(std::to_string(_height));
       intBox->setFontSize(16);
       intBox->setFormat("[1-9][0-9]*");
       intBox->setSpinnable(true);
@@ -283,10 +317,11 @@ private:
   std::vector<rtx::Scene> scenes;
   int mCurrentScene;
 
-  float _width = 250.0f;
-  float _height = 250.0f;
+  float _width = 800.0f;
+  float _height = 800.0f;
+  float fov = 90.0f;
   float spp = 3.f; // sample par pixels
-  bool useMultithreading = false;
+  bool useMultithreading = true;
 };
 
 #endif
