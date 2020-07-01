@@ -78,23 +78,6 @@ rtx::Scene RaytracingApp::openScene(std::string path) {
   return scene;
 }
 
-rtx::Color RaytracingApp::castRayForPixel(const rtx::Scene &scene,
-                                          const rtx::Camera &cam, float i,
-                                          float j) const {
-  rtx::Color color;
-  rtx::Point impact;
-  rtx::Ray ray = cam.getRay(i, j);
-  rtx::Object *obj = scene.getClosestIntersection(ray, impact);
-
-  if (obj) {
-    color = scene.performLighting(ray, *obj, impact);
-  } else {
-    color = scene.getBackground();
-  }
-
-  return color;
-}
-
 void RaytracingApp::traceRays(Image::View view, const rtx::Scene &scene,
                               const rtx::Camera &cam) const {
   const float w = 1.f / _width;
@@ -116,7 +99,7 @@ void RaytracingApp::traceRays(Image::View view, const rtx::Scene &scene,
           float cx = x + (k * ws);
           float cy = y + (l * hs);
 
-          color += castRayForPixel(scene, cam, cx, cy);
+          color += scene.castRayForPixel(cam, cx, cy);
         }
       }
       color = color / (spp * spp);

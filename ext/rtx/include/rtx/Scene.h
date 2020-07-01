@@ -1,9 +1,9 @@
 #ifndef H_SCENE
 #define H_SCENE
 
-#include <json/json.h>
 #include <vector>
 
+#include <rtx/Camera.h>
 #include <rtx/Light.h>
 #include <rtx/Object.h>
 #include <rtx/Ray.h>
@@ -27,10 +27,10 @@ struct Scene {
   const Light *getLight(int index) const;
   Object *getClosestIntersection(const Ray &ray, Point &impact) const;
 
+  Color castRayForPixel(const Camera &cam, float i, float j) const;
   Color performLighting(const Ray &ray, const Object &obj,
                         const Point &impact) const;
   bool isInShadow(const Light &light, const Point &impact) const;
-
   Color getAmbianteLighting(const Object &obj, const Point &impact) const;
   Color getDiffuseLighting(const Ray &ray, const Object &obj,
                            const Point &impact) const;

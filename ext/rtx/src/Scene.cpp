@@ -50,6 +50,24 @@ Object *Scene::getClosestIntersection(const Ray &ray, Point &impact) const {
   return closer_obj;
 };
 
+/**
+ * Retourne la couleur correspondant au point (i, j) de l'image.
+ */
+Color Scene::castRayForPixel(const Camera &cam, float i, float j) const {
+  Color color;
+  Point impact;
+  Ray ray = cam.getRay(i, j);
+  Object *obj = getClosestIntersection(ray, impact);
+
+  color = (obj) ? performLighting(ray, *obj, impact) : getBackground();
+
+  return color;
+}
+
+/**
+ * Retourne la couleur de l'objet intersecté, tout en prenant en compte le
+ * lighting.
+ */
 Color Scene::performLighting(const Ray &ray, const Object &obj,
                              const Point &impact) const {
   Color ambiante = getAmbianteLighting(obj, impact);
@@ -59,6 +77,10 @@ Color Scene::performLighting(const Ray &ray, const Object &obj,
   return ambiante + diffuse + specular;
 }
 
+/**
+ * Retourne vrai si un object se situe entre le point d'intersection et la
+ * lumière, sinon retourne faux.
+ */
 bool Scene::isInShadow(const Light &light, const Point &impact) const {
   Ray R = light.getRayToLight(impact);
   Point lightPosition = light.getRayFromLight(impact).origin;
@@ -74,11 +96,17 @@ bool Scene::isInShadow(const Light &light, const Point &impact) const {
   return false;
 }
 
+/**
+ * Retourne la couleur ambiante.
+ */
 Color Scene::getAmbianteLighting(const Object &obj, const Point &impact) const {
   Material mat = obj.getMaterial(impact);
   return mat.ka * getAmbiant();
 }
 
+/**
+ * Retourne la couleur diffuse.
+ */
 Color Scene::getDiffuseLighting(const Ray &ray, const Object &obj,
                                 const Point &impact) const {
   Material mat = obj.getMaterial(impact);
@@ -102,6 +130,9 @@ Color Scene::getDiffuseLighting(const Ray &ray, const Object &obj,
   return diffuse;
 }
 
+/**
+ * Retourne la couleur speculaire.
+ */
 Color Scene::getSpecularLighting(const Ray &ray, const Object &obj,
                                  const Point &impact) const {
   Material mat = obj.getMaterial(impact);
