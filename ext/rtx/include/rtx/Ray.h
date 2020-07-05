@@ -23,7 +23,7 @@ struct Ray {
 
   Ray();
   Ray(float ox, float oy, float oz, float vx, float vy, float vz);
-  Ray(Point origin, Vector vector) : origin(origin), vector(vector){};
+  Ray(const Point &origin, const Vector &vector);
 
   friend std::ostream &operator<<(std::ostream &os, const Ray &r);
 };

@@ -5,7 +5,7 @@
 using namespace rtx;
 
 bool InfiniteCylinder::intersect(const Ray &ray, Point &impact) const {
-  Vector O = globalToLocal(ray.origin);
+  Point O = globalToLocal(ray.origin);
   Vector V = globalToLocal(ray.vector);
 
   float a = V[0] * V[0] + V[2] * V[2];

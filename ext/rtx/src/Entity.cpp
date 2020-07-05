@@ -72,7 +72,9 @@ void Entity::scale(float f) {
   transInv = trans.inverse();
 }
 
-Vector Entity::localToGlobal(const Vector &v) const { return trans * v; }
+Vector Entity::localToGlobal(const Vector &v) const {
+  return (trans * v).normalized();
+}
 
 Point Entity::localToGlobal(const Point &p) const { return trans * p; }
 
@@ -83,7 +85,9 @@ Ray Entity::localToGlobal(const Ray &r) const {
   return r1;
 }
 
-Vector Entity::globalToLocal(const Vector &v) const { return transInv * v; }
+Vector Entity::globalToLocal(const Vector &v) const {
+  return (transInv * v).normalized();
+}
 
 Point Entity::globalToLocal(const Point &p) const { return transInv * p; }
 

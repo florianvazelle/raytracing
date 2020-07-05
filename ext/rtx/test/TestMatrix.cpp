@@ -50,7 +50,7 @@ TEST(TestVector, Distance) {
   rtx::Point v1(7, 4, 3);
   rtx::Point v2(17, 6, 2);
 
-  ASSERT_EQ(rtx::Point::distance(v1, v2), 10.246951f);
+  ASSERT_EQ(v1.distance(v2), 10.246951f);
 
   EXPECT_TRUE(true);
 }

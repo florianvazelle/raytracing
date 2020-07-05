@@ -55,15 +55,22 @@ bool Cube::intersect(const Ray &ray, Point &impact) const {
 }
 
 Ray Cube::getNormal(const Point &impact, const Point &observator) const {
-  Vector dir = globalToLocal(impact);
+  const float EPSILON = 0.00001f;
+
+  Point I = globalToLocal(impact);
+  Vector dir = I;
 
   Vector p = localToGlobal(dir);
-  if (observator.dot(p) < -1)
+  if (observator.dot(p) < -2)
     dir = -dir;
 
   for (int i = 0; i < 3; i++) {
-    if (-1 < dir[i] && dir[i] < 1) {
+    if (-1.f + EPSILON < dir[i] && dir[i] < 1.f - EPSILON) {
       dir[i] = 0.0f;
+    } else if (dir[i] < -1.f + EPSILON) {
+      dir[i] = -1;
+    } else if (1.f - EPSILON < dir[i]) {
+      dir[i] = 1;
     }
   }
 

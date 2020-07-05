@@ -2,6 +2,7 @@
 #define H_LIGHT
 
 #include <rtx/Entity.h>
+#include <rtx/Point.h>
 #include <rtx/Ray.h>
 #include <rtx/Vector.h>
 

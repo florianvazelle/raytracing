@@ -24,7 +24,8 @@ Ray Light::getRayFromLight(const Point &p) const {
 Vector Light::getVectorToLight(const Point &p) const {
   Point origin;
   Point P = globalToLocal(p);
-  return localToGlobal(origin - P);
+  Vector dir = origin - P;
+  return localToGlobal(dir).normalized();
 }
 
 /**
@@ -33,5 +34,6 @@ Vector Light::getVectorToLight(const Point &p) const {
 Vector Light::getVectorFromLight(const Point &p) const {
   Point origin;
   Point P = globalToLocal(p);
-  return localToGlobal(P - origin);
+  Vector dir = P - origin;
+  return localToGlobal(dir).normalized();
 }

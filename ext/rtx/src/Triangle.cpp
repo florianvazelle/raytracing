@@ -8,14 +8,14 @@ using namespace rtx;
  * Möller–Trumbore intersection algorithm
  */
 bool Triangle::intersect(const Ray &ray, Point &impact) const {
-  Vector O = globalToLocal(ray.origin);
+  Point O = globalToLocal(ray.origin);
   Vector V = globalToLocal(ray.vector);
 
   const float EPSILON = 0.0000001;
 
-  Vector vertex0 = Vector(-1, 1, 0);
-  Vector vertex1 = Vector(1, 1, 0);
-  Vector vertex2 = Vector(0, -1, 0);
+  Point vertex0 = Point(-1, 1, 0);
+  Point vertex1 = Point(1, 1, 0);
+  Point vertex2 = Point(0, -1, 0);
   Vector edge1, edge2, h, s, q;
 
   float a, f, u, v;

@@ -20,9 +20,9 @@ Image::Image(char const *filename) {
     auto pixels = static_cast<uint8_t *>(in_surface->pixels);
     for (int i = 0; i < _h * _w; ++i) {
       int j = 4 * i;
-      _pixels[i].r = pixels[j + 1] / 255.0f;
+      _pixels[i].b = pixels[j + 1] / 255.0f;
       _pixels[i].g = pixels[j + 2] / 255.0f;
-      _pixels[i].b = pixels[j + 3] / 255.0f;
+      _pixels[i].r = pixels[j + 3] / 255.0f;
     }
     SDL_UnlockSurface(in_surface);
 
@@ -49,9 +49,9 @@ void Image::save_png(char const *filename) {
   for (int i = 0; i < _h * _w; ++i) {
     int j = 4 * i;
     pixels[j] = 255.0f;
-    pixels[j + 1] = _pixels[i].r * 255.0f;
+    pixels[j + 1] = _pixels[i].b * 255.0f;
     pixels[j + 2] = _pixels[i].g * 255.0f;
-    pixels[j + 3] = _pixels[i].b * 255.0f;
+    pixels[j + 3] = _pixels[i].r * 255.0f;
   }
   SDL_UnlockSurface(out_surface);
 
