@@ -1,31 +1,31 @@
 #include <cmath>
 #include <stdexcept>
 
-#include <rtx/Vector.h>
+#include <rtx/Point.h>
 
 using namespace rtx;
 
-Vector::Vector(const Point &v) {
+Point::Point(const Vector &v) {
   x = v.x;
   y = v.y;
   z = v.z;
 };
 
-Vector &Vector::operator=(const Vector &rhs) {
+Point &Point::operator=(const Point &rhs) {
   x = rhs.x;
   y = rhs.y;
   z = rhs.z;
   return *this;
 }
 
-Vector &Vector::operator=(const Point &rhs) {
+Point &Point::operator=(const Vector &rhs) {
   x = rhs.x;
   y = rhs.y;
   z = rhs.z;
   return *this;
 }
 
-bool Vector::operator==(const Vector &rhs) const {
+bool Point::operator==(const Point &rhs) const {
   return (rhs.x == x && rhs.y == y && rhs.z == z);
 }
 
@@ -33,39 +33,39 @@ bool Vector::operator==(const Vector &rhs) const {
  * Simple Operator with float
  */
 
-Vector Vector::operator+(const float &rhs) const {
+Point Point::operator+(const float &rhs) const {
   return {x + rhs, y + rhs, z + rhs};
 }
 
-Vector Vector::operator-(const float &rhs) const {
+Point Point::operator-(const float &rhs) const {
   return {x - rhs, y - rhs, z - rhs};
 }
 
-Vector Vector::operator*(const float &rhs) const {
+Point Point::operator*(const float &rhs) const {
   return {x * rhs, y * rhs, z * rhs};
 }
 
-Vector Vector::operator/(const float &rhs) const {
+Point Point::operator/(const float &rhs) const {
   return {x / rhs, y / rhs, z / rhs};
 }
 
 /**
- * Simple Operator with Vector
+ * Simple Operator with Point
  */
 
-Vector Vector::operator+(const Vector &rhs) const {
+Point Point::operator+(const Point &rhs) const {
   return {x + rhs.x, y + rhs.y, z + rhs.z};
 }
 
-Vector Vector::operator-(const Vector &rhs) const {
+Point Point::operator-(const Point &rhs) const {
   return {x - rhs.x, y - rhs.y, z - rhs.z};
 }
 
-Vector Vector::operator*(const Vector &rhs) const {
+Point Point::operator*(const Point &rhs) const {
   return {x * rhs.x, y * rhs.y, z * rhs.z};
 }
 
-Vector Vector::operator/(const Vector &rhs) const {
+Point Point::operator/(const Point &rhs) const {
   return {x / rhs.x, y / rhs.y, z / rhs.z};
 }
 
@@ -73,28 +73,28 @@ Vector Vector::operator/(const Vector &rhs) const {
  * Assignement Operator with float
  */
 
-Vector &Vector::operator+=(const float &rhs) {
+Point &Point::operator+=(const float &rhs) {
   x += rhs;
   y += rhs;
   z += rhs;
   return *this;
 }
 
-Vector &Vector::operator-=(const float &rhs) {
+Point &Point::operator-=(const float &rhs) {
   x -= rhs;
   y -= rhs;
   z -= rhs;
   return *this;
 }
 
-Vector &Vector::operator*=(const float &rhs) {
+Point &Point::operator*=(const float &rhs) {
   x *= rhs;
   y *= rhs;
   z *= rhs;
   return *this;
 }
 
-Vector &Vector::operator/=(const float &rhs) {
+Point &Point::operator/=(const float &rhs) {
   x /= rhs;
   y /= rhs;
   z /= rhs;
@@ -102,40 +102,40 @@ Vector &Vector::operator/=(const float &rhs) {
 }
 
 /**
- * Assignement Operator with Vector
+ * Assignement Operator with Point
  */
 
-Vector &Vector::operator+=(const Vector &rhs) {
+Point &Point::operator+=(const Point &rhs) {
   x += rhs.x;
   y += rhs.y;
   z += rhs.z;
   return *this;
 }
 
-Vector &Vector::operator-=(const Vector &rhs) {
+Point &Point::operator-=(const Point &rhs) {
   x -= rhs.x;
   y -= rhs.y;
   z -= rhs.z;
   return *this;
 }
 
-Vector &Vector::operator*=(const Vector &rhs) {
+Point &Point::operator*=(const Point &rhs) {
   x *= rhs.x;
   y *= rhs.y;
   z *= rhs.z;
   return *this;
 }
 
-Vector &Vector::operator/=(const Vector &rhs) {
+Point &Point::operator/=(const Point &rhs) {
   x /= rhs.x;
   y /= rhs.y;
   z /= rhs.z;
   return *this;
 }
 
-Vector Vector::operator-() const { return {-x, -y, -z}; }
+Point Point::operator-() const { return {-x, -y, -z}; }
 
-float Vector::operator[](const int &rhs) const {
+float Point::operator[](const int &rhs) const {
   if (rhs == 0)
     return x;
   if (rhs == 1)
@@ -145,7 +145,7 @@ float Vector::operator[](const int &rhs) const {
   throw std::out_of_range("Out of Range");
 }
 
-float &Vector::operator[](const int &rhs) {
+float &Point::operator[](const int &rhs) {
   if (rhs == 0)
     return x;
   if (rhs == 1)
@@ -155,7 +155,7 @@ float &Vector::operator[](const int &rhs) {
   throw std::out_of_range("Out of Range");
 }
 
-Vector &Vector::normalized() {
+Point &Point::normalized() {
   float inv_length = 1.f / length();
   x *= inv_length;
   y *= inv_length;
@@ -163,24 +163,24 @@ Vector &Vector::normalized() {
   return *this;
 }
 
-float Vector::dot(const Vector &rhs) const {
+float Point::dot(const Point &rhs) const {
   return x * rhs.x + y * rhs.y + z * rhs.z;
 }
 
-float Vector::distance(const Vector &rhs) const {
+float Point::distance(const Point &rhs) const {
   float x1 = x - rhs.x;
   float y1 = y - rhs.y;
   float z1 = z - rhs.z;
   return std::sqrt((x1 * x1) + (y1 * y1) + (z1 * z1));
 }
 
-Vector Vector::cross(const Vector &v) const {
+Point Point::cross(const Point &v) const {
   return {(y * v.z - z * v.y), -(x * v.z - z * v.x), (x * v.y - y * v.x)};
 }
 
-float Vector::norm() const { return x * x + y * y + z * z; }
-float Vector::length() const { return std::sqrt(norm()); }
+float Point::norm() const { return x * x + y * y + z * z; }
+float Point::length() const { return std::sqrt(norm()); }
 
-std::ostream &rtx::operator<<(std::ostream &os, const Vector &f) {
+std::ostream &rtx::operator<<(std::ostream &os, const Point &f) {
   return os << "(" << f.x << ", " << f.y << ", " << f.z << ")";
 }

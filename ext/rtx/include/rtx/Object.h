@@ -21,6 +21,10 @@ struct Object : public Entity {
   Object(const Material &mat) : material(mat){};
   virtual ~Object(){};
 
+  bool operator==(const Object &rhs) const {
+    return trans == rhs.trans && material == rhs.material;
+  };
+
   /**
    * Retourne le Material correspondant au point de la surface de l'objet passé
    * en paramètre.

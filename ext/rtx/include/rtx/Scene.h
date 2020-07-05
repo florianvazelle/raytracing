@@ -28,14 +28,22 @@ struct Scene {
   Object *getClosestIntersection(const Ray &ray, Point &impact) const;
 
   Color castRayForPixel(const Camera &cam, float i, float j) const;
-  Color performLighting(const Ray &ray, const Object &obj,
-                        const Point &impact) const;
+  Color castRay(const Ray &ray, int raycast = 0) const;
+
+  Color performLighting(const Ray &ray, const Object &obj, const Point &impact,
+                        int raycast) const;
+
+  /* Lighting stuff */
   bool isInShadow(const Light &light, const Point &impact) const;
   Color getAmbianteLighting(const Object &obj, const Point &impact) const;
   Color getDiffuseLighting(const Ray &ray, const Object &obj,
                            const Point &impact) const;
   Color getSpecularLighting(const Ray &ray, const Object &obj,
                             const Point &impact) const;
+
+  Color getReflectiveLighting(const Ray &ray, const Object &obj,
+                              const Point &impact, int raycast) const;
+  Vector reflect(const Vector &I, const Vector &N) const;
 };
 
 } // namespace rtx

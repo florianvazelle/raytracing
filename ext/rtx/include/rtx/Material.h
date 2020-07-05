@@ -9,11 +9,13 @@ namespace rtx {
  * Représente le matériau d'un objet.
  */
 struct Material {
+  Material();
+  Material(Color ka, Color kd, Color ks, int shiny = 0, float reflect = 0);
 
-  Material() : shininess(0){};
-  Material(int shininess) : shininess(shininess){};
-  Material(Color ka, Color kd, Color ks, int shininess)
-      : ka(ka), kd(kd), ks(ks), shininess(shininess){};
+  bool operator==(const Material &rhs) const {
+    return ka == rhs.ka && kd == rhs.kd && ks == rhs.ks &&
+           shininess == rhs.shininess && reflectivity == rhs.reflectivity;
+  };
 
   /**
    * La composante ambiante, qui se multiplie par la lumière ambiante de la
@@ -37,6 +39,11 @@ struct Material {
    * L'exposant de brillance du matériel, utilisé dans le modèle de Phong.
    */
   int shininess;
+
+  /**
+   *
+   */
+  float reflectivity;
 };
 
 } // namespace rtx

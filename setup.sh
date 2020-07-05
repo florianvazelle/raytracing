@@ -3,9 +3,9 @@
 ###
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 printf "== Moving to *build* directory - creating if needed ... "
-mkdir -p $DIR/build
+mkdir -p "$DIR/build"
 printf "OK\n"
-cd $DIR/build
+cd "$DIR/build"
 
 
 ###

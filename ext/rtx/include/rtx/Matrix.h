@@ -2,6 +2,7 @@
 #define H_MATRIX
 
 #include <rtx/Point.h>
+#include <rtx/Vector.h>
 
 namespace rtx {
 

@@ -3,7 +3,11 @@
 
 #include <ostream>
 
+#include <rtx/Point.h>
+
 namespace rtx {
+
+struct Point;
 
 struct Vector {
   union {
@@ -18,32 +22,47 @@ struct Vector {
 
   Vector() : x(0), y(0), z(0){};
   Vector(float x, float y, float z) : x(x), y(y), z(z){};
+  Vector(const Vector &v) : x(v.x), y(v.y), z(v.z){};
+  Vector(const Point &v);
 
-  Vector operator*(const float t) const;
-  Vector operator+(const Vector &rhs) const;
-  Vector operator+(const float &rhs) const;
-  Vector &operator+=(const Vector &rhs);
-  Vector operator-(const Vector &rhs) const;
-  Vector operator-(const float &rhs) const;
-  Vector operator-() const;
-  Vector operator*(const Vector &rhs) const;
-  Vector &operator*=(const Vector &rhs);
-  Vector &operator*=(const float &rhs);
-  Vector operator/(const float &rhs) const;
+  Vector &operator=(const Vector &rhs);
+  Vector &operator=(const Point &rhs);
 
   bool operator==(const Vector &rhs) const;
+
+  Vector operator+(const float &rhs) const;
+  Vector operator-(const float &rhs) const;
+  Vector operator*(const float &rhs) const;
+  Vector operator/(const float &rhs) const;
+
+  Vector operator+(const Vector &rhs) const;
+  Vector operator-(const Vector &rhs) const;
+  Vector operator*(const Vector &rhs) const;
+  Vector operator/(const Vector &rhs) const;
+
+  Vector &operator+=(const float &rhs);
+  Vector &operator-=(const float &rhs);
+  Vector &operator*=(const float &rhs);
+  Vector &operator/=(const float &rhs);
+
+  Vector &operator+=(const Vector &rhs);
+  Vector &operator-=(const Vector &rhs);
+  Vector &operator*=(const Vector &rhs);
+  Vector &operator/=(const Vector &rhs);
+
+  Vector operator-() const;
 
   float operator[](const int &rhs) const;
   float &operator[](const int &rhs);
 
-  Vector &normalized();
-  float dot(const Vector &rhs) const;
-  Vector cross(const Vector &v) const;
   float norm() const;
   float length() const;
+  Vector &normalized();
+  float dot(const Vector &rhs) const;
+  Vector cross(const Vector &rhs) const;
+  float distance(const Vector &rhs) const;
 
-  static float distance(const Vector &v1, const Vector &v2);
-  friend std::ostream &operator<<(std::ostream &os, const Vector &p);
+  friend std::ostream &operator<<(std::ostream &os, const Vector &v);
 };
 
 using Color = Vector;

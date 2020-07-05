@@ -50,12 +50,11 @@ Matrix Matrix::operator*(const Matrix &mat) const {
 }
 
 Vector Matrix::operator*(const Vector &rhs) const {
-  float sum;
   float result[4];
   float rhsData[4] = {rhs.x, rhs.y, rhs.z, 0};
 
   for (int i = 0; i < 4; i++) {
-    sum = 0.0f;
+    float sum = 0.0f;
     for (int j = 0; j < 4; j++) {
       sum += data[i + j * 4] * rhsData[j];
     }
@@ -65,12 +64,11 @@ Vector Matrix::operator*(const Vector &rhs) const {
 }
 
 Point Matrix::operator*(const Point &rhs) const {
-  float sum;
   float result[4];
   float rhsData[4] = {rhs.x, rhs.y, rhs.z, 1};
 
   for (int i = 0; i < 4; i++) {
-    sum = 0.0f;
+    float sum = 0.0f;
     for (int j = 0; j < 4; j++) {
       sum += data[i + j * 4] * rhsData[j];
     }
