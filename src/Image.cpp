@@ -38,7 +38,14 @@ Image::Image(int w, int h) {
   _pixels.resize(w * h);
 }
 
-void Image::save_png(char const *filename) {
+const char *Image::get_filename_ext(const char *filename) {
+  const char *dot = strrchr(filename, '.');
+  if (!dot || dot == filename)
+    return "";
+  return dot + 1;
+}
+
+void Image::save(char const *filename) {
   SDL_Surface *out_surface;
   out_surface = SDL_CreateRGBSurface(0, _w, _h, 32, 0, 0, 0, 0);
   out_surface =
@@ -55,6 +62,10 @@ void Image::save_png(char const *filename) {
   }
   SDL_UnlockSurface(out_surface);
 
-  IMG_SavePNG(out_surface, filename);
+  const char *extension = get_filename_ext(filename);
+  if (strcmp(extension, "png"))
+    IMG_SavePNG(out_surface, filename);
+  else if (strcmp(extension, "jpg"))
+    IMG_SaveJPG(out_surface, filename, 100);
   SDL_FreeSurface(out_surface);
 }
