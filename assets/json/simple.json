@@ -1,0 +1,53 @@
+{
+  "objects": [
+    {
+      "type": "Cube",
+      "position": { "x": 0, "y": -1, "z": 0 },
+      "rotation": { "x": 0.5, "y": 1, "z": 0.5 },
+      "scale": 0.7,
+      "material": {
+        "ka": { "r": 0.5, "g": 0.1, "b": 0.1 },
+        "kd": { "r": 0.4, "g": 0.3, "b": 0.3 },
+        "ks": { "r": 0.6, "g": 0.5, "b": 0.5 },
+        "shininess": 7,
+        "reflectivity": 0,
+        "refractivity": 0
+      }
+    },
+    {
+      "type": "Square",
+      "position": { "x": 0, "y": 0.65, "z": -1 },
+      "rotation": { "x": -0.5, "y": 1, "z": 0 },
+      "scale": 0.5,
+      "material": {
+        "ka": { "r": 0.1, "g": 0.5, "b": 0.1 },
+        "kd": { "r": 0.1, "g": 0.5, "b": 0.1 },
+        "ks": { "r": 0.1, "g": 0.5, "b": 0.1 },
+        "shininess": 10,
+        "reflectivity": 0,
+        "refractivity": 0
+      }
+    },
+    {
+      "type": "Sphere",
+      "position": { "x": -1.1, "y": 0.9, "z": -2 },
+      "rotation": { "x": 0, "y": 0, "z": 0 },
+      "scale": 1,
+      "material": {
+        "ka": { "r": 0.1, "g": 0.1, "b": 0.5 },
+        "kd": { "r": 0.3, "g": 0.3, "b": 0.4 },
+        "ks": { "r": 0.5, "g": 0.5, "b": 0.6 },
+        "shininess": 10,
+        "reflectivity": 0,
+        "refractivity": 0
+      }
+    }
+  ],
+  "lights": [
+    {
+      "position": { "x": 1, "y": 1, "z": 0 },
+      "id": { "r": 0.5, "g": 1, "b": 0 },
+      "is": { "r": 1, "g": 1, "b": 1 }
+    }
+  ]
+}

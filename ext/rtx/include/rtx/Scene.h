@@ -18,6 +18,8 @@ namespace rtx {
  * d'arrière plan (quand un rayon ne touche pas d'objet).
  */
 struct Scene {
+  const static int DEPTH_COMPLEXITY = 10;
+
   std::vector<Object *> objects;
   std::vector<Light *> lights;
 
@@ -41,9 +43,17 @@ struct Scene {
   Color getSpecularLighting(const Ray &ray, const Object &obj,
                             const Point &impact) const;
 
-  Color getReflectiveLighting(const Ray &ray, const Object &obj,
-                              const Point &impact, int raycast) const;
+  Color getReflectiveRefractive(const Ray &ray, const Object &obj,
+                                const Point &impact, int raycast) const;
+  Color getReflectivity(const Ray &ray, const Object &obj, const Point &impact,
+                        int raycast) const;
+  Color getRefractivity(const Ray &ray, const Object &obj, const Point &impact,
+                        int raycast) const;
+
+  float schlickFresnel(const Vector &I, const Vector &N, float n1,
+                       float n2) const;
   Vector reflect(const Vector &I, const Vector &N) const;
+  Vector refract(const Vector &I, const Vector &N, float n1, float n2) const;
 };
 
 } // namespace rtx

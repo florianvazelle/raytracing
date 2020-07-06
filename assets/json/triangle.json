@@ -2,23 +2,32 @@
   "objects": [
     {
       "type": "Triangle",
-      "position": { "x": 0, "y": 0, "z": 0 },
+      "position": { "x": -1, "y": 0, "z": -1 },
+      "rotation": { "x": 0, "y": 1, "z": 0 },
+      "scale": 1,
+      "material": {
+        "ka": { "r": 1, "g": 0, "b": 0 },
+        "kd": { "r": 0, "g": 0, "b": 0 },
+        "ks": { "r": 0, "g": 0, "b": 0 },
+        "shininess": 10,
+        "reflectivity": 1,
+        "refractivity": 0
+      }
+    },
+    {
+      "type": "Sphere",
+      "position": { "x": 1, "y": 0, "z": 0 },
       "rotation": { "x": 0, "y": 0, "z": 0 },
       "scale": 1,
       "material": {
-        "ka": { "r": 0.1, "g": 0.5, "b": 0.1 },
-        "kd": { "r": 0.1, "g": 0.5, "b": 0.1 },
-        "ks": { "r": 0.1, "g": 0.5, "b": 0.1 },
+        "ka": { "r": 1, "g": 0.5, "b": 0.1 },
+        "kd": { "r": 1, "g": 0.5, "b": 0.1 },
+        "ks": { "r": 1, "g": 0.5, "b": 0.1 },
         "shininess": 10,
-        "reflectivity": 0
+        "reflectivity": 1,
+        "refractivity": 0
       }
     }
   ],
-  "lights": [
-    {
-      "position": { "x": 1, "y": 1, "z": 0 },
-      "id": { "r": 0.5, "g": 1, "b": 0 },
-      "is": { "r": 1, "g": 1, "b": 1 }
-    }
-  ]
+  "lights": []
 }

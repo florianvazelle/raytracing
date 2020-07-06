@@ -1,0 +1,67 @@
+{
+  "objects": [
+    {
+      "type": "Square",
+      "position": { "x": -2, "y": 0, "z": -5.0 },
+      "rotation": { "x": 0, "y": 0, "z": 0 },
+      "scale": 2,
+      "material": {
+        "ka": { "r": 0.235, "g": 0.294, "b": 0.556 },
+        "kd": { "r": 0.235, "g": 0.294, "b": 0.556 },
+        "ks": { "r": 0.235, "g": 0.294, "b": 0.556 },
+        "shininess": 0.5,
+        "reflectivity": 0,
+        "refractivity": 0
+      }
+    },
+    {
+      "type": "Square",
+      "position": { "x": 2, "y": 0, "z": -5.0 },
+      "rotation": { "x": 0, "y": 0, "z": 0 },
+      "scale": 2,
+      "material": {
+        "ka": { "r": 0.89, "g": 0.776, "b": 0.243 },
+        "kd": { "r": 0.89, "g": 0.776, "b": 0.243 },
+        "ks": { "r": 0.89, "g": 0.776, "b": 0.243 },
+        "shininess": 0.5,
+        "reflectivity": 0,
+        "refractivity": 0
+      }
+    },
+    {
+      "type": "Sphere",
+      "position": { "x": 0.7, "y": -0.7, "z": -4.5 },
+      "rotation": { "x": 0, "y": 0, "z": 0 },
+      "scale": 0.25,
+      "material": {
+        "ka": { "r": 1, "g": 0, "b": 0 },
+        "kd": { "r": 0.3, "g": 0.35, "b": 0.4 },
+        "ks": { "r": 0.06, "g": 0.07, "b": 0.08 },
+        "shininess": 10,
+        "reflectivity": 0,
+        "refractivity": 0
+      }
+    },
+    {
+      "type": "Sphere",
+      "position": { "x": 0, "y": 0, "z": -3.0 },
+      "rotation": { "x": 0, "y": 0, "z": 0 },
+      "scale": 1,
+      "material": {
+        "ka": { "r": 0, "g": 0, "b": 0 },
+        "kd": { "r": 0.3, "g": 0.35, "b": 0.4 },
+        "ks": { "r": 0.06, "g": 0.07, "b": 0.08 },
+        "shininess": 50,
+        "reflectivity": 0,
+        "refractivity": 3
+      }
+    }
+  ],
+  "lights": [
+    {
+      "position": { "x": 1, "y": 1, "z": 0 },
+      "id": { "r": 0.9, "g": 0.9, "b": 0.9 },
+      "is": { "r": 0.9, "g": 0.9, "b": 0.9 }
+    }
+  ]
+}

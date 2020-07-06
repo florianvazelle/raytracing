@@ -17,6 +17,7 @@ rtx::Material JsonHelper::toMaterial(Json::Value material) {
 
   const int shininess = material["shininess"].asInt();
   const float reflectivity = material["reflectivity"].asFloat();
+  const float refractivity = material["refractivity"].asFloat();
 
-  return rtx::Material(ka, kd, ks, shininess, reflectivity);
+  return rtx::Material(ka, kd, ks, shininess, reflectivity, refractivity);
 }

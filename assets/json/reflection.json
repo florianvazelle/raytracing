@@ -23,7 +23,8 @@
         "kd": { "r": 0.2, "g": 0.364, "b": 0.415 },
         "ks": { "r": 0.2, "g": 0.364, "b": 0.415 },
         "shininess": 0.5,
-        "reflectivity": 0.8
+        "reflectivity": 0.8,
+        "refractivity": 0
       }
     },
     {
@@ -36,7 +37,8 @@
         "kd": { "r": 0.839, "g": 0.309, "b": 0.164 },
         "ks": { "r": 0.839, "g": 0.309, "b": 0.164 },
         "shininess": 0.5,
-        "reflectivity": 0.8
+        "reflectivity": 0.8,
+        "refractivity": 0
       }
     }
   ],

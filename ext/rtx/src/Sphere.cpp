@@ -47,7 +47,7 @@ bool Sphere::intersect(const Ray &ray, Point &impact) const {
 
 Ray Sphere::getNormal(const Point &impact, const Point &observator) const {
   Vector dir = globalToLocal(impact);
-  if (observator.dot(dir) < 0)
+  if (observator.dot(dir) < -1)
     dir = -dir;
   Ray r;
   r.origin = impact;

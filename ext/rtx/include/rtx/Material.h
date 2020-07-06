@@ -10,11 +10,14 @@ namespace rtx {
  */
 struct Material {
   Material();
-  Material(Color ka, Color kd, Color ks, int shiny = 0, float reflect = 0);
+  Material(const Color &ka, const Color &kd, const Color &ks,
+           const int &shininess = 0, const float &reflectivity = 0,
+           const float &refractivity = 0);
 
   bool operator==(const Material &rhs) const {
     return ka == rhs.ka && kd == rhs.kd && ks == rhs.ks &&
-           shininess == rhs.shininess && reflectivity == rhs.reflectivity;
+           shininess == rhs.shininess && reflectivity == rhs.reflectivity &&
+           refractivity == rhs.refractivity;
   };
 
   /**
@@ -44,6 +47,11 @@ struct Material {
    *
    */
   float reflectivity;
+
+  /**
+   *
+   */
+  float refractivity;
 };
 
 } // namespace rtx
