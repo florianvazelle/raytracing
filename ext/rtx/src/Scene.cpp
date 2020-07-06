@@ -1,6 +1,7 @@
 #include <cmath>
 #include <iostream>
 #include <limits>
+#include <algorithm> 
 
 #include <rtx/Cube.h>
 #include <rtx/Light.h>
