@@ -31,9 +31,9 @@ public:
      * Pre-settings
      */
 
-    // Convertie en image toute les scenes de assets/json/
+    // Convertie en image toute les scenes de assets/scenes/
     for (const fs::directory_entry &p :
-         fs::directory_iterator("assets/json/")) {
+         fs::directory_iterator("assets/scenes/")) {
       fs::path path = p.path();
       fs::path filename = path.filename();
       fs::path ext = path.extension();
@@ -49,14 +49,14 @@ public:
         Image img = raytracing(scene, (useMultithreading) ? 2 : 1);
 
         char buff[100];
-        sprintf(buff, "assets/png/scene%d.json.png", mCurrentScene);
-        img.save_png(buff);
+        sprintf(buff, "assets/samples/scene%d.png", mCurrentScene);
+        img.save(buff);
       }
     }
 
     // On récupère toute les images
     std::vector<std::pair<int, std::string>> icons =
-        loadImageDirectory(mNVGContext, "assets/png");
+        loadImageDirectory(mNVGContext, "assets/samples");
 
     std::sort(icons.begin(), icons.end(),
               [](const std::pair<int, std::string> &lhs,
@@ -223,7 +223,7 @@ public:
           {
               {"json", "JavaScript Object Notation"},
           },
-          true);
+          false);
       std::cout << "File dialog result: " << jsonPath << std::endl;
       if (jsonPath.size() > 1) {
         rtx::Scene scene = openScene(jsonPath);
@@ -236,13 +236,25 @@ public:
 
     b = new Button(tools, "Save");
     b->setCallback([&] {
-      std::cout << "File dialog result: "
-                << file_dialog(
-                       {
-                           {"jpg", "JavaScript Object Notation"},
-                       },
-                       true)
-                << std::endl;
+      std::string jpgPath;
+      jpgPath = file_dialog(
+          {
+              {"jpg", "Joint Photographic Experts Group"},
+          },
+          true);
+      std::cout << "File dialog result: " << jpgPath << std::endl;
+      if (jpgPath.size() > 1) {
+        Image img = raytracing(
+            scenes.at(mCurrentScene),
+            (useMultithreading) ? 12 : 1); // TODO : Faire en sorte de ne pas
+                                           // avoir à recalculer l'image
+
+        // Défini le nom du fichier
+        char buff[255];
+        sprintf(buff, "%s.jpg", jpgPath.c_str());
+        // Enregistre l'image en JPG
+        img.save(buff);
+      }
     });
 
     performLayout();
@@ -271,9 +283,9 @@ public:
 
     // Défini le nom du fichier
     char buff[100];
-    sprintf(buff, "assets/png/scene%d.json.png", mCurrentScene);
+    sprintf(buff, "assets/samples/scene%d.png", mCurrentScene);
     // Enregistre l'image en PNG
-    img.save_png(buff);
+    img.save(buff);
 
     // Lit l'image en OpenGL et la stocke
     GLTexture texture(buff);
@@ -285,7 +297,7 @@ public:
 
     // On met a jour la popup des miniatures des images
     std::vector<std::pair<int, std::string>> icons =
-        nanogui::loadImageDirectory(mNVGContext, "assets/png");
+        nanogui::loadImageDirectory(mNVGContext, "assets/samples");
 
     std::sort(icons.begin(), icons.end(),
               [](const std::pair<int, std::string> &lhs,

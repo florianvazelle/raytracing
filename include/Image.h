@@ -15,7 +15,7 @@ public:
   auto operator[](int r) { return _pixels.data() + r * w(); }
   auto operator[](int r) const { return _pixels.data() + r * w(); }
 
-  void save_png(char const *filename);
+  void save(char const *filename);
   auto pixels() { return _pixels.data(); }
   auto pixels() const { return _pixels.data(); }
   int w() const { return _w; }
@@ -38,6 +38,8 @@ private:
   std::vector<rtx::Color> _pixels;
   int _w;
   int _h;
+
+  const char *get_filename_ext(const char *filename);
 };
 
 #endif
