@@ -20,7 +20,7 @@ struct Checkboard : Material {
       : Material(ka, kd, ks, shininess, reflectivity, refractivity),
         scale(scale){};
 
-  const Color getAmbiante(const Point &impact) const {
+  const Color getAmbiant(const Point &impact) const {
     float total = std::floor(impact.x / scale) + std::floor(impact.y / scale);
     bool isEven = std::fmod(total, 2.0f) == 0.0f;
 

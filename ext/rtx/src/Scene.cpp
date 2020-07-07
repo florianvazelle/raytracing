@@ -2,7 +2,6 @@
 #include <cmath>
 #include <iostream>
 #include <limits>
-#include <algorithm> 
 
 #include <rtx/Cube.h>
 #include <rtx/Light.h>
@@ -80,13 +79,13 @@ Color Scene::castRay(const Ray &ray, int raycast) const {
  */
 Color Scene::performLighting(const Ray &ray, const Object &obj,
                              const Point &impact, int raycast) const {
-  Color ambiante = getAmbianteLighting(obj, impact);
+  Color ambiant = getAmbiantLighting(obj, impact);
   Color diffuse = getDiffuseLighting(ray, obj, impact);
   Color specular = getSpecularLighting(ray, obj, impact);
   Color reflectiveRefractive =
       getReflectiveRefractive(ray, obj, impact, raycast);
 
-  return ambiante + diffuse + specular + reflectiveRefractive;
+  return ambiant + diffuse + specular + reflectiveRefractive;
 }
 
 /**
@@ -112,7 +111,7 @@ bool Scene::isInShadow(const Light &light, const Point &impact) const {
 /**
  * Retourne la couleur ambiante.
  */
-Color Scene::getAmbianteLighting(const Object &obj, const Point &impact) const {
+Color Scene::getAmbiantLighting(const Object &obj, const Point &impact) const {
   Material mat = obj.getMaterial(impact);
   return mat.ka * getAmbiant();
 }
