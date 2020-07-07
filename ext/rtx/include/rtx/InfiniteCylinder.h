@@ -7,7 +7,7 @@ namespace rtx {
 
 struct InfiniteCylinder : public Object {
   InfiniteCylinder();
-  InfiniteCylinder(const Material &mat) : Object(mat){};
+  InfiniteCylinder(Material *mat) : Object(mat){};
   virtual ~InfiniteCylinder() {}
 
   Ray getNormal(const Point &p, const Point &o) const;

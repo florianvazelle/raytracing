@@ -15,10 +15,10 @@ namespace rtx {
  * Tous les Point, Vector et Ray sont exprimés dans le référentiel global.
  */
 struct Object : public Entity {
-  Material material;
+  Material *material;
 
   Object(){};
-  Object(const Material &mat) : material(mat){};
+  Object(Material *mat) : material(mat){};
   virtual ~Object(){};
 
   bool operator==(const Object &rhs) const {
@@ -29,7 +29,20 @@ struct Object : public Entity {
    * Retourne le Material correspondant au point de la surface de l'objet passé
    * en paramètre.
    */
-  virtual Material getMaterial(const Point &p) const { return material; };
+  Material getMaterial(const Point &p) const {
+    // On crée un materiaux de transition, le reste du code peut ainsi rester
+    // inchangé
+
+    const Color ka = material->getAmbiante(p);
+    const Color kd = material->kd;
+    const Color ks = material->ks;
+
+    const int shininess = material->shininess;
+    const float reflectivity = material->reflectivity;
+    const float refractivity = material->refractivity;
+
+    return Material(ka, kd, ks, shininess, reflectivity, refractivity);
+  };
 
   /**
    * Retourne la normale correspondant au point de la surface de l'objet passé
