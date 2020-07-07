@@ -25,7 +25,7 @@ struct Material {
    * scène.
    */
   Color ka;
-  virtual const Color getAmbiante(const Point &impact) const { return ka; };
+  virtual const Color getAmbiant(const Point &impact) const { return ka; };
 
   /**
    * La composante diffuse, qui se multiplie par la composante diffuse de chaque

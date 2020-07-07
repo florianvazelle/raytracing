@@ -37,7 +37,7 @@ struct Scene {
 
   /* Lighting stuff */
   bool isInShadow(const Light &light, const Point &impact) const;
-  Color getAmbianteLighting(const Object &obj, const Point &impact) const;
+  Color getAmbiantLighting(const Object &obj, const Point &impact) const;
   Color getDiffuseLighting(const Ray &ray, const Object &obj,
                            const Point &impact) const;
   Color getSpecularLighting(const Ray &ray, const Object &obj,

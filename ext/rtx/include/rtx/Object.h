@@ -33,7 +33,7 @@ struct Object : public Entity {
     // On crée un materiaux de transition, le reste du code peut ainsi rester
     // inchangé
 
-    const Color ka = material->getAmbiante(p);
+    const Color ka = material->getAmbiant(p);
     const Color kd = material->kd;
     const Color ks = material->ks;
 
