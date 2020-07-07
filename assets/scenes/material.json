@@ -7,11 +7,28 @@
       "scale": 1,
       "material": {
         "type": "Checkboard",
+        "scale": 1,
         "ka": { "r": 0.19, "g": 0.745, "b": 0.165 },
         "kd": { "r": 0.19, "g": 0.745, "b": 0.165 },
         "ks": { "r": 0.19, "g": 0.745, "b": 0.165 },
         "shininess": 0.5,
         "reflectivity": 0.5
+      }
+    },
+    {
+      "type": "Sphere",
+      "position": { "x": 1.5, "y": -1.5, "z": -4 },
+      "rotation": { "x": 0, "y": 0, "z": 0 },
+      "scale": 0.75,
+      "material": {
+        "type": "Line",
+        "scale": 0.25,
+        "ka": { "r": 0.3, "g": 0.1, "b": 0.1 },
+        "kd": { "r": 0.4, "g": 0.2, "b": 0.2 },
+        "ks": { "r": 0.3, "g": 0.3, "b": 0.3 },
+        "shininess": 10,
+        "reflectivity": 0,
+        "refractivity": 0
       }
     }
   ],

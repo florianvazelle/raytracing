@@ -1,6 +1,7 @@
 #include "JsonHelper.h"
 
 #include <rtx/Checkboard.h>
+#include <rtx/Line.h>
 
 #include <stdexcept>
 
@@ -28,9 +29,13 @@ rtx::Material *JsonHelper::toMaterial(Json::Value material) {
   rtx::Material *mat;
 
   if (!type.empty()) {
+    const float scale = material["scale"].asFloat();
     if (type == "Checkboard") {
       mat = new rtx::Checkboard(ka, kd, ks, shininess, reflectivity,
-                                refractivity);
+                                refractivity, scale);
+    } else if (type == "Line") {
+      mat = new rtx::Line(ka, kd, ks, shininess, reflectivity, refractivity,
+                          scale);
     } else {
       throw std::invalid_argument("Type not supported");
     }
