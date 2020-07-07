@@ -10,7 +10,7 @@ class JsonHelper {
 public:
   static rtx::Point toPoint(Json::Value vector);
   static rtx::Color toColor(Json::Value color);
-  static rtx::Material toMaterial(Json::Value material);
+  static rtx::Material *toMaterial(Json::Value material);
 
 private:
   JsonHelper() {}

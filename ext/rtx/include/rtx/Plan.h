@@ -7,7 +7,7 @@ namespace rtx {
 
 struct Plan : public Object {
   Plan();
-  Plan(const Material &mat) : Object(mat){};
+  Plan(Material *mat) : Object(mat){};
   virtual ~Plan() {}
 
   Ray getNormal(const Point &p, const Point &o) const;

@@ -35,7 +35,7 @@ rtx::Scene RaytracingApp::openScene(std::string path) {
     rtx::Point pos = JsonHelper::toPoint(obj["position"]);
     rtx::Point rot = JsonHelper::toPoint(obj["rotation"]);
     float scale = obj["scale"].asFloat();
-    rtx::Material mat = JsonHelper::toMaterial(obj["material"]);
+    rtx::Material *mat = JsonHelper::toMaterial(obj["material"]);
 
     rtx::Object *object;
 

@@ -7,7 +7,7 @@ namespace rtx {
 
 struct Square : public Plan {
   Square();
-  Square(const Material &mat) : Plan(mat){};
+  Square(Material *mat) : Plan(mat){};
   virtual ~Square() {}
 
   bool intersect(const Ray &ray, Point &impact) const;
