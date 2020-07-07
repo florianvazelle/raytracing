@@ -135,6 +135,10 @@ Image RaytracingApp::raytracing(const rtx::Scene &scene,
   int h = _height / threadsCount;
 
   for (int i = 0; i < threadsCount; i++) {
+    // Trick for the last thread to fill the rest of the image
+    if (i + 1 >= threadsCount)
+      h = _height - y;
+
     threads.push_back(std::thread(&RaytracingApp::traceRays, this,
                                   image.view(x, y, w, h), scene, cam));
     y = y + h;
