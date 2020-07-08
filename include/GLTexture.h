@@ -1,20 +1,19 @@
 #ifndef H_GLTEXTURE
 #define H_GLTEXTURE
 
+#include <cstdint>
 #include <memory>
 #include <nanogui/nanogui.h>
+#include <rtx/Vector.h>
 #include <string>
+#include <utility>
 
 class GLTexture {
 public:
-  using handleType = std::unique_ptr<uint8_t[], void (*)(void *)>;
-
   GLTexture() = default;
-  GLTexture(const std::string &textureName)
-      : mTextureName(textureName), mTextureId(0) {}
-
-  GLTexture(const std::string &textureName, GLint textureId)
-      : mTextureName(textureName), mTextureId(textureId) {}
+  GLTexture(const int &w, const int &h) : mTextureId(0), width(w), height(h) {
+    textureData.resize(w * h);
+  }
 
   GLTexture(const GLTexture &other) = delete;
   GLTexture(GLTexture &&other) noexcept;
@@ -24,17 +23,53 @@ public:
   ~GLTexture() noexcept;
 
   GLuint texture() const { return mTextureId; }
-  const std::string &textureName() const { return mTextureName; }
+  GLuint &texture() { return mTextureId; }
 
   /**
    *  Load a file in memory and create an OpenGL texture.
-   *  Returns a handle type (an std::unique_ptr) to the loaded pixels.
    */
-  handleType load(const std::string &fileName);
+  void load(const std::string &fileName);
+
+  /**
+   *  Save a PNG or JPG image with SDL.
+   */
+  void save(char const *filename);
+
+  auto operator[](int r) { return textureData.data() + r * w(); }
+  auto operator[](int r) const { return textureData.data() + r * w(); }
+
+  auto pixels() { return textureData.data(); }
+  auto pixels() const { return textureData.data(); }
+
+  int w() const { return width; }
+  int h() const { return height; }
+
+  void size(const int &w, const int &h) {
+    width = w;
+    height = h;
+    textureData.resize(width * height);
+  }
+  int size() const { return width * height; }
+
+  class View {
+  public:
+    auto operator[](int r) { return image.pixels() + (y + r) * image.w() + x; }
+
+    int x;
+    int y;
+    int w;
+    int h;
+    GLTexture &image;
+  };
+
+  auto view(int x, int y, int w, int h) { return View{x, y, w, h, *this}; }
 
 private:
-  std::string mTextureName;
   GLuint mTextureId;
+  std::vector<rtx::Color> textureData;
+  int width, height;
+
+  const char *get_filename_ext(const char *filename);
 };
 
 #endif
