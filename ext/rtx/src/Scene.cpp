@@ -79,7 +79,8 @@ Color Scene::castRay(const Ray &ray, int raycast) const {
  */
 Color Scene::performLighting(const Ray &ray, const Object &obj,
                              const Point &impact, int raycast) const {
-  Color ambiant = getAmbiantLighting(obj, impact);
+  Color ambiant = getAmbiantLighting(obj, impact) *
+                  ambientOcclusion(ray, obj, impact, raycast);
   Color diffuse = getDiffuseLighting(ray, obj, impact);
   Color specular = getSpecularLighting(ray, obj, impact);
   Color reflectiveRefractive =
@@ -261,4 +262,58 @@ Vector Scene::refract(const Vector &I, const Vector &N, float n1,
 
   Vector refracted = I * n + N * (n * dot + ((dot > 0) ? -R : R));
   return refracted.normalized();
+}
+
+float urand() { return rand() / (float)RAND_MAX; }
+
+Vector generate_cos_weighted_point(float u, float v) {
+  float radial = sqrt(u);
+  float theta = 2.0f * M_PI * v;
+
+  return Vector(radial * cos(theta), radial * sin(theta), sqrt(1.0f - u));
+}
+
+std::vector<Vector> get_hemisphere_points(int count) {
+  std::vector<Vector> result;
+
+  for (size_t i = 0; i < count; ++i) {
+    result.push_back(generate_cos_weighted_point(urand(), urand()));
+  }
+
+  return result;
+}
+
+float Scene::ambientOcclusion(const Ray &ray, const Object &obj,
+                              const Point &impact, int raycast) const {
+  if (raycast >= DEPTH_COMPLEXITY)
+    return 1.0f;
+
+  Vector up = Vector(0, 0, 1);
+  const Material mat = obj.getMaterial(impact);
+  const Vector N = obj.getNormal(impact, ray.origin).vector;
+
+  float angle = acos(up.dot(N));
+  Vector axis = up.cross(N);
+  Entity rot;
+  rot.rotateX(angle * axis.x);
+  rot.rotateY(angle * axis.y);
+  rot.rotateZ(angle * axis.z);
+
+  float occlusion = 0.0f;
+
+  std::vector<Vector> kernels = get_hemisphere_points(32);
+  for (int i = 0; i < kernels.size(); ++i) {
+    kernels[i] = rot.localToGlobal(kernels[i]);
+
+    Point ambientImpact;
+    Ray ray(impact, kernels[i]);
+    Object *obj = getClosestIntersection(ray, ambientImpact);
+
+    if (obj) {
+      occlusion++;
+    }
+  }
+
+  return 1.0f - (occlusion / kernels.size());
+  ;
 }

@@ -54,6 +54,9 @@ struct Scene {
                        float n2) const;
   Vector reflect(const Vector &I, const Vector &N) const;
   Vector refract(const Vector &I, const Vector &N, float n1, float n2) const;
+
+  float ambientOcclusion(const Ray &ray, const Object &obj, const Point &impact,
+                         int raycast) const;
 };
 
 } // namespace rtx

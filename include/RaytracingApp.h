@@ -125,11 +125,13 @@ public:
         textBox->setValue(std::to_string((int)(value * 10)));
       });
       slider->setFinalCallback([this, imageView, imgPanel](float value) {
-        spp = value * 10;
-
-        updateView(scenes.at(mCurrentScene), imgPanel,
-                   mImagesData.at(mCurrentScene));
-        imageView->bindImage(mImagesData.at(mCurrentScene).texture());
+        int newSpp = (int)(value * 10);
+        if (spp != newSpp) {
+          spp = newSpp;
+          updateView(scenes.at(mCurrentScene), imgPanel,
+                     mImagesData.at(mCurrentScene));
+          imageView->bindImage(mImagesData.at(mCurrentScene).texture());
+        }
       });
       textBox->setFixedSize(Vector2i(60, 25));
       textBox->setFontSize(20);
