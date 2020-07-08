@@ -79,7 +79,7 @@ rtx::Scene RaytracingApp::openScene(std::string path) {
   return scene;
 }
 
-void RaytracingApp::traceRays(Image::View view, const rtx::Scene &scene,
+void RaytracingApp::traceRays(GLTexture::View view, const rtx::Scene &scene,
                               const rtx::Camera &cam) const {
   const float w = 1.f / _width;
   const float h = 1.f / _height;
@@ -117,17 +117,25 @@ void RaytracingApp::traceRays(Image::View view, const rtx::Scene &scene,
       row[i] = color;
     }
   }
+  // std::vector<uint8_t> pixels;
+  // for (int i = 0; i < view.h * view.w; i++) {
+  //   pixels.push_back(view[0][i].b * 255.0f);
+  //   pixels.push_back(view[0][i].g * 255.0f);
+  //   pixels.push_back(view[0][i].r * 255.0f);
+  // }
+  // glBindTexture(GL_TEXTURE_2D, view.image.texture());
+  // glTexSubImage2D(GL_TEXTURE_2D, 0, view.x, view.y, view.w, view.h, GL_RGB,
+  //                 GL_UNSIGNED_BYTE, pixels.data());
+  // glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-Image RaytracingApp::raytracing(const rtx::Scene &scene,
-                                int threadsCount = 1) const {
+void RaytracingApp::raytracing(const rtx::Scene &scene, int threadsCount,
+                               GLTexture &texture) const {
 
   rtx::Camera cam(3.0f);
   cam.translate(0, 0, 3);
 
   std::vector<std::thread> threads;
-
-  Image image(_width, _height);
 
   int x = 0;
   int y = 0;
@@ -140,12 +148,10 @@ Image RaytracingApp::raytracing(const rtx::Scene &scene,
       h = _height - y;
 
     threads.push_back(std::thread(&RaytracingApp::traceRays, this,
-                                  image.view(x, y, w, h), scene, cam));
+                                  texture.view(x, y, w, h), scene, cam));
     y = y + h;
   }
 
   for (auto &th : threads)
     th.join();
-
-  return image;
 }
