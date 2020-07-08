@@ -61,6 +61,7 @@ struct Vector {
   float dot(const Vector &rhs) const;
   Vector cross(const Vector &rhs) const;
   float distance(const Vector &rhs) const;
+  Vector &saturate();
 
   friend std::ostream &operator<<(std::ostream &os, const Vector &v);
 };

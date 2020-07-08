@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <cmath>
 #include <stdexcept>
 
@@ -180,6 +181,13 @@ Vector Vector::cross(const Vector &v) const {
 
 float Vector::norm() const { return x * x + y * y + z * z; }
 float Vector::length() const { return std::sqrt(norm()); }
+
+Vector &Vector::saturate() {
+  r = std::clamp<float>(r, 0, 1);
+  g = std::clamp<float>(g, 0, 1);
+  b = std::clamp<float>(b, 0, 1);
+  return *this;
+}
 
 std::ostream &rtx::operator<<(std::ostream &os, const Vector &f) {
   return os << "(" << f.x << ", " << f.y << ", " << f.z << ")";

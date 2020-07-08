@@ -45,52 +45,19 @@ public:
         scenes.push_back(scene);
         mCurrentScene = scenes.size() - 1;
 
-        // Défini le nom du fichier
-        char buff[100];
-        sprintf(buff, "assets/samples/scene%d.png", mCurrentScene);
-
         // On crée la texture
         GLTexture texture(_width, _height);
-
-        raytracing(scene, (useMultithreading) ? 12 : 1, texture);
-
         glGenTextures(1, &(texture.texture()));
-        glBindTexture(GL_TEXTURE_2D, texture.texture());
 
-        std::vector<uint8_t> data;
-        auto pixels = texture.pixels();
-        for (int j = 0; j < texture.size(); j++) {
-          data.push_back(pixels[j].r * 255.0f);
-          data.push_back(pixels[j].g * 255.0f);
-          data.push_back(pixels[j].b * 255.0f);
-        }
+        updateTexture(scene, texture);
 
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, _width, _height, 0, GL_RGB,
-                     GL_UNSIGNED_BYTE, data.data());
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-        glBindTexture(GL_TEXTURE_2D, 0);
-
+        char buff[100];
+        sprintf(buff, "assets/samples/scene%d.png", mCurrentScene);
         texture.save(buff);
 
         mImagesData.push_back(std::move(texture));
       }
     }
-
-    // On récupère toute les images
-    std::vector<std::pair<int, std::string>> icons =
-        loadImageDirectory(mNVGContext, "assets/samples");
-
-    std::sort(icons.begin(), icons.end(),
-              [](const std::pair<int, std::string> &lhs,
-                 const std::pair<int, std::string> &rhs) {
-                return lhs.second < rhs.second;
-              });
-    icons.resize(scenes.size());
 
     /**
      * Image Window
@@ -103,7 +70,7 @@ public:
 
     // On définie l'image a affiché
     ImageView *imageView =
-        new ImageView(imageWindow, mImagesData[mCurrentScene].texture());
+        new ImageView(imageWindow, mImagesData.at(mCurrentScene).texture());
     // imageView->setScaleCentered(0.5);
     imageView->setFixedSize(Vector2i(500, 500));
 
@@ -123,21 +90,13 @@ public:
     VScrollPanel *vscroll = new VScrollPanel(popup);
     popup->setFixedSize(Vector2i(245, 150));
     ImagePanel *imgPanel = new ImagePanel(vscroll);
-    imgPanel->setImages(icons);
     imgPanel->setCallback([this, imageView](int i) {
-      imageView->bindImage(mImagesData[i].texture());
+      imageView->bindImage(mImagesData.at(i).texture());
       mCurrentScene = i;
       std::cout << "Selected item " << i << '\n';
-      // for (int j = 0; j < mImagesData[i].w; j++) {
-      //   for (int k = 0; k < mImagesData[i].h; k++) {
-      //     mImagesData[i].textureData[j + k * mImagesData[i].w] = 0;
-      // glTexSubImage2D(GL_TEXTURE_2D, 0, j, k, mImagesData[i].w,
-      //                 mImagesData[i].h, GL_RGB, GL_UNSIGNED_BYTE,
-      //                 mImagesData[i].textureData);
-      // imageView->bindImage(mImagesData[i].texture());
-      //   }
-      // }
     });
+
+    updateIcons(imgPanel);
 
     /* Actions */
     Widget *tools = new Widget(actionWindow);
@@ -168,42 +127,14 @@ public:
       slider->setFinalCallback([this, imageView, imgPanel](float value) {
         spp = value * 10;
 
-        updateView(scenes[mCurrentScene], imageView, imgPanel,
-                   mImagesData[mCurrentScene]);
+        updateView(scenes.at(mCurrentScene), imgPanel,
+                   mImagesData.at(mCurrentScene));
+        imageView->bindImage(mImagesData.at(mCurrentScene).texture());
       });
       textBox->setFixedSize(Vector2i(60, 25));
       textBox->setFontSize(20);
       textBox->setAlignment(TextBox::Alignment::Right);
     }
-
-    /* FOV slider */
-    // {
-    //   new Label(actionWindow, "Field of view", "sans-bold");
-    //   tools = new Widget(actionWindow);
-    //   tools->setLayout(
-    //       new BoxLayout(Orientation::Horizontal, Alignment::Middle, 0, 6));
-
-    //   Slider *slider = new Slider(tools);
-    //   slider->setValue(0.5f);
-    //   slider->setFixedWidth(80);
-
-    //   TextBox *textBox = new TextBox(tools);
-    //   textBox->setFixedSize(Vector2i(60, 25));
-    //   textBox->setValue("90");
-    //   slider->setCallback([textBox](float value) {
-    //     float i = value * 3;
-    //     textBox->setValue(std::to_string((int)(60 + (i * 30))));
-    //   });
-    //   slider->setFinalCallback([this, imageView, imgPanel](float value) {
-    //     float i = value * 3;
-    //     fov = 60 + (i * 30);
-
-    //     updateView(scenes[mCurrentScene], imageView, imgPanel);
-    //   });
-    //   textBox->setFixedSize(Vector2i(60, 25));
-    //   textBox->setFontSize(20);
-    //   textBox->setAlignment(TextBox::Alignment::Right);
-    // }
 
     /* Positive integer widget */
     {
@@ -220,9 +151,9 @@ public:
       intBox->setCallback([this, imageView, imgPanel](float value) {
         _width = value;
 
-        mImagesData[mCurrentScene].size(_width, mImagesData[mCurrentScene].h());
-        updateView(scenes[mCurrentScene], imageView, imgPanel,
-                   mImagesData[mCurrentScene]);
+        updateView(scenes.at(mCurrentScene), imgPanel,
+                   mImagesData.at(mCurrentScene));
+        imageView->bindImage(mImagesData.at(mCurrentScene).texture());
       });
 
       new Label(actionWindow, "Height :", "sans-bold");
@@ -238,10 +169,9 @@ public:
       intBox->setCallback([this, imageView, imgPanel](float value) {
         _height = value;
 
-        mImagesData[mCurrentScene].size(mImagesData[mCurrentScene].w(),
-                                        _height);
-        updateView(scenes[mCurrentScene], imageView, imgPanel,
-                   mImagesData[mCurrentScene]);
+        updateView(scenes.at(mCurrentScene), imgPanel,
+                   mImagesData.at(mCurrentScene));
+        imageView->bindImage(mImagesData.at(mCurrentScene).texture());
       });
     }
 
@@ -267,8 +197,9 @@ public:
 
         // On crée la texture
         GLTexture texture(_width, _height);
-        updateView(scene, imageView, imgPanel, texture);
+        updateView(scene, imgPanel, texture);
         mImagesData.push_back(std::move(texture));
+        imageView->bindImage(texture.texture());
       }
     });
 
@@ -283,7 +214,6 @@ public:
       std::cout << "File dialog result: " << jpgPath << std::endl;
 
       if (jpgPath.size() > 1) {
-        // Défini le nom du fichier
         char buff[255];
         sprintf(buff, "%s.jpg", jpgPath.c_str());
         mImagesData.at(mCurrentScene).save(buff);
@@ -308,15 +238,22 @@ public:
     Screen::draw(ctx);
   }
 
-  void updateView(const rtx::Scene &scene, nanogui::ImageView *imageView,
-                  nanogui::ImagePanel *imgPanel, GLTexture &texture) {
-    // Défini le nom du fichier
+  void updateView(const rtx::Scene &scene, nanogui::ImagePanel *imgPanel,
+                  GLTexture &texture) {
+    updateTexture(scene, texture);
+
     char buff[100];
     sprintf(buff, "assets/samples/scene%d.png", mCurrentScene);
+    texture.save(buff);
+
+    updateIcons(imgPanel);
+  }
+
+  void updateTexture(const rtx::Scene &scene, GLTexture &texture) const {
+    texture.size(_width, _height);
 
     raytracing(scene, (useMultithreading) ? 12 : 1, texture);
 
-    glGenTextures(1, &(texture.texture()));
     glBindTexture(GL_TEXTURE_2D, texture.texture());
 
     std::vector<uint8_t> data;
@@ -336,11 +273,9 @@ public:
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
     glBindTexture(GL_TEXTURE_2D, 0);
+  }
 
-    texture.save(buff);
-
-    imageView->bindImage(texture.texture());
-
+  void updateIcons(nanogui::ImagePanel *imgPanel) const {
     // On met a jour la popup des miniatures des images
     std::vector<std::pair<int, std::string>> icons =
         nanogui::loadImageDirectory(mNVGContext, "assets/samples");
@@ -355,18 +290,22 @@ public:
     imgPanel->setImages(icons);
   }
 
+  /**
+   *  Convert a Json::Value into a Scene object.
+   */
   rtx::Scene openScene(std::string);
 
-  rtx::Color castRayForPixel(const rtx::Scene &scene, const rtx::Camera &cam,
-                             float i, float j) const;
+  /**
+   *  Trace all ray & apply super sampling & correction gamma.
+   */
   void traceRays(GLTexture::View view, const rtx::Scene &scene,
                  const rtx::Camera &cam) const;
+
+  /**
+   *  Split image & launch thread.
+   */
   void raytracing(const rtx::Scene &scene, int threadsCount,
                   GLTexture &texture) const;
-
-  rtx::Color getImpactColor(const rtx::Ray &ray, const rtx::Object &obj,
-                            const rtx::Point &impact,
-                            const rtx::Scene &scene) const;
 
 private:
   std::vector<GLTexture> mImagesData;
@@ -374,11 +313,11 @@ private:
   std::vector<rtx::Scene> scenes;
   int mCurrentScene;
 
-  float _width = 44.0f;
-  float _height = 44.0f;
+  float _width = 800.0f;
+  float _height = 800.0f;
   float fov = 90.0f;
   float spp = 1.f; // sample par pixels
-  bool useMultithreading = false;
+  bool useMultithreading = true;
 };
 
 #endif
