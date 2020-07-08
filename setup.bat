@@ -1,4 +1,3 @@
- 
 cd %~f0
 mkdir build
 cd build

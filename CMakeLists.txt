@@ -21,6 +21,14 @@ if (NOT IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/ext/nanogui/include")
                       "git submodule update --init --recursive")
 endif()
 
+if (MSVC)
+  # Disable annoying MSVC warnings (all targets)
+  add_definitions(/D "_CRT_SECURE_NO_WARNINGS")
+
+  # Parallel build on MSVC (all targets)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
+endif()
+
 # ┌──────────────────────────────────────────────────────────────────┐
 # │  Load libraries                                                  │
 # └──────────────────────────────────────────────────────────────────┘
