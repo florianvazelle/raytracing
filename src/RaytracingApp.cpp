@@ -106,9 +106,7 @@ void RaytracingApp::traceRays(GLTexture::View view, const rtx::Scene &scene,
       color = color / (spp * spp);
 
       // Correction Gamma
-      color.r = std::clamp(color.r, 0.f, 1.f);
-      color.g = std::clamp(color.g, 0.f, 1.f);
-      color.b = std::clamp(color.b, 0.f, 1.f);
+      color.saturate();
 
       color.r = powf(color.r, 1.f / 2.2f);
       color.g = powf(color.g, 1.f / 2.2f);
@@ -117,16 +115,6 @@ void RaytracingApp::traceRays(GLTexture::View view, const rtx::Scene &scene,
       row[i] = color;
     }
   }
-  // std::vector<uint8_t> pixels;
-  // for (int i = 0; i < view.h * view.w; i++) {
-  //   pixels.push_back(view[0][i].b * 255.0f);
-  //   pixels.push_back(view[0][i].g * 255.0f);
-  //   pixels.push_back(view[0][i].r * 255.0f);
-  // }
-  // glBindTexture(GL_TEXTURE_2D, view.image.texture());
-  // glTexSubImage2D(GL_TEXTURE_2D, 0, view.x, view.y, view.w, view.h, GL_RGB,
-  //                 GL_UNSIGNED_BYTE, pixels.data());
-  // glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void RaytracingApp::raytracing(const rtx::Scene &scene, int threadsCount,
