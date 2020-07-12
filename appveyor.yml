@@ -9,7 +9,7 @@ platform:
 
 configuration:
   - Release
-  # - Debug
+  - Debug
 
 environment:
   APPVEYOR_YML_DISABLE_PS_LINUX: true
@@ -35,6 +35,12 @@ install:
   - sh: sudo apt-get install python3-pip -y
 
   - sh: sudo apt-get install xorg-dev libx11-xcb-dev libxcb-render0-dev libxcb-render-util0-dev libgl-dev -y
+
+  - sh: sudo apt install software-properties-common
+  - sh: sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+  - sh: sudo apt update
+  - sh: sudo apt install gcc-9 g++-9
+  - sh: sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90 --slave /usr/bin/g++ g++ /usr/bin/g++-9 --slave /usr/bin/gcov gcov /usr/bin/gcov-9
 
   # Prepend newly installed Python to the PATH of this build (this cannot be
   # done from inside the powershell script as it would require to restart
@@ -68,6 +74,6 @@ for:
         - image: Visual Studio 2017
     before_build:
       - cmake .. -G "Visual Studio 15 2017" -A x64
-      - tree C:/projects/raytracing/build
     build_script:
+      - cmake --build . --config %CONFIGURATION%
       - msbuild %APPVEYOR_PROJECT_NAME%.sln

@@ -10,7 +10,7 @@
         "kd": { "r": 0, "g": 0, "b": 0 },
         "ks": { "r": 0, "g": 0, "b": 0 },
         "shininess": 10,
-        "reflectivity": 0,
+        "reflectivity": 1,
         "refractivity": 0
       }
     },
