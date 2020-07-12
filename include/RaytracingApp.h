@@ -107,6 +107,14 @@ public:
     c->setChecked(useMultithreading);
     c->setCallback([this](bool isChecked) { useMultithreading = isChecked; });
 
+    c = new CheckBox(actionWindow, "Shadow");
+    c->setChecked(useShadow);
+    c->setCallback([this](bool isChecked) { useShadow = isChecked; });
+
+    c = new CheckBox(actionWindow, "Occlusion ambiante");
+    c->setChecked(useAmbiantOcclusion);
+    c->setCallback([this](bool isChecked) { useAmbiantOcclusion = isChecked; });
+
     /* Super sample slider */
     {
       new Label(actionWindow, "Sample per pixels", "sans-bold");
@@ -240,7 +248,7 @@ public:
     Screen::draw(ctx);
   }
 
-  void updateView(const rtx::Scene &scene, nanogui::ImagePanel *imgPanel,
+  void updateView(rtx::Scene &scene, nanogui::ImagePanel *imgPanel,
                   GLTexture &texture) {
     updateTexture(scene, texture);
 
@@ -251,7 +259,7 @@ public:
     updateIcons(imgPanel);
   }
 
-  void updateTexture(const rtx::Scene &scene, GLTexture &texture) const {
+  void updateTexture(rtx::Scene &scene, GLTexture &texture) const {
     texture.size(_width, _height);
 
     raytracing(scene, (useMultithreading) ? 12 : 1, texture);
@@ -306,7 +314,7 @@ public:
   /**
    *  Split image & launch thread.
    */
-  void raytracing(const rtx::Scene &scene, int threadsCount,
+  void raytracing(rtx::Scene &scene, int threadsCount,
                   GLTexture &texture) const;
 
 private:
@@ -320,6 +328,8 @@ private:
   float fov = 90.0f;
   float spp = 1.f; // sample par pixels
   bool useMultithreading = true;
+  bool useShadow = true;
+  bool useAmbiantOcclusion = false;
 };
 
 #endif

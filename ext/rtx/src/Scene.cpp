@@ -79,14 +79,16 @@ Color Scene::castRay(const Ray &ray, int raycast) const {
  */
 Color Scene::performLighting(const Ray &ray, const Object &obj,
                              const Point &impact, int raycast) const {
-  Color ambiant = getAmbiantLighting(obj, impact) *
-                  ambientOcclusion(ray, obj, impact, raycast);
+  Color ambiant = getAmbiantLighting(obj, impact);
+  float occlusion = 1.f;
+  if (useAmbiantOcclusion)
+    occlusion = ambientOcclusion(ray, obj, impact, raycast);
   Color diffuse = getDiffuseLighting(ray, obj, impact);
   Color specular = getSpecularLighting(ray, obj, impact);
   Color reflectiveRefractive =
       getReflectiveRefractive(ray, obj, impact, raycast);
 
-  return ambiant + diffuse + specular + reflectiveRefractive;
+  return ambiant * occlusion + diffuse + specular + reflectiveRefractive;
 }
 
 /**
@@ -132,7 +134,7 @@ Color Scene::getDiffuseLighting(const Ray &ray, const Object &obj,
 
     Vector L = l->getVectorToLight(impact);
 
-    if (isInShadow(*l, impact))
+    if (isInShadow(*l, impact) && useShadow)
       continue;
 
     float lambertian = std::max(0.f, N.dot(L));
@@ -158,7 +160,7 @@ Color Scene::getSpecularLighting(const Ray &ray, const Object &obj,
 
     Vector L = l->getVectorToLight(impact);
 
-    if (isInShadow(*l, impact))
+    if (isInShadow(*l, impact) && useShadow)
       continue;
 
     Vector R = reflect(L, N);

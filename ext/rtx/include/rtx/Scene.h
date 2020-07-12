@@ -19,6 +19,8 @@ namespace rtx {
  */
 struct Scene {
   const static int DEPTH_COMPLEXITY = 10;
+  bool useShadow;
+  bool useAmbiantOcclusion;
 
   std::vector<Object *> objects;
   std::vector<Light *> lights;

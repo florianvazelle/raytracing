@@ -117,13 +117,16 @@ void RaytracingApp::traceRays(GLTexture::View view, const rtx::Scene &scene,
   }
 }
 
-void RaytracingApp::raytracing(const rtx::Scene &scene, int threadsCount,
+void RaytracingApp::raytracing(rtx::Scene &scene, int threadsCount,
                                GLTexture &texture) const {
 
   rtx::Camera cam(3.0f);
   cam.translate(0, 0, 3);
 
   std::vector<std::thread> threads;
+
+  scene.useShadow = useShadow;
+  scene.useAmbiantOcclusion = useAmbiantOcclusion;
 
   int x = 0;
   int y = 0;
