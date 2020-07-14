@@ -80,7 +80,11 @@ rtx::Scene RaytracingApp::openScene(std::string path) {
 }
 
 void RaytracingApp::traceRays(GLTexture::View view, const rtx::Scene &scene,
-                              const rtx::Camera &cam) const {
+                              const rtx::Camera &cam,
+                              GLFWwindow *window) const {
+  glfwMakeContextCurrent(window);
+  glBindTexture(GL_TEXTURE_2D, view.image.texture());
+
   const float w = 1.f / _width;
   const float h = 1.f / _height;
 
@@ -113,8 +117,18 @@ void RaytracingApp::traceRays(GLTexture::View view, const rtx::Scene &scene,
       color.b = powf(color.b, 1.f / 2.2f);
 
       row[i] = color;
+
+      std::vector<uint8_t> data;
+      data.push_back(color.r);
+      data.push_back(color.g);
+      data.push_back(color.b);
+      glTexSubImage2D(GL_TEXTURE_2D, 0, (i + view.x), (j + view.y), 1, 1,
+                      GL_RGB, GL_UNSIGNED_BYTE, data.data());
     }
   }
+
+  glBindTexture(GL_TEXTURE_2D, 0);
+  glfwMakeContextCurrent(NULL);
 }
 
 void RaytracingApp::raytracing(rtx::Scene &scene, int threadsCount,
@@ -133,16 +147,22 @@ void RaytracingApp::raytracing(rtx::Scene &scene, int threadsCount,
   int w = _width;
   int h = _height / threadsCount;
 
+  GLFWwindow *window = glfwGetCurrentContext();
   for (int i = 0; i < threadsCount; i++) {
     // Trick for the last thread to fill the rest of the image
     if (i + 1 >= threadsCount)
       h = _height - y;
 
-    threads.push_back(std::thread(&RaytracingApp::traceRays, this,
-                                  texture.view(x, y, w, h), scene, cam));
+    glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+    GLFWwindow *offscreen_context =
+        glfwCreateWindow(640, 480, "", NULL, window);
+
+    std::thread(&RaytracingApp::traceRays, this, texture.view(x, y, w, h),
+                scene, cam, offscreen_context)
+        .detach();
     y = y + h;
   }
 
-  for (auto &th : threads)
-    th.join();
+  // for (auto &th : threads)
+  //   th.join();
 }

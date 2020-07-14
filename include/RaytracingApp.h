@@ -23,7 +23,11 @@ namespace fs = std::filesystem; // g++ -v >= 9
 class RaytracingApp : public nanogui::Screen {
 public:
   RaytracingApp()
-      : nanogui::Screen(Eigen::Vector2i(800, 600), "NanoGUI Test", true) {
+      : nanogui::Screen(Eigen::Vector2i(800, 600), "NanoGUI Test",
+                        /*resizable*/ true, /*fullscreen*/ false,
+                        /*colorBits*/ 8,
+                        /*alphaBits*/ 8, /*depthBits*/ 24, /*stencilBits*/ 8,
+                        /*nSamples*/ 0, /*glMajor*/ 4, /*glMinor*/ 6) {
     using namespace nanogui;
 
     /**
@@ -267,27 +271,26 @@ public:
   void updateTexture(rtx::Scene &scene, GLTexture &texture) const {
     texture.size(_width, _height);
 
+    glBindTexture(GL_TEXTURE_2D, texture.texture());
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, _width, _height, 0, GL_RGB,
+                 GL_UNSIGNED_BYTE, 0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
     raytracing(scene, (useMultithreading) ? 12 : 1, texture);
 
-    glBindTexture(GL_TEXTURE_2D, texture.texture());
+    // std::vector<uint8_t> data;
+    // auto pixels = texture.pixels();
+    // for (int j = 0; j < texture.size(); j++) {
+    //   data.push_back(pixels[j].r * 255.0f);
+    //   data.push_back(pixels[j].g * 255.0f);
+    //   data.push_back(pixels[j].b * 255.0f);
+    // }
 
-    std::vector<uint8_t> data;
-    auto pixels = texture.pixels();
-    for (int j = 0; j < texture.size(); j++) {
-      data.push_back(pixels[j].r * 255.0f);
-      data.push_back(pixels[j].g * 255.0f);
-      data.push_back(pixels[j].b * 255.0f);
-    }
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, _width, _height, 0, GL_RGB,
-                 GL_UNSIGNED_BYTE, data.data());
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-    glBindTexture(GL_TEXTURE_2D, 0);
+    // glBindTexture(GL_TEXTURE_2D, texture.texture());
+    // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, _width, _height, 0, GL_RGB,
+    // GL_UNSIGNED_BYTE, data.data()); glTexParameteri(GL_TEXTURE_2D,
+    // GL_TEXTURE_MIN_FILTER, GL_LINEAR); glBindTexture(GL_TEXTURE_2D, 0);
   }
 
   void updateIcons(nanogui::ImagePanel *imgPanel) const {
@@ -317,7 +320,7 @@ public:
    *  Trace all ray & apply super sampling & correction gamma.
    */
   void traceRays(GLTexture::View view, const rtx::Scene &scene,
-                 const rtx::Camera &cam) const;
+                 const rtx::Camera &cam, GLFWwindow *window) const;
 
   /**
    *  Split image & launch thread.
