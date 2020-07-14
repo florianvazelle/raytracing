@@ -26,11 +26,6 @@ public:
   GLuint &texture() { return mTextureId; }
 
   /**
-   *  Load a file in memory and create an OpenGL texture.
-   */
-  void load(const std::string &fileName);
-
-  /**
    *  Save a PNG or JPG image with SDL.
    */
   void save(char const *filename);
