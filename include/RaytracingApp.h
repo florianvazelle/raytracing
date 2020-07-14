@@ -52,7 +52,9 @@ public:
         updateTexture(scene, texture);
 
         char buff[100];
-        sprintf(buff, "assets/samples/scene%d.png", mCurrentScene);
+        std::stringstream ss;
+        ss << std::setw(5) << std::setfill('0') << mCurrentScene;
+        sprintf(buff, "assets/samples/scene%s.png", ss.str().c_str());
         texture.save(buff);
 
         mImagesData.push_back(std::move(texture));
@@ -207,9 +209,10 @@ public:
 
         // On crée la texture
         GLTexture texture(_width, _height);
+        glGenTextures(1, &(texture.texture()));
         updateView(scene, imgPanel, texture);
-        mImagesData.push_back(std::move(texture));
         imageView->bindImage(texture.texture());
+        mImagesData.push_back(std::move(texture));
       }
     });
 
@@ -253,7 +256,9 @@ public:
     updateTexture(scene, texture);
 
     char buff[100];
-    sprintf(buff, "assets/samples/scene%d.png", mCurrentScene);
+    std::stringstream ss;
+    ss << std::setw(5) << std::setfill('0') << mCurrentScene;
+    sprintf(buff, "assets/samples/scene%s.png", ss.str().c_str());
     texture.save(buff);
 
     updateIcons(imgPanel);
@@ -286,14 +291,17 @@ public:
   }
 
   void updateIcons(nanogui::ImagePanel *imgPanel) const {
+    const std::string path = "assets/samples/";
+
     // On met a jour la popup des miniatures des images
     std::vector<std::pair<int, std::string>> icons =
-        nanogui::loadImageDirectory(mNVGContext, "assets/samples");
+        nanogui::loadImageDirectory(mNVGContext, path);
 
     std::sort(icons.begin(), icons.end(),
-              [](const std::pair<int, std::string> &lhs,
-                 const std::pair<int, std::string> &rhs) {
-                return lhs.second < rhs.second;
+              [path](const std::pair<int, std::string> &lhs,
+                     const std::pair<int, std::string> &rhs) {
+                return std::stoi(lhs.second.substr(path.size() + 6, 5)) <
+                       std::stoi(rhs.second.substr(path.size() + 6, 5));
               });
     icons.resize(scenes.size());
 
