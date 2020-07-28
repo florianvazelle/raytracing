@@ -61,12 +61,8 @@ include_directories(${PROJECT_SOURCE_DIR}/ext/jsoncpp/include)
 add_subdirectory(${PROJECT_SOURCE_DIR}/ext/rtx)
 include_directories(${PROJECT_SOURCE_DIR}/ext/rtx/include)
 
-# ┌──────────────────────────────────────────────────────────────────┐
-# │  Conan                                                           │
-# └──────────────────────────────────────────────────────────────────┘
-
-include(${PROJECT_SOURCE_DIR}/build/conanbuildinfo.cmake)
-CONAN_BASIC_SETUP()
+# Stb  ------
+include_directories(${PROJECT_SOURCE_DIR}/ext/stb)
 
 # ┌──────────────────────────────────────────────────────────────────┐
 # │  Build executable                                                │
