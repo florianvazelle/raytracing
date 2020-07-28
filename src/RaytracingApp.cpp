@@ -11,6 +11,7 @@
 #include <rtx/Triangle.h>
 
 #include "JsonHelper.h"
+#include "ThreadPool.h"
 #include "RaytracingApp.h"
 
 rtx::Scene RaytracingApp::openScene(std::string path) {
@@ -123,7 +124,9 @@ void RaytracingApp::raytracing(rtx::Scene &scene, int threadsCount,
   rtx::Camera cam(3.0f);
   cam.translate(0, 0, 3);
 
-  std::vector<std::thread> threads;
+  // create thread pool with the number of concurrent threads supported
+  ThreadPool pool;
+  std::vector<std::future<void>> results;
 
   scene.useShadow = useShadow;
   scene.useAmbiantOcclusion = useAmbiantOcclusion;
@@ -131,18 +134,15 @@ void RaytracingApp::raytracing(rtx::Scene &scene, int threadsCount,
   int x = 0;
   int y = 0;
   int w = _width;
-  int h = _height / threadsCount;
+  int h = 1;
 
-  for (int i = 0; i < threadsCount; i++) {
-    // Trick for the last thread to fill the rest of the image
-    if (i + 1 >= threadsCount)
-      h = _height - y;
-
-    threads.push_back(std::thread(&RaytracingApp::traceRays, this,
-                                  texture.view(x, y, w, h), scene, cam));
-    y = y + h;
+  for (y = 0; y < _height; y++) {
+    // enqueue and store future
+    results.emplace_back(pool.enqueue([this](GLTexture::View view, const rtx::Scene &scene, const rtx::Camera &cam) {
+      traceRays(view, scene, cam);
+    }, texture.view(x, y, w, h), scene, cam));
   }
 
-  for (auto &th : threads)
-    th.join();
+  for(auto && result: results)
+    result.get();
 }
