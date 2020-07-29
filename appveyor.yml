@@ -1,7 +1,7 @@
 version: "build-{build}-{branch}"
 
 image:
-  # - Visual Studio 2017
+  - Visual Studio 2017
   - Ubuntu
 
 platform:
@@ -9,7 +9,6 @@ platform:
 
 configuration:
   - Release
-  - Debug
 
 environment:
   APPVEYOR_YML_DISABLE_PS_LINUX: true
