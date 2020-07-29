@@ -21,9 +21,6 @@ install:
   - sh: mkdir -p build
   - cd build
 
-  - sh: sudo apt-get install xorg-dev libx11-xcb-dev libxcb-render0-dev libxcb-render-util0-dev libgl-dev -y
-
-  - sh: sudo apt install software-properties-common
   - sh: sudo add-apt-repository ppa:ubuntu-toolchain-r/test
   - sh: sudo apt update
   - sh: sudo apt install gcc-9 g++-9
