@@ -9,18 +9,9 @@ platform:
 
 configuration:
   - Release
-  - Debug
 
 environment:
   APPVEYOR_YML_DISABLE_PS_LINUX: true
-  matrix:
-    - PYTHON: "C:\\Python36-x64"
-      PYTHON_VERSION: "3.6.x" # currently 3.6.5
-      PYTHON_ARCH: "64"
-
-cache:
-  - C:\Users\appveyor\.conan -> conanfile.txt
-  - C:\projects\raytracing\build
 
 install:
   - git submodule update --init --recursive
@@ -29,11 +20,9 @@ install:
   - sh: mkdir -p build
   - cd build
 
-  # Install Python (from the official .msi of https://python.org) and pip when
-  # not already installed.
-  - ps: if (-not(Test-Path($env:PYTHON))) { & appveyor\install.ps1 }
-  - sh: sudo apt-get install python3-pip -y
-
+  - sh: sudo add-apt-repository ppa:ubuntu-x-swat/updates 
+  - sh: sudo apt-get upgrade -y
+  - sh: sudo apt-get dist-upgrade -y
   - sh: sudo apt-get install xorg-dev libx11-xcb-dev libxcb-render0-dev libxcb-render-util0-dev libgl-dev -y
 
   - sh: sudo apt install software-properties-common
@@ -41,24 +30,6 @@ install:
   - sh: sudo apt update
   - sh: sudo apt install gcc-9 g++-9
   - sh: sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90 --slave /usr/bin/g++ g++ /usr/bin/g++-9 --slave /usr/bin/gcov gcov /usr/bin/gcov-9
-
-  # Prepend newly installed Python to the PATH of this build (this cannot be
-  # done from inside the powershell script as it would require to restart
-  # the parent CMD process).
-  - ps: "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
-
-  # Check that we have the expected version and architecture for Python
-  - ps: python --version
-  - sh: python3 --version
-
-  # Upgrade to the latest version of pip to avoid it displaying warnings
-  # about it being out of date.
-  - ps: python -m pip install --upgrade pip
-
-  - ps: python -m pip install conan
-  - sh: sudo -H python3 -m pip install conan
-  - conan remote add bincrafters "https://api.bintray.com/conan/bincrafters/public-conan"
-  - conan install .. --build missing
 
 for:
   - matrix:
