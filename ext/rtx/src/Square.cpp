@@ -2,7 +2,7 @@
 
 using namespace rtx;
 
-bool Square::intersect(const Ray &ray, Point &impact) const {
+bool Square::intersect(const Ray& ray, Point& impact) const {
   Point O = globalToLocal(ray.origin);
   Vector V = globalToLocal(ray.vector);
 
@@ -12,8 +12,7 @@ bool Square::intersect(const Ray &ray, Point &impact) const {
     impact[1] = O[1] + t * V[1];
     impact[2] = O[2] + t * V[2];
 
-    if (-1 <= impact[0] && impact[0] <= 1 && -1 <= impact[1] &&
-        impact[1] <= 1) {
+    if (-1 <= impact[0] && impact[0] <= 1 && -1 <= impact[1] && impact[1] <= 1) {
       impact = localToGlobal(impact);
       return true;
     }
@@ -21,7 +20,7 @@ bool Square::intersect(const Ray &ray, Point &impact) const {
   return false;
 }
 
-Point Square::getTextureCoordinates(const Point &p) const {
+Point Square::getTextureCoordinates(const Point& p) const {
   Point tmp = globalToLocal(p);
   for (int i = 0; i < 3; i++) {
     tmp[i] = (tmp[i] + 1.0f) / 2.0f;

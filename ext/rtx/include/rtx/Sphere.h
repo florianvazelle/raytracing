@@ -7,14 +7,14 @@ namespace rtx {
 
 struct Sphere : public Object {
   Sphere();
-  Sphere(Material *mat) : Object(mat){};
+  Sphere(Material* mat) : Object(mat){};
   virtual ~Sphere() {}
 
-  Ray getNormal(const Point &p, const Point &o) const;
-  bool intersect(const Ray &ray, Point &impact) const;
-  Point getTextureCoordinates(const Point &p) const;
+  Ray getNormal(const Point& p, const Point& o) const;
+  bool intersect(const Ray& ray, Point& impact) const;
+  Point getTextureCoordinates(const Point& p) const;
 };
 
-} // namespace rtx
+}  // namespace rtx
 
 #endif

@@ -25,6 +25,6 @@ struct Camera : Entity {
   Ray getRay(float x, float y) const;
 };
 
-} // namespace rtx
+}  // namespace rtx
 
 #endif

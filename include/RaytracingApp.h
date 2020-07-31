@@ -1,6 +1,13 @@
 #ifndef H_RAYTRACINGAPP
 #define H_RAYTRACINGAPP
 
+#include <json/json.h>
+#include <nanogui/nanogui.h>
+#include <rtx/Camera.h>
+#include <rtx/Object.h>
+#include <rtx/Scene.h>
+#include <rtx/Vector.h>
+
 #include <cstdio>
 #include <filesystem>
 #include <fstream>
@@ -8,20 +15,12 @@
 #include <memory>
 #include <string>
 
-#include <json/json.h>
-#include <nanogui/nanogui.h>
-
-#include <rtx/Camera.h>
-#include <rtx/Object.h>
-#include <rtx/Scene.h>
-#include <rtx/Vector.h>
-
 #include "GLTexture.h"
 
-namespace fs = std::filesystem; // g++ -v >= 9
+namespace fs = std::filesystem;  // g++ -v >= 9
 
 class RaytracingApp : public nanogui::Screen {
-public:
+ public:
   RaytracingApp() : nanogui::Screen(Eigen::Vector2i(800, 600), "NanoGUI Test", true) {
     using namespace nanogui;
 
@@ -30,7 +29,7 @@ public:
      */
 
     // Convertie en image toute les scenes de assets/scenes/
-    for (const fs::directory_entry &p : fs::directory_iterator("assets/scenes/")) {
+    for (const fs::directory_entry& p : fs::directory_iterator("assets/scenes/")) {
       fs::path path = p.path();
       fs::path filename = path.filename();
       fs::path ext = path.extension();
@@ -70,8 +69,7 @@ public:
     imageWindow->setLayout(new GroupLayout());
 
     // On définie l'image a affiché
-    ImageView *imageView =
-        new ImageView(imageWindow, mImagesData.at(mCurrentScene).texture());
+    ImageView* imageView = new ImageView(imageWindow, mImagesData.at(mCurrentScene).texture());
     // imageView->setScaleCentered(0.5);
     imageView->setFixedSize(Vector2i(500, 500));
 
@@ -85,12 +83,12 @@ public:
     actionWindow->setLayout(new GroupLayout());
 
     // Popup bouton pour selectionner une scene
-    PopupButton *imagePanelBtn = new PopupButton(actionWindow, "Image Panel");
+    PopupButton* imagePanelBtn = new PopupButton(actionWindow, "Image Panel");
     imagePanelBtn->setIcon(ENTYPO_ICON_FOLDER);
-    Popup *popup = imagePanelBtn->popup();
-    VScrollPanel *vscroll = new VScrollPanel(popup);
+    Popup* popup = imagePanelBtn->popup();
+    VScrollPanel* vscroll = new VScrollPanel(popup);
     popup->setFixedSize(Vector2i(245, 150));
-    ImagePanel *imgPanel = new ImagePanel(vscroll);
+    ImagePanel* imgPanel = new ImagePanel(vscroll);
     imgPanel->setCallback([this, imageView](int i) {
       imageView->bindImage(mImagesData.at(i).texture());
       mCurrentScene = i;
@@ -100,11 +98,10 @@ public:
     updateIcons(imgPanel);
 
     /* Actions */
-    Widget *tools = new Widget(actionWindow);
-    tools->setLayout(
-        new BoxLayout(Orientation::Horizontal, Alignment::Middle, 0, 5));
+    Widget* tools = new Widget(actionWindow);
+    tools->setLayout(new BoxLayout(Orientation::Horizontal, Alignment::Middle, 0, 5));
 
-    CheckBox *c = new CheckBox(actionWindow, "Multithreading");
+    CheckBox* c = new CheckBox(actionWindow, "Multithreading");
     c->setChecked(useMultithreading);
     c->setCallback([this](bool isChecked) { useMultithreading = isChecked; });
 
@@ -120,25 +117,22 @@ public:
     {
       new Label(actionWindow, "Sample per pixels", "sans-bold");
       tools = new Widget(actionWindow);
-      tools->setLayout(
-          new BoxLayout(Orientation::Horizontal, Alignment::Middle, 0, 6));
+      tools->setLayout(new BoxLayout(Orientation::Horizontal, Alignment::Middle, 0, 6));
 
-      Slider *slider = new Slider(tools);
+      Slider* slider = new Slider(tools);
       slider->setValue(spp / 10);
       slider->setFixedWidth(80);
 
-      TextBox *textBox = new TextBox(tools);
+      TextBox* textBox = new TextBox(tools);
       textBox->setFixedSize(Vector2i(60, 25));
       textBox->setValue(std::to_string((int)spp));
-      slider->setCallback([textBox](float value) {
-        textBox->setValue(std::to_string((int)(value * 10)));
-      });
+      slider->setCallback(
+          [textBox](float value) { textBox->setValue(std::to_string((int)(value * 10))); });
       slider->setFinalCallback([this, imageView, imgPanel](float value) {
         int newSpp = (int)(value * 10);
         if (spp != newSpp) {
           spp = newSpp;
-          updateView(scenes.at(mCurrentScene), imgPanel,
-                     mImagesData.at(mCurrentScene));
+          updateView(scenes.at(mCurrentScene), imgPanel, mImagesData.at(mCurrentScene));
           imageView->bindImage(mImagesData.at(mCurrentScene).texture());
         }
       });
@@ -162,8 +156,7 @@ public:
       intBox->setCallback([this, imageView, imgPanel](float value) {
         _width = value;
 
-        updateView(scenes.at(mCurrentScene), imgPanel,
-                   mImagesData.at(mCurrentScene));
+        updateView(scenes.at(mCurrentScene), imgPanel, mImagesData.at(mCurrentScene));
         imageView->bindImage(mImagesData.at(mCurrentScene).texture());
       });
 
@@ -180,8 +173,7 @@ public:
       intBox->setCallback([this, imageView, imgPanel](float value) {
         _height = value;
 
-        updateView(scenes.at(mCurrentScene), imgPanel,
-                   mImagesData.at(mCurrentScene));
+        updateView(scenes.at(mCurrentScene), imgPanel, mImagesData.at(mCurrentScene));
         imageView->bindImage(mImagesData.at(mCurrentScene).texture());
       });
     }
@@ -190,12 +182,15 @@ public:
 
     new Label(actionWindow, "File dialog", "sans-bold");
     tools = new Widget(actionWindow);
-    tools->setLayout(
-        new BoxLayout(Orientation::Horizontal, Alignment::Middle, 0, 6));
-    Button *b = new Button(tools, "Open");
+    tools->setLayout(new BoxLayout(Orientation::Horizontal, Alignment::Middle, 0, 6));
+    Button* b = new Button(tools, "Open");
     b->setCallback([this, imageView, imgPanel] {
-      std::string jsonPath = file_dialog({{"json", "JavaScript Object Notation"},}, false);
-      
+      std::string jsonPath = file_dialog(
+          {
+              {"json", "JavaScript Object Notation"},
+          },
+          false);
+
       std::cout << "File dialog result: " << jsonPath << std::endl;
 
       if (jsonPath.size() > 1) {
@@ -214,7 +209,11 @@ public:
 
     b = new Button(tools, "Save");
     b->setCallback([&] {
-      std::string jpgPath = file_dialog({{"jpg", "Joint Photographic Experts Group"},}, true);
+      std::string jpgPath = file_dialog(
+          {
+              {"jpg", "Joint Photographic Experts Group"},
+          },
+          true);
 
       std::cout << "File dialog result: " << jpgPath << std::endl;
 
@@ -229,8 +228,7 @@ public:
   }
 
   virtual bool keyboardEvent(int key, int scancode, int action, int modifiers) {
-    if (Screen::keyboardEvent(key, scancode, action, modifiers))
-      return true;
+    if (Screen::keyboardEvent(key, scancode, action, modifiers)) return true;
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
       setVisible(false);
       return true;
@@ -238,13 +236,12 @@ public:
     return false;
   }
 
-  virtual void draw(NVGcontext *ctx) {
+  virtual void draw(NVGcontext* ctx) {
     /* Draw the user interface */
     Screen::draw(ctx);
   }
 
-  void updateView(rtx::Scene &scene, nanogui::ImagePanel *imgPanel,
-                  GLTexture &texture) {
+  void updateView(rtx::Scene& scene, nanogui::ImagePanel* imgPanel, GLTexture& texture) {
     updateTexture(scene, texture);
 
     char buff[100];
@@ -256,7 +253,7 @@ public:
     updateIcons(imgPanel);
   }
 
-  void updateTexture(rtx::Scene &scene, GLTexture &texture) const {
+  void updateTexture(rtx::Scene& scene, GLTexture& texture) const {
     texture.size(_width, _height);
 
     raytracing(scene, (useMultithreading) ? 12 : 1, texture);
@@ -271,8 +268,8 @@ public:
       data.push_back(pixels[j].b * 255.0f);
     }
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, _width, _height, 0, GL_RGB,
-                 GL_UNSIGNED_BYTE, data.data());
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, _width, _height, 0, GL_RGB, GL_UNSIGNED_BYTE,
+                 data.data());
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -282,19 +279,18 @@ public:
     glBindTexture(GL_TEXTURE_2D, 0);
   }
 
-  void updateIcons(nanogui::ImagePanel *imgPanel) const {
+  void updateIcons(nanogui::ImagePanel* imgPanel) const {
     const std::string path = "assets/samples/";
 
     // On met a jour la popup des miniatures des images
-    std::vector<std::pair<int, std::string>> icons =
-        nanogui::loadImageDirectory(mNVGContext, path);
+    std::vector<std::pair<int, std::string>> icons = nanogui::loadImageDirectory(mNVGContext, path);
 
-    std::sort(icons.begin(), icons.end(),
-              [path](const std::pair<int, std::string> &lhs,
-                     const std::pair<int, std::string> &rhs) {
-                return std::stoi(lhs.second.substr(path.size() + 6, 5)) <
-                       std::stoi(rhs.second.substr(path.size() + 6, 5));
-              });
+    std::sort(
+        icons.begin(), icons.end(),
+        [path](const std::pair<int, std::string>& lhs, const std::pair<int, std::string>& rhs) {
+          return std::stoi(lhs.second.substr(path.size() + 6, 5)) <
+                 std::stoi(rhs.second.substr(path.size() + 6, 5));
+        });
     icons.resize(scenes.size());
 
     imgPanel->setImages(icons);
@@ -308,16 +304,14 @@ public:
   /**
    *  Trace all ray & apply super sampling & correction gamma.
    */
-  void traceRays(GLTexture::View view, const rtx::Scene &scene,
-                 const rtx::Camera &cam) const;
+  void traceRays(GLTexture::View view, const rtx::Scene& scene, const rtx::Camera& cam) const;
 
   /**
    *  Split image & launch thread.
    */
-  void raytracing(rtx::Scene &scene, int threadsCount,
-                  GLTexture &texture) const;
+  void raytracing(rtx::Scene& scene, int threadsCount, GLTexture& texture) const;
 
-private:
+ private:
   std::vector<GLTexture> mImagesData;
 
   std::vector<rtx::Scene> scenes;
@@ -326,7 +320,7 @@ private:
   float _width = 800.0f;
   float _height = 800.0f;
   float fov = 90.0f;
-  float spp = 1.f; // sample par pixels
+  float spp = 1.f;  // sample par pixels
   bool useMultithreading = true;
   bool useShadow = true;
   bool useAmbiantOcclusion = false;

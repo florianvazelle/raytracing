@@ -4,7 +4,7 @@
 
 using namespace rtx;
 
-bool Plan::intersect(const Ray &ray, Point &impact) const {
+bool Plan::intersect(const Ray& ray, Point& impact) const {
   Vector O = globalToLocal(ray.origin);
   Vector V = globalToLocal(ray.vector);
 
@@ -20,11 +20,10 @@ bool Plan::intersect(const Ray &ray, Point &impact) const {
   return false;
 }
 
-Ray Plan::getNormal(const Point &impact, const Point &observator) const {
+Ray Plan::getNormal(const Point& impact, const Point& observator) const {
   Vector dir(0, 0, 1);
   Vector p = localToGlobal(dir);
-  if (observator.dot(p) < 1)
-    dir = -dir;
+  if (observator.dot(p) < 1) dir = -dir;
 
   Ray r;
   r.origin = impact;
@@ -32,12 +31,11 @@ Ray Plan::getNormal(const Point &impact, const Point &observator) const {
   return r;
 }
 
-Point Plan::getTextureCoordinates(const Point &p) const {
+Point Plan::getTextureCoordinates(const Point& p) const {
   Point tmp = globalToLocal(p);
   for (int i = 0; i < 3; i++) {
     tmp[i] = fmod(tmp[i], 1);
-    if (tmp[i] < 0)
-      tmp[i]++;
+    if (tmp[i] < 0) tmp[i]++;
   }
   return tmp;
 }

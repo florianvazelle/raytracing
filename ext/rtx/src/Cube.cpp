@@ -4,7 +4,7 @@
 
 using namespace rtx;
 
-bool Cube::intersect(const Ray &ray, Point &impact) const {
+bool Cube::intersect(const Ray& ray, Point& impact) const {
   Vector O = globalToLocal(ray.origin);
   Vector V = globalToLocal(ray.vector);
   Vector invdir = Vector(1.0f / V[0], 1.0f / V[1], 1.0f / V[2]);
@@ -20,29 +20,22 @@ bool Cube::intersect(const Ray &ray, Point &impact) const {
   tymin = (bounds[sign[1]][1] - O[1]) * invdir[1];
   tymax = (bounds[!sign[1]][1] - O[1]) * invdir[1];
 
-  if ((tmin > tymax) || (tymin > tmax))
-    return false;
-  if (tymin > tmin)
-    tmin = tymin;
-  if (tymax < tmax)
-    tmax = tymax;
+  if ((tmin > tymax) || (tymin > tmax)) return false;
+  if (tymin > tmin) tmin = tymin;
+  if (tymax < tmax) tmax = tymax;
 
   tzmin = (bounds[sign[2]][2] - O[2]) * invdir[2];
   tzmax = (bounds[!sign[2]][2] - O[2]) * invdir[2];
 
-  if ((tmin > tzmax) || (tzmin > tmax))
-    return false;
-  if (tzmin > tmin)
-    tmin = tzmin;
-  if (tzmax < tmax)
-    tmax = tzmax;
+  if ((tmin > tzmax) || (tzmin > tmax)) return false;
+  if (tzmin > tmin) tmin = tzmin;
+  if (tzmax < tmax) tmax = tzmax;
 
   float t = tmin;
 
   if (t < 0) {
     t = tmax;
-    if (t < 0)
-      return false;
+    if (t < 0) return false;
   }
 
   impact[0] = O[0] + t * V[0];
@@ -54,15 +47,14 @@ bool Cube::intersect(const Ray &ray, Point &impact) const {
   return true;
 }
 
-Ray Cube::getNormal(const Point &impact, const Point &observator) const {
+Ray Cube::getNormal(const Point& impact, const Point& observator) const {
   const float EPSILON = 0.00001f;
 
   Point I = globalToLocal(impact);
   Vector dir = I;
 
   Vector p = localToGlobal(dir);
-  if (observator.dot(p) < -2)
-    dir = -dir;
+  if (observator.dot(p) < -2) dir = -dir;
 
   for (int i = 0; i < 3; i++) {
     if (-1.f + EPSILON < dir[i] && dir[i] < 1.f - EPSILON) {
@@ -80,7 +72,7 @@ Ray Cube::getNormal(const Point &impact, const Point &observator) const {
   return r;
 }
 
-Point Cube::getTextureCoordinates(const Point &p) const {
+Point Cube::getTextureCoordinates(const Point& p) const {
   Point locP = globalToLocal(p);
   float x = locP[0], y = locP[1], z = locP[2];
 

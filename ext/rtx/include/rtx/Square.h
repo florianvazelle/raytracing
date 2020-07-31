@@ -7,13 +7,13 @@ namespace rtx {
 
 struct Square : public Plan {
   Square();
-  Square(Material *mat) : Plan(mat){};
+  Square(Material* mat) : Plan(mat){};
   virtual ~Square() {}
 
-  bool intersect(const Ray &ray, Point &impact) const;
-  Point getTextureCoordinates(const Point &p) const;
+  bool intersect(const Ray& ray, Point& impact) const;
+  Point getTextureCoordinates(const Point& p) const;
 };
 
-} // namespace rtx
+}  // namespace rtx
 
 #endif

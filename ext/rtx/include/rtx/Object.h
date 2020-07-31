@@ -15,13 +15,13 @@ namespace rtx {
  * Tous les Point, Vector et Ray sont exprimés dans le référentiel global.
  */
 struct Object : public Entity {
-  Material *material;
+  Material* material;
 
   Object(){};
-  Object(Material *mat) : material(mat){};
+  Object(Material* mat) : material(mat){};
   virtual ~Object(){};
 
-  bool operator==(const Object &rhs) const {
+  bool operator==(const Object& rhs) const {
     return trans == rhs.trans && material == rhs.material;
   };
 
@@ -29,7 +29,7 @@ struct Object : public Entity {
    * Retourne le Material correspondant au point de la surface de l'objet passé
    * en paramètre.
    */
-  Material getMaterial(const Point &p) const {
+  Material getMaterial(const Point& p) const {
     // On crée un materiaux de transition, le reste du code peut ainsi rester
     // inchangé
 
@@ -48,16 +48,16 @@ struct Object : public Entity {
    * Retourne la normale correspondant au point de la surface de l'objet passé
    * en paramètre, observé depuis le point passé en second paramètre.
    */
-  virtual Ray getNormal(const Point &p, const Point &o) const = 0;
+  virtual Ray getNormal(const Point& p, const Point& o) const = 0;
 
   /**
    * Calcule si le rayon passé en paramètre intersecte l'objet. Si c'est le cas,
    * met le point d'impact passé en paramètre par référence à jour, et retourne
    * true. Sinon, retourne false.
    */
-  virtual bool intersect(const Ray &ray, Point &impact) const = 0;
+  virtual bool intersect(const Ray& ray, Point& impact) const = 0;
 };
 
-} // namespace rtx
+}  // namespace rtx
 
 #endif

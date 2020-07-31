@@ -26,15 +26,15 @@ struct Entity {
   void rotateZ(float deg);
   void scale(float factor);
 
-  Vector localToGlobal(const Vector &v) const;
-  Point localToGlobal(const Point &p) const;
-  Ray localToGlobal(const Ray &r) const;
+  Vector localToGlobal(const Vector& v) const;
+  Point localToGlobal(const Point& p) const;
+  Ray localToGlobal(const Ray& r) const;
 
-  Vector globalToLocal(const Vector &v) const;
-  Point globalToLocal(const Point &p) const;
-  Ray globalToLocal(const Ray &r) const;
+  Vector globalToLocal(const Vector& v) const;
+  Point globalToLocal(const Point& p) const;
+  Ray globalToLocal(const Ray& r) const;
 };
 
-} // namespace rtx
+}  // namespace rtx
 
 #endif

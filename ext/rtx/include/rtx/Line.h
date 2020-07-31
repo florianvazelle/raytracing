@@ -14,13 +14,11 @@ struct Line : Material {
   float scale;
 
   Line() : Material(), scale(1){};
-  Line(const Color &ka, const Color &kd, const Color &ks,
-       const int &shininess = 0, const float &reflectivity = 0,
-       const float &refractivity = 0, const float &scale = 1)
-      : Material(ka, kd, ks, shininess, reflectivity, refractivity),
-        scale(scale){};
+  Line(const Color& ka, const Color& kd, const Color& ks, const int& shininess = 0,
+       const float& reflectivity = 0, const float& refractivity = 0, const float& scale = 1)
+      : Material(ka, kd, ks, shininess, reflectivity, refractivity), scale(scale){};
 
-  const Color getAmbiant(const Point &impact) const {
+  const Color getAmbiant(const Point& impact) const {
     float total = std::floor(impact.x / scale);
     bool isEven = std::fmod(total, 2.0f) == 0.0f;
 
@@ -32,6 +30,6 @@ struct Line : Material {
   }
 };
 
-} // namespace rtx
+}  // namespace rtx
 
 #endif

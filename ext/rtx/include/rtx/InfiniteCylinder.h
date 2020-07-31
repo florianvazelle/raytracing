@@ -7,14 +7,14 @@ namespace rtx {
 
 struct InfiniteCylinder : public Object {
   InfiniteCylinder();
-  InfiniteCylinder(Material *mat) : Object(mat){};
+  InfiniteCylinder(Material* mat) : Object(mat){};
   virtual ~InfiniteCylinder() {}
 
-  Ray getNormal(const Point &p, const Point &o) const;
-  bool intersect(const Ray &ray, Point &impact) const;
-  Point getTextureCoordinates(const Point &p) const;
+  Ray getNormal(const Point& p, const Point& o) const;
+  bool intersect(const Ray& ray, Point& impact) const;
+  Point getTextureCoordinates(const Point& p) const;
 };
 
-} // namespace rtx
+}  // namespace rtx
 
 #endif

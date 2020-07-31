@@ -1,8 +1,8 @@
+#include <rtx/Matrix.h>
+
 #include <cmath>
 #include <iostream>
 #include <stdexcept>
-
-#include <rtx/Matrix.h>
 
 using namespace rtx;
 
@@ -12,7 +12,7 @@ Matrix::Matrix() {
   }
 }
 
-bool Matrix::operator==(const Matrix &m) const {
+bool Matrix::operator==(const Matrix& m) const {
   bool res = true;
   for (int i = 0; i < 16; i++) {
     res = res && (data[i] == m.data[i]);
@@ -21,27 +21,24 @@ bool Matrix::operator==(const Matrix &m) const {
 }
 
 float Matrix::operator()(int i, int j) const { return data[i + j * 4]; };
-float &Matrix::operator()(int i, int j) { return data[i + j * 4]; };
+float& Matrix::operator()(int i, int j) { return data[i + j * 4]; };
 
-Matrix &Matrix::operator=(const Matrix &rhs) {
-  if (this == &rhs)
-    return (*this);
+Matrix& Matrix::operator=(const Matrix& rhs) {
+  if (this == &rhs) return (*this);
 
-  for (int x = 0; x < 16; x++)
-    data[x] = rhs.data[x];
+  for (int x = 0; x < 16; x++) data[x] = rhs.data[x];
 
   return (*this);
 }
 
-Matrix Matrix::operator*(const Matrix &mat) const {
+Matrix Matrix::operator*(const Matrix& mat) const {
   Matrix product;
 
   for (int y = 0; y < 4; y++)
     for (int x = 0; x < 4; x++) {
       double sum = 0.0;
 
-      for (int j = 0; j < 4; j++)
-        sum += (*this)(x, j) * mat(j, y);
+      for (int j = 0; j < 4; j++) sum += (*this)(x, j) * mat(j, y);
 
       product(x, y) = sum;
     }
@@ -49,7 +46,7 @@ Matrix Matrix::operator*(const Matrix &mat) const {
   return (product);
 }
 
-Vector Matrix::operator*(const Vector &rhs) const {
+Vector Matrix::operator*(const Vector& rhs) const {
   float result[4];
   float rhsData[4] = {rhs.x, rhs.y, rhs.z, 0};
 
@@ -63,7 +60,7 @@ Vector Matrix::operator*(const Vector &rhs) const {
   return Vector(result[0], result[1], result[2]);
 }
 
-Point Matrix::operator*(const Point &rhs) const {
+Point Matrix::operator*(const Point& rhs) const {
   float result[4];
   float rhsData[4] = {rhs.x, rhs.y, rhs.z, 1};
 
@@ -171,11 +168,9 @@ Matrix Matrix::inverse() const {
             data[4] * data[1] * data[10] + data[4] * data[2] * data[9] +
             data[8] * data[1] * data[6] - data[8] * data[2] * data[5];
 
-  det = data[0] * inv[0] + data[1] * inv[4] + data[2] * inv[8] +
-        data[3] * inv[12];
+  det = data[0] * inv[0] + data[1] * inv[4] + data[2] * inv[8] + data[3] * inv[12];
 
-  if (det == 0)
-    std::overflow_error("Divide by zero exception");
+  if (det == 0) std::overflow_error("Divide by zero exception");
 
   det = 1.0 / det;
 
@@ -187,7 +182,7 @@ Matrix Matrix::inverse() const {
   return out;
 }
 
-std::ostream &rtx::operator<<(std::ostream &os, const Matrix &m) {
+std::ostream& rtx::operator<<(std::ostream& os, const Matrix& m) {
   for (int i = 0; i < 4; i++) {
     for (int j = 0; j < 4; j++) {
       os << m(i, j) << " ";

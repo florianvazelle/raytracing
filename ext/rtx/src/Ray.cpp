@@ -12,8 +12,8 @@ Ray::Ray(float ox, float oy, float oz, float vx, float vy, float vz) {
   origin += (vector / 1000);
 }
 
-Ray::Ray(const Point &o, const Vector &v) : Ray(o.x, o.y, o.z, v.x, v.y, v.z) {}
+Ray::Ray(const Point& o, const Vector& v) : Ray(o.x, o.y, o.z, v.x, v.y, v.z) {}
 
-std::ostream &rtx::operator<<(std::ostream &os, const Ray &r) {
+std::ostream& rtx::operator<<(std::ostream& os, const Ray& r) {
   return os << "orig" << r.origin << " dir" << r.vector;
 }

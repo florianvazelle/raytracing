@@ -24,12 +24,12 @@ struct Light : public Entity {
   Light(){};
   Light(Color id, Color is) : id(id), is(is){};
 
-  Ray getRayToLight(const Point &p) const;
-  Ray getRayFromLight(const Point &p) const;
-  Vector getVectorToLight(const Point &p) const;
-  Vector getVectorFromLight(const Point &p) const;
+  Ray getRayToLight(const Point& p) const;
+  Ray getRayFromLight(const Point& p) const;
+  Vector getVectorToLight(const Point& p) const;
+  Vector getVectorFromLight(const Point& p) const;
 };
 
-} // namespace rtx
+}  // namespace rtx
 
 #endif

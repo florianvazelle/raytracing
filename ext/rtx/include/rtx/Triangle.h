@@ -7,13 +7,13 @@ namespace rtx {
 
 struct Triangle : public Plan {
   Triangle();
-  Triangle(Material *mat) : Plan(mat){};
+  Triangle(Material* mat) : Plan(mat){};
   virtual ~Triangle() {}
 
-  bool intersect(const Ray &ray, Point &impact) const;
-  Point getTextureCoordinates(const Point &p) const;
+  bool intersect(const Ray& ray, Point& impact) const;
+  Point getTextureCoordinates(const Point& p) const;
 };
 
-} // namespace rtx
+}  // namespace rtx
 
 #endif

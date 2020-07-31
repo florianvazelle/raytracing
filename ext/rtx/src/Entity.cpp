@@ -1,6 +1,6 @@
-#include <cmath>
-
 #include <rtx/Entity.h>
+
+#include <cmath>
 
 using namespace rtx;
 
@@ -72,26 +72,22 @@ void Entity::scale(float f) {
   transInv = trans.inverse();
 }
 
-Vector Entity::localToGlobal(const Vector &v) const {
-  return (trans * v).normalized();
-}
+Vector Entity::localToGlobal(const Vector& v) const { return (trans * v).normalized(); }
 
-Point Entity::localToGlobal(const Point &p) const { return trans * p; }
+Point Entity::localToGlobal(const Point& p) const { return trans * p; }
 
-Ray Entity::localToGlobal(const Ray &r) const {
+Ray Entity::localToGlobal(const Ray& r) const {
   Ray r1;
   r1.origin = trans * r.origin;
   r1.vector = trans * r.vector;
   return r1;
 }
 
-Vector Entity::globalToLocal(const Vector &v) const {
-  return (transInv * v).normalized();
-}
+Vector Entity::globalToLocal(const Vector& v) const { return (transInv * v).normalized(); }
 
-Point Entity::globalToLocal(const Point &p) const { return transInv * p; }
+Point Entity::globalToLocal(const Point& p) const { return transInv * p; }
 
-Ray Entity::globalToLocal(const Ray &r) const {
+Ray Entity::globalToLocal(const Ray& r) const {
   Ray r1;
   r1.origin = transInv * r.origin;
   r1.vector = transInv * r.vector;

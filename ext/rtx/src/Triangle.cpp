@@ -7,7 +7,7 @@ using namespace rtx;
 /**
  * Möller–Trumbore intersection algorithm
  */
-bool Triangle::intersect(const Ray &ray, Point &impact) const {
+bool Triangle::intersect(const Ray& ray, Point& impact) const {
   Point O = globalToLocal(ray.origin);
   Vector V = globalToLocal(ray.vector);
 
@@ -25,21 +25,18 @@ bool Triangle::intersect(const Ray &ray, Point &impact) const {
   h = V.cross(edge2);
   a = edge1.dot(h);
 
-  if (a > -EPSILON && a < EPSILON)
-    return false;
+  if (a > -EPSILON && a < EPSILON) return false;
 
   f = 1.0 / a;
   s = O - vertex0;
   u = f * s.dot(h);
 
-  if (u < 0.0 || u > 1.0)
-    return false;
+  if (u < 0.0 || u > 1.0) return false;
 
   q = s.cross(edge1);
   v = f * V.dot(q);
 
-  if (v < 0.0 || u + v > 1.0)
-    return false;
+  if (v < 0.0 || u + v > 1.0) return false;
 
   float t = f * edge2.dot(q);
   if (t > EPSILON) {

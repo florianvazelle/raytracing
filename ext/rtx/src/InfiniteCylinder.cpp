@@ -4,7 +4,7 @@
 
 using namespace rtx;
 
-bool InfiniteCylinder::intersect(const Ray &ray, Point &impact) const {
+bool InfiniteCylinder::intersect(const Ray& ray, Point& impact) const {
   Point O = globalToLocal(ray.origin);
   Vector V = globalToLocal(ray.vector);
 
@@ -14,16 +14,14 @@ bool InfiniteCylinder::intersect(const Ray &ray, Point &impact) const {
 
   float discr = b * b - a * c;
 
-  if (discr < 0)
-    return false;
+  if (discr < 0) return false;
 
   // nearest intersection
   float t = (-b - sqrt(discr)) / a;
 
   // t<0 means the intersection is behind the ray origin
   // which we don't want
-  if (t <= 0)
-    return false;
+  if (t <= 0) return false;
 
   impact[0] = O[0] + t * V[0];
   impact[1] = O[1] + t * V[1];
@@ -34,11 +32,9 @@ bool InfiniteCylinder::intersect(const Ray &ray, Point &impact) const {
   return true;
 }
 
-Ray InfiniteCylinder::getNormal(const Point &impact,
-                                const Point &observator) const {
+Ray InfiniteCylinder::getNormal(const Point& impact, const Point& observator) const {
   Vector dir = globalToLocal(impact);
-  if (observator.dot(dir) < 0)
-    dir = -dir;
+  if (observator.dot(dir) < 0) dir = -dir;
   dir[1] = 0;
   Ray r;
   r.origin = impact;

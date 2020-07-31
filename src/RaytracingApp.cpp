@@ -1,7 +1,4 @@
-#include <algorithm>
-#include <iomanip>
-#include <stdexcept>
-#include <thread>
+#include "RaytracingApp.h"
 
 #include <rtx/Cube.h>
 #include <rtx/InfiniteCylinder.h>
@@ -10,9 +7,13 @@
 #include <rtx/Square.h>
 #include <rtx/Triangle.h>
 
+#include <algorithm>
+#include <iomanip>
+#include <stdexcept>
+#include <thread>
+
 #include "JsonHelper.h"
 #include "ThreadPool.h"
-#include "RaytracingApp.h"
 
 rtx::Scene RaytracingApp::openScene(std::string path) {
   Json::Value root;
@@ -36,7 +37,7 @@ rtx::Scene RaytracingApp::openScene(std::string path) {
     rtx::Point pos = JsonHelper::toPoint(obj["position"]);
     rtx::Point rot = JsonHelper::toPoint(obj["rotation"]);
     float scale = obj["scale"].asFloat();
-    rtx::Material *mat = JsonHelper::toMaterial(obj["material"]);
+    rtx::Material* mat = JsonHelper::toMaterial(obj["material"]);
 
     std::shared_ptr<rtx::Object> object;
 
@@ -61,7 +62,7 @@ rtx::Scene RaytracingApp::openScene(std::string path) {
     object->rotateY(rot.y);
     object->rotateZ(rot.z);
     object->translate(pos.x, pos.y, pos.z);
-    scene.objects.push_back(object); 
+    scene.objects.push_back(object);
   }
 
   const Json::Value ligs = root["lights"];
@@ -74,14 +75,14 @@ rtx::Scene RaytracingApp::openScene(std::string path) {
 
     std::shared_ptr<rtx::Light> light = std::make_shared<rtx::Light>(id, is);
     light->translate(pos.x, pos.y, pos.z);
-    scene.lights.push_back(light); 
+    scene.lights.push_back(light);
   }
 
   return scene;
 }
 
-void RaytracingApp::traceRays(GLTexture::View view, const rtx::Scene &scene,
-                              const rtx::Camera &cam) const {
+void RaytracingApp::traceRays(GLTexture::View view, const rtx::Scene& scene,
+                              const rtx::Camera& cam) const {
   const float w = 1.f / _width;
   const float h = 1.f / _height;
 
@@ -118,9 +119,7 @@ void RaytracingApp::traceRays(GLTexture::View view, const rtx::Scene &scene,
   }
 }
 
-void RaytracingApp::raytracing(rtx::Scene &scene, int threadsCount,
-                               GLTexture &texture) const {
-
+void RaytracingApp::raytracing(rtx::Scene& scene, int threadsCount, GLTexture& texture) const {
   rtx::Camera cam(3.0f);
   cam.translate(0, 0, 3);
 
@@ -138,44 +137,45 @@ void RaytracingApp::raytracing(rtx::Scene &scene, int threadsCount,
 
   for (y = 0; y < _height; y++) {
     // enqueue and store future
-    results.emplace_back(pool.enqueue([this](GLTexture::View view, const rtx::Scene &scene, const rtx::Camera &cam) {
-      const float w = 1.f / _width;
-      const float h = 1.f / _height;
+    results.emplace_back(pool.enqueue(
+        [this](GLTexture::View view, const rtx::Scene& scene, const rtx::Camera& cam) {
+          const float w = 1.f / _width;
+          const float h = 1.f / _height;
 
-      const float ws = w / (spp + 1.f);
-      const float hs = h / (spp + 1.f);
+          const float ws = w / (spp + 1.f);
+          const float hs = h / (spp + 1.f);
 
-      for (int j = 0; j < view.h; j++) {
-        auto row = view[j];
-        for (int i = 0; i < view.w; i++) {
-          rtx::Color color;
-          float x = (i + view.x) * w;
-          float y = (j + view.y) * h;
+          for (int j = 0; j < view.h; j++) {
+            auto row = view[j];
+            for (int i = 0; i < view.w; i++) {
+              rtx::Color color;
+              float x = (i + view.x) * w;
+              float y = (j + view.y) * h;
 
-          // super-sampling
-          for (int l = 1.f; l <= spp; l++) {
-            for (int k = 1.f; k <= spp; k++) {
-              float cx = x + (k * ws);
-              float cy = y + (l * hs);
+              // super-sampling
+              for (int l = 1.f; l <= spp; l++) {
+                for (int k = 1.f; k <= spp; k++) {
+                  float cx = x + (k * ws);
+                  float cy = y + (l * hs);
 
-              color += scene.castRayForPixel(cam, cx, cy);
+                  color += scene.castRayForPixel(cam, cx, cy);
+                }
+              }
+              color = color / (spp * spp);
+
+              // Correction Gamma
+              color.saturate();
+
+              color.r = powf(color.r, 1.f / 2.2f);
+              color.g = powf(color.g, 1.f / 2.2f);
+              color.b = powf(color.b, 1.f / 2.2f);
+
+              row[i] = color;
             }
           }
-          color = color / (spp * spp);
-
-          // Correction Gamma
-          color.saturate();
-
-          color.r = powf(color.r, 1.f / 2.2f);
-          color.g = powf(color.g, 1.f / 2.2f);
-          color.b = powf(color.b, 1.f / 2.2f);
-
-          row[i] = color;
-        }
-      }
-    }, texture.view(x, y, w, h), scene, cam));
+        },
+        texture.view(x, y, w, h), scene, cam));
   }
 
-  for(auto && result: results)
-    result.get();
+  for (auto&& result : results) result.get();
 }

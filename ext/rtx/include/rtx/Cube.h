@@ -7,14 +7,14 @@ namespace rtx {
 
 struct Cube : public Object {
   Cube();
-  Cube(Material *mat) : Object(mat){};
+  Cube(Material* mat) : Object(mat){};
   virtual ~Cube() {}
 
-  Ray getNormal(const Point &p, const Point &o) const;
-  bool intersect(const Ray &ray, Point &impact) const;
-  Point getTextureCoordinates(const Point &p) const;
+  Ray getNormal(const Point& p, const Point& o) const;
+  bool intersect(const Ray& ray, Point& impact) const;
+  Point getTextureCoordinates(const Point& p) const;
 };
 
-} // namespace rtx
+}  // namespace rtx
 
 #endif

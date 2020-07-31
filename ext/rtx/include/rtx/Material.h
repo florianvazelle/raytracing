@@ -10,14 +10,12 @@ namespace rtx {
  */
 struct Material {
   Material();
-  Material(const Color &ka, const Color &kd, const Color &ks,
-           const int &shininess = 0, const float &reflectivity = 0,
-           const float &refractivity = 0);
+  Material(const Color& ka, const Color& kd, const Color& ks, const int& shininess = 0,
+           const float& reflectivity = 0, const float& refractivity = 0);
 
-  bool operator==(const Material &rhs) const {
-    return ka == rhs.ka && kd == rhs.kd && ks == rhs.ks &&
-           shininess == rhs.shininess && reflectivity == rhs.reflectivity &&
-           refractivity == rhs.refractivity;
+  bool operator==(const Material& rhs) const {
+    return ka == rhs.ka && kd == rhs.kd && ks == rhs.ks && shininess == rhs.shininess &&
+           reflectivity == rhs.reflectivity && refractivity == rhs.refractivity;
   };
 
   /**
@@ -25,7 +23,7 @@ struct Material {
    * scène.
    */
   Color ka;
-  virtual const Color getAmbiant(const Point &impact) const { return ka; };
+  virtual const Color getAmbiant(const Point& impact) const { return ka; };
 
   /**
    * La composante diffuse, qui se multiplie par la composante diffuse de chaque
@@ -55,6 +53,6 @@ struct Material {
   float refractivity;
 };
 
-} // namespace rtx
+}  // namespace rtx
 
 #endif

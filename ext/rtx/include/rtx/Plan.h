@@ -7,14 +7,14 @@ namespace rtx {
 
 struct Plan : public Object {
   Plan();
-  Plan(Material *mat) : Object(mat){};
+  Plan(Material* mat) : Object(mat){};
   virtual ~Plan() {}
 
-  Ray getNormal(const Point &p, const Point &o) const;
-  bool intersect(const Ray &ray, Point &impact) const;
-  Point getTextureCoordinates(const Point &p) const;
+  Ray getNormal(const Point& p, const Point& o) const;
+  bool intersect(const Ray& ray, Point& impact) const;
+  Point getTextureCoordinates(const Point& p) const;
 };
 
-} // namespace rtx
+}  // namespace rtx
 
 #endif
