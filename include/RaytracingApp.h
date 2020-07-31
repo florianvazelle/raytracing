@@ -22,8 +22,7 @@ namespace fs = std::filesystem; // g++ -v >= 9
 
 class RaytracingApp : public nanogui::Screen {
 public:
-  RaytracingApp()
-      : nanogui::Screen(Eigen::Vector2i(800, 600), "NanoGUI Test", true) {
+  RaytracingApp() : nanogui::Screen(Eigen::Vector2i(800, 600), "NanoGUI Test", true) {
     using namespace nanogui;
 
     /**
@@ -31,8 +30,7 @@ public:
      */
 
     // Convertie en image toute les scenes de assets/scenes/
-    for (const fs::directory_entry &p :
-         fs::directory_iterator("assets/scenes/")) {
+    for (const fs::directory_entry &p : fs::directory_iterator("assets/scenes/")) {
       fs::path path = p.path();
       fs::path filename = path.filename();
       fs::path ext = path.extension();
@@ -42,6 +40,7 @@ public:
         std::string path_str = path.string();
 
         rtx::Scene scene = openScene(path_str);
+
         scenes.push_back(scene);
         mCurrentScene = scenes.size() - 1;
 
@@ -195,13 +194,10 @@ public:
         new BoxLayout(Orientation::Horizontal, Alignment::Middle, 0, 6));
     Button *b = new Button(tools, "Open");
     b->setCallback([this, imageView, imgPanel] {
-      std::string jsonPath;
-      jsonPath = file_dialog(
-          {
-              {"json", "JavaScript Object Notation"},
-          },
-          false);
+      std::string jsonPath = file_dialog({{"json", "JavaScript Object Notation"},}, false);
+      
       std::cout << "File dialog result: " << jsonPath << std::endl;
+
       if (jsonPath.size() > 1) {
         rtx::Scene scene = openScene(jsonPath);
         scenes.push_back(scene);
@@ -218,11 +214,7 @@ public:
 
     b = new Button(tools, "Save");
     b->setCallback([&] {
-      std::string jpgPath = file_dialog(
-          {
-              {"jpg", "Joint Photographic Experts Group"},
-          },
-          true);
+      std::string jpgPath = file_dialog({{"jpg", "Joint Photographic Experts Group"},}, true);
 
       std::cout << "File dialog result: " << jpgPath << std::endl;
 

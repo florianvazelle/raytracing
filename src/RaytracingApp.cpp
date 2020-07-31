@@ -29,7 +29,7 @@ rtx::Scene RaytracingApp::openScene(std::string path) {
   rtx::Scene scene;
 
   const Json::Value objs = root["objects"];
-  for (int i = 0; i < objs.size(); ++i) {
+  for (unsigned int i = 0; i < objs.size(); ++i) {
     const Json::Value obj = objs[i];
 
     std::string type = obj["type"].asString();
@@ -38,20 +38,20 @@ rtx::Scene RaytracingApp::openScene(std::string path) {
     float scale = obj["scale"].asFloat();
     rtx::Material *mat = JsonHelper::toMaterial(obj["material"]);
 
-    rtx::Object *object;
+    std::shared_ptr<rtx::Object> object;
 
     if (type == "Cube") {
-      object = new rtx::Cube(mat);
+      object = std::make_shared<rtx::Cube>(mat);
     } else if (type == "Plan") {
-      object = new rtx::Plan(mat);
+      object = std::make_shared<rtx::Plan>(mat);
     } else if (type == "Square") {
-      object = new rtx::Square(mat);
+      object = std::make_shared<rtx::Square>(mat);
     } else if (type == "Sphere") {
-      object = new rtx::Sphere(mat);
+      object = std::make_shared<rtx::Sphere>(mat);
     } else if (type == "InfiniteCylinder") {
-      object = new rtx::InfiniteCylinder(mat);
+      object = std::make_shared<rtx::InfiniteCylinder>(mat);
     } else if (type == "Triangle") {
-      object = new rtx::Triangle(mat);
+      object = std::make_shared<rtx::Triangle>(mat);
     } else {
       throw std::invalid_argument("Type not supported");
     }
@@ -61,20 +61,20 @@ rtx::Scene RaytracingApp::openScene(std::string path) {
     object->rotateY(rot.y);
     object->rotateZ(rot.z);
     object->translate(pos.x, pos.y, pos.z);
-    scene.objects.push_back(object);
+    scene.objects.push_back(object); 
   }
 
   const Json::Value ligs = root["lights"];
-  for (int i = 0; i < ligs.size(); ++i) {
+  for (unsigned int i = 0; i < ligs.size(); ++i) {
     const Json::Value lig = ligs[i];
 
     rtx::Point pos = JsonHelper::toPoint(lig["position"]);
     rtx::Color id = JsonHelper::toColor(lig["id"]);
     rtx::Color is = JsonHelper::toColor(lig["is"]);
 
-    rtx::Light *light = new rtx::Light(id, is);
+    std::shared_ptr<rtx::Light> light = std::make_shared<rtx::Light>(id, is);
     light->translate(pos.x, pos.y, pos.z);
-    scene.lights.push_back(light);
+    scene.lights.push_back(light); 
   }
 
   return scene;
@@ -139,7 +139,40 @@ void RaytracingApp::raytracing(rtx::Scene &scene, int threadsCount,
   for (y = 0; y < _height; y++) {
     // enqueue and store future
     results.emplace_back(pool.enqueue([this](GLTexture::View view, const rtx::Scene &scene, const rtx::Camera &cam) {
-      traceRays(view, scene, cam);
+      const float w = 1.f / _width;
+      const float h = 1.f / _height;
+
+      const float ws = w / (spp + 1.f);
+      const float hs = h / (spp + 1.f);
+
+      for (int j = 0; j < view.h; j++) {
+        auto row = view[j];
+        for (int i = 0; i < view.w; i++) {
+          rtx::Color color;
+          float x = (i + view.x) * w;
+          float y = (j + view.y) * h;
+
+          // super-sampling
+          for (int l = 1.f; l <= spp; l++) {
+            for (int k = 1.f; k <= spp; k++) {
+              float cx = x + (k * ws);
+              float cy = y + (l * hs);
+
+              color += scene.castRayForPixel(cam, cx, cy);
+            }
+          }
+          color = color / (spp * spp);
+
+          // Correction Gamma
+          color.saturate();
+
+          color.r = powf(color.r, 1.f / 2.2f);
+          color.g = powf(color.g, 1.f / 2.2f);
+          color.b = powf(color.b, 1.f / 2.2f);
+
+          row[i] = color;
+        }
+      }
     }, texture.view(x, y, w, h), scene, cam));
   }
 

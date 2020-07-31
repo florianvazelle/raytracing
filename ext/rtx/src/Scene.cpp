@@ -25,21 +25,21 @@ Color Scene::getAmbiant() const { return Color(1.0f, 1.0f, 1.0f); };
 int Scene::nbLights() const { return lights.size(); };
 
 /**
- * Retourne un pointeur vers la nième lumière.
+ * Retourne un pointeur vers la n-ième lumière.
  */
-const Light *Scene::getLight(int index) const { return lights.at(index); };
+const std::shared_ptr<Light> Scene::getLight(int index) const { return lights.at(index); };
 
 /**
  * Retourne un pointeur vers l'objet intersecté par le rayon passé en paramètre
  * le plus proche, et nullptr si il n'y en a pas. Met à jour le point d'impact
  * passé en paramètre par référence.
  */
-Object *Scene::getClosestIntersection(const Ray &ray, Point &impact) const {
+std::shared_ptr<Object>  Scene::getClosestIntersection(const Ray &ray, Point &impact) const {
   Point closestImpact;
-  Object *closestObject = nullptr;
+  std::shared_ptr<Object> closestObject = nullptr;
   float minDist = std::numeric_limits<float>::max();
 
-  for (Object *obj : objects) {
+  for (auto obj : objects) {
     if (obj->intersect(ray, impact)) {
       float dist = ray.origin.distance(impact);
       if (minDist > dist) {
@@ -67,7 +67,7 @@ Color Scene::castRayForPixel(const Camera &cam, float i, float j) const {
  */
 Color Scene::castRay(const Ray &ray, int raycast) const {
   Point impact;
-  Object *obj = getClosestIntersection(ray, impact);
+  std::shared_ptr<Object> obj = getClosestIntersection(ray, impact);
   Color color =
       (obj) ? performLighting(ray, *obj, impact, raycast) : getBackground();
   return color;
@@ -100,7 +100,7 @@ bool Scene::isInShadow(const Light &light, const Point &impact) const {
   Point lightPosition = light.getRayFromLight(impact).origin;
 
   Point shadowImpact;
-  Object *obj = getClosestIntersection(shadowFeeler, shadowImpact);
+  std::shared_ptr<Object>  obj = getClosestIntersection(shadowFeeler, shadowImpact);
   if (obj) {
     float objectDistance = impact.distance(shadowImpact);
     float lightDistance = impact.distance(lightPosition);
@@ -130,7 +130,7 @@ Color Scene::getDiffuseLighting(const Ray &ray, const Object &obj,
   const Vector N = obj.getNormal(impact, ray.origin).vector;
 
   for (int i = 0; i < nbLights(); i++) {
-    const Light *l = getLight(i);
+    const std::shared_ptr<Light> l = getLight(i);
 
     Vector L = l->getVectorToLight(impact);
 
@@ -156,7 +156,7 @@ Color Scene::getSpecularLighting(const Ray &ray, const Object &obj,
   const Vector V = -ray.vector;
 
   for (int i = 0; i < nbLights(); i++) {
-    const Light *l = getLight(i);
+    const std::shared_ptr<Light> l = getLight(i);
 
     Vector L = l->getVectorToLight(impact);
 
@@ -309,7 +309,7 @@ float Scene::ambientOcclusion(const Ray &ray, const Object &obj,
 
     Point ambientImpact;
     Ray ray(impact, kernels[i]);
-    Object *obj = getClosestIntersection(ray, ambientImpact);
+    std::shared_ptr<Object> obj = getClosestIntersection(ray, ambientImpact);
 
     if (obj) {
       occlusion++;
