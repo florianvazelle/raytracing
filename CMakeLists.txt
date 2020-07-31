@@ -2,8 +2,10 @@
 # │  Projects Settings                                               │
 # └──────────────────────────────────────────────────────────────────┘
 
-project("raytracing")
+project("raytracing" CXX)
 cmake_minimum_required(VERSION 3.1)
+
+option(RAYTRACING_WITH_EXAMPLE "Compile raytracing example" ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -O3 -g")
@@ -86,3 +88,11 @@ target_link_libraries(${PROJECT_NAME} nanogui jsoncpp_lib rtx ${CONAN_LIBS})
 # └──────────────────────────────────────────────────────────────────┘
 
 file(COPY assets/ DESTINATION bin/assets)
+
+# ┌──────────────────────────────────────────────────────────────────┐
+# │  Examples                                                        │
+# └──────────────────────────────────────────────────────────────────┘
+
+if(RAYTRACING_WITH_EXAMPLE)
+  add_subdirectory(${PROJECT_SOURCE_DIR}/example)
+endif()

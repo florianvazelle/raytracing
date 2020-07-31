@@ -1,9 +1,13 @@
 [submodule "ext/nanogui"]
 	path = ext/nanogui
-	url = https://github.com/wjakob/nanogui
+	url = https://github.com/wjakob/nanogui.git
 [submodule "ext/jsoncpp"]
 	path = ext/jsoncpp
-	url = https://github.com/open-source-parsers/jsoncpp
+	url = https://github.com/open-source-parsers/jsoncpp.git
+[submodule "ext/stb"]
+	path = ext/stb
+	url = https://github.com/nothings/stb.git
 [submodule "ext/rtx/ext/googletest"]
 	path = ext/rtx/ext/googletest
-	url = https://github.com/google/googletest/
+	url = https://github.com/google/googletest.git
+
