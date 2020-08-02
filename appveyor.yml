@@ -20,6 +20,11 @@ install:
   - sh: mkdir -p build
   - cd build
 
+  - ps: "./install-opengl.ps1"
+
+  - sh: sudo add-apt-repository ppa:ubuntu-x-swat/updates 
+  - sh: sudo apt-get upgrade -y
+  - sh: sudo apt-get dist-upgrade -y
   - sh: sudo apt-get install xorg-dev libx11-xcb-dev libxcb-render0-dev libxcb-render-util0-dev libgl-dev -y
 
 for:
@@ -39,3 +44,6 @@ for:
     build_script:
       - cmake --build . --config %CONFIGURATION%
       - msbuild %APPVEYOR_PROJECT_NAME%.sln
+
+on_finish:
+  - ps: "./install-opengl.ps1 uninstall"
