@@ -304,5 +304,4 @@ float Scene::ambientOcclusion(const Ray& ray, const Object& obj, const Point& im
   }
 
   return 1.0f - (occlusion / kernels.size());
-  ;
 }

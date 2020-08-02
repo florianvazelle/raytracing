@@ -2,97 +2,100 @@
 # │  Projects Settings                                               │
 # └──────────────────────────────────────────────────────────────────┘
 
-project("raytracing" CXX)
-cmake_minimum_required(VERSION 3.1)
+project("raytracing")
+cmake_minimum_required (VERSION 3.0.2)
 
-option(RAYTRACING_WITH_EXAMPLE "Compile raytracing example" ON)
+option(RTX_WITH_RAYTRACER "Compile raytracer" ON)
+option(RTX_WITH_TESTS "Compile and run rtx test executables" ON)
+option(RTX_WITH_POST_BUILD_UNITTEST "Automatically run unit-tests as a post build step" ON)
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -O3 -g")
-set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
+set(CMAKE_CXX_STANDARD 11)
 
-# Doing this makes testing easier, NanoGUI example* will all go to ./bin/
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 
-if (NOT IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/ext/nanogui/include")
-  message(FATAL_ERROR "The NanoGUI dependency is missing!  You probably did not "
-                      "clone the project with --recursive. It is possible to "
-                      "recover by calling\n"
-                      "git submodule update --init --recursive")
+# ┌──────────────────────────────────────────────────────────────────┐
+# │  Build library                                                   │
+# └──────────────────────────────────────────────────────────────────┘
+
+# Find source files
+file(GLOB_RECURSE ${PROJECT_NAME}_SOURCES ${PROJECT_SOURCE_DIR}/src/rtx/*.cpp)
+
+# Create shared library
+add_library(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES})
+
+# Include header files
+target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include)
+
+# ┌──────────────────────────────────────────────────────────────────┐
+# │  Tests                                                           │
+# └──────────────────────────────────────────────────────────────────┘
+
+if(RTX_WITH_TESTS)
+    if (NOT IS_DIRECTORY "${CMAKE_SOURCE_DIR}/ext/googletest/googletest/include")
+      message(FATAL_ERROR "The ${dependency} dependency is missing! You probably did not "
+                          "clone the project with --recursive. It is possible to "
+                          "recover by calling\n"
+                          "git submodule update --init --recursive")
+    endif()
+
+    set(BUILD_GMOCK OFF CACHE BOOL " " FORCE)
+
+    add_subdirectory(${PROJECT_SOURCE_DIR}/ext/googletest)
+
+    enable_testing()
+
+    include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
+
+    add_subdirectory(test)
 endif()
 
-if (MSVC)
-  # Disable annoying MSVC warnings (all targets)
-  add_definitions(/D "_CRT_SECURE_NO_WARNINGS")
-
-  # Parallel build on MSVC (all targets)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
-endif()
-
 # ┌──────────────────────────────────────────────────────────────────┐
-# │  Load libraries                                                  │
+# │  Load raytracer                                                  │
 # └──────────────────────────────────────────────────────────────────┘
 
-# NanoGUI  ------
-set(NANOGUI_BUILD_EXAMPLE OFF CACHE BOOL " " FORCE)
-set(NANOGUI_BUILD_PYTHON  OFF CACHE BOOL " " FORCE)
-set(NANOGUI_INSTALL       OFF CACHE BOOL " " FORCE)
+if(RTX_WITH_RAYTRACER)
+    set(DEPENDENCIES "nanogui/include" "jsoncpp/include" stb)
+    foreach(dependency ${DEPENDENCIES})
+        if (NOT IS_DIRECTORY "${CMAKE_SOURCE_DIR}/ext/${dependency}")
+            message(FATAL_ERROR "The ${dependency} dependency is missing! You probably did not "
+                                "clone the project with --recursive. It is possible to "
+                                "recover by calling\n"
+                                "git submodule update --init --recursive")
+        endif()
+    endforeach()
 
-# Add the configurations from nanogui
-add_subdirectory(${PROJECT_SOURCE_DIR}/ext/nanogui)
+    # ┌──────────────────────────────────────────────────────────────────┐
+    # │  Load libraries                                                  │
+    # └──────────────────────────────────────────────────────────────────┘
 
-# For reliability of parallel build, make the NanoGUI targets dependencies
-set_property(TARGET glfw glfw_objects nanogui PROPERTY FOLDER "dependencies")
+    # NanoGUI  ------
+    set(NANOGUI_BUILD_EXAMPLE OFF CACHE BOOL " " FORCE)
+    set(NANOGUI_BUILD_PYTHON  OFF CACHE BOOL " " FORCE)
+    set(NANOGUI_INSTALL       OFF CACHE BOOL " " FORCE)
 
-# On top of adding the path to nanogui/include, you may need extras
-include_directories(${PROJECT_SOURCE_DIR}/ext/nanogui/include)
-include_directories(${NANOGUI_EXTRA_INCS})
+    # Add the configurations from nanogui
+    add_subdirectory(${PROJECT_SOURCE_DIR}/ext/nanogui)
 
-# Various preprocessor definitions have been generated by NanoGUI
-add_definitions(${NANOGUI_EXTRA_DEFS})
+    # For reliability of parallel build, make the NanoGUI targets dependencies
+    set_property(TARGET glfw glfw_objects nanogui PROPERTY FOLDER "dependencies")
 
-# JsonCpp  ------
-set(JSONCPP_WITH_TESTS OFF CACHE BOOL " " FORCE)
+    # On top of adding the path to nanogui/include, you may need extras
+    include_directories(SYSTEM ${PROJECT_SOURCE_DIR}/ext/nanogui/include)
+    include_directories(SYSTEM ${NANOGUI_EXTRA_INCS})
 
-add_subdirectory(${PROJECT_SOURCE_DIR}/ext/jsoncpp)
-include_directories(${PROJECT_SOURCE_DIR}/ext/jsoncpp/include)
+    # Various preprocessor definitions have been generated by NanoGUI
+    # add_definitions(${NANOGUI_EXTRA_DEFS})
 
-# Rtx  ------
-add_subdirectory(${PROJECT_SOURCE_DIR}/ext/rtx)
-include_directories(${PROJECT_SOURCE_DIR}/ext/rtx/include)
+    # JsonCpp  ------
+    set(JSONCPP_WITH_TESTS OFF CACHE BOOL " " FORCE)
 
-# Stb  ------
-include_directories(${PROJECT_SOURCE_DIR}/ext/stb)
+    add_subdirectory(${PROJECT_SOURCE_DIR}/ext/jsoncpp)
+    include_directories(SYSTEM ${PROJECT_SOURCE_DIR}/ext/jsoncpp/include)
 
-# ┌──────────────────────────────────────────────────────────────────┐
-# │  Build executable                                                │
-# └──────────────────────────────────────────────────────────────────┘
+    # Stb  ------
+    include_directories(SYSTEM ${PROJECT_SOURCE_DIR}/ext/stb)
 
-include_directories(${PROJECT_SOURCE_DIR}/include)
-
-file(GLOB_RECURSE ${PROJECT_NAME}_HEADERS ${PROJECT_SOURCE_DIR}/include/*.h)
-file(GLOB_RECURSE ${PROJECT_NAME}_SOURCES ${PROJECT_SOURCE_DIR}/src/*.cpp)
-
-add_executable(${PROJECT_NAME} ${${PROJECT_NAME}_SOURCES} ${${PROJECT_NAME}_HEADERS})
-
-# ┌──────────────────────────────────────────────────────────────────┐
-# │  Link Libraries                                                  │
-# └──────────────────────────────────────────────────────────────────┘
-
-target_link_libraries(${PROJECT_NAME} nanogui jsoncpp_lib rtx ${CONAN_LIBS})
-
-# ┌──────────────────────────────────────────────────────────────────┐
-# │  Copy Assets                                                     │
-# └──────────────────────────────────────────────────────────────────┘
-
-file(COPY assets/ DESTINATION bin/assets)
-
-# ┌──────────────────────────────────────────────────────────────────┐
-# │  Examples                                                        │
-# └──────────────────────────────────────────────────────────────────┘
-
-if(RAYTRACING_WITH_EXAMPLE)
-  add_subdirectory(${PROJECT_SOURCE_DIR}/example)
+    add_subdirectory(${PROJECT_SOURCE_DIR}/src/raytracer)
 endif()

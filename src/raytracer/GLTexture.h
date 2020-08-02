@@ -29,13 +29,14 @@ class GLTexture {
   /**
    *  Save a PNG or JPG image with SDL.
    */
-  void save(char const* filename);
+  void save(char const* filename) const;
+  void update() const;
 
-  auto operator[](int r) { return textureData.data() + r * w(); }
-  auto operator[](int r) const { return textureData.data() + r * w(); }
+  rtx::Color* operator[](int r) { return textureData.data() + r * w(); }
+  const rtx::Color* operator[](int r) const { return textureData.data() + r * w(); }
 
-  auto pixels() { return textureData.data(); }
-  auto pixels() const { return textureData.data(); }
+  rtx::Color* pixels() { return textureData.data(); }
+  const rtx::Color* pixels() const { return textureData.data(); }
 
   int w() const { return width; }
   int h() const { return height; }
@@ -49,7 +50,7 @@ class GLTexture {
 
   class View {
    public:
-    auto operator[](int r) { return image.pixels() + (y + r) * image.w() + x; }
+    rtx::Color* operator[](int r) { return image.pixels() + (y + r) * image.w() + x; }
 
     int x;
     int y;
@@ -58,14 +59,14 @@ class GLTexture {
     GLTexture& image;
   };
 
-  auto view(int x, int y, int w, int h) { return View{x, y, w, h, *this}; }
+  View view(int x, int y, int w, int h) { return View{x, y, w, h, *this}; }
 
  private:
   GLuint mTextureId;
   std::vector<rtx::Color> textureData;
   int width, height;
 
-  const char* get_filename_ext(const char* filename);
+  const char* get_filename_ext(const char* filename) const;
 };
 
 #endif

@@ -1,7 +1,6 @@
 #ifndef H_RAYTRACINGAPP
 #define H_RAYTRACINGAPP
 
-#include <json/json.h>
 #include <nanogui/nanogui.h>
 #include <rtx/Camera.h>
 #include <rtx/Object.h>
@@ -9,15 +8,13 @@
 #include <rtx/Vector.h>
 
 #include <cstdio>
-#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <memory>
 #include <string>
 
 #include "GLTexture.h"
-
-namespace fs = std::filesystem;  // g++ -v >= 9
+#include "JsonParser.h"
 
 class RaytracingApp : public nanogui::Screen {
  public:
@@ -25,51 +22,16 @@ class RaytracingApp : public nanogui::Screen {
     using namespace nanogui;
 
     /**
-     * Pre-settings
-     */
-
-    // Convertie en image toute les scenes de assets/scenes/
-    for (const fs::directory_entry& p : fs::directory_iterator("assets/scenes/")) {
-      fs::path path = p.path();
-      fs::path filename = path.filename();
-      fs::path ext = path.extension();
-
-      // On ne selectionne que des image
-      if (ext == ".json") {
-        std::string path_str = path.string();
-
-        rtx::Scene scene = openScene(path_str);
-
-        scenes.push_back(scene);
-        mCurrentScene = scenes.size() - 1;
-
-        // On crée la texture
-        GLTexture texture(_width, _height);
-        glGenTextures(1, &(texture.texture()));
-
-        updateTexture(scene, texture);
-
-        char buff[100];
-        std::stringstream ss;
-        ss << std::setw(5) << std::setfill('0') << mCurrentScene;
-        sprintf(buff, "assets/samples/scene%s.png", ss.str().c_str());
-        texture.save(buff);
-
-        mImagesData.push_back(std::move(texture));
-      }
-    }
-
-    /**
      * Image Window
      */
 
     // On crée une fenetre "image" pour afficher une image
-    auto imageWindow = new Window(this, "Selected image");
+    Window* imageWindow = new Window(this, "Selected image");
     imageWindow->setPosition(Vector2i(250, 15));
     imageWindow->setLayout(new GroupLayout());
 
     // On définie l'image a affiché
-    ImageView* imageView = new ImageView(imageWindow, mImagesData.at(mCurrentScene).texture());
+    ImageView* imageView = new ImageView(imageWindow, NULL);
     // imageView->setScaleCentered(0.5);
     imageView->setFixedSize(Vector2i(500, 500));
 
@@ -78,7 +40,7 @@ class RaytracingApp : public nanogui::Screen {
      */
 
     // On crée une fenetre "action" pour avoir l'ensemble des actions
-    auto actionWindow = new Window(this, "Actions");
+    Window* actionWindow = new Window(this, "Actions");
     actionWindow->setPosition(Vector2i(15, 15));
     actionWindow->setLayout(new GroupLayout());
 
@@ -194,7 +156,7 @@ class RaytracingApp : public nanogui::Screen {
       std::cout << "File dialog result: " << jsonPath << std::endl;
 
       if (jsonPath.size() > 1) {
-        rtx::Scene scene = openScene(jsonPath);
+        rtx::Scene scene = JsonParser::openScene(jsonPath.c_str());
         scenes.push_back(scene);
         mCurrentScene = scenes.size() - 1;
 
@@ -255,28 +217,8 @@ class RaytracingApp : public nanogui::Screen {
 
   void updateTexture(rtx::Scene& scene, GLTexture& texture) const {
     texture.size(_width, _height);
-
-    raytracing(scene, (useMultithreading) ? 12 : 1, texture);
-
-    glBindTexture(GL_TEXTURE_2D, texture.texture());
-
-    std::vector<uint8_t> data;
-    auto pixels = texture.pixels();
-    for (int j = 0; j < texture.size(); j++) {
-      data.push_back(pixels[j].r * 255.0f);
-      data.push_back(pixels[j].g * 255.0f);
-      data.push_back(pixels[j].b * 255.0f);
-    }
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, _width, _height, 0, GL_RGB, GL_UNSIGNED_BYTE,
-                 data.data());
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-    glBindTexture(GL_TEXTURE_2D, 0);
+    raytracing(scene, texture);
+    texture.update();
   }
 
   void updateIcons(nanogui::ImagePanel* imgPanel) const {
@@ -297,19 +239,9 @@ class RaytracingApp : public nanogui::Screen {
   }
 
   /**
-   *  Convert a Json::Value into a Scene object.
-   */
-  rtx::Scene openScene(std::string);
-
-  /**
-   *  Trace all ray & apply super sampling & correction gamma.
-   */
-  void traceRays(GLTexture::View view, const rtx::Scene& scene, const rtx::Camera& cam) const;
-
-  /**
    *  Split image & launch thread.
    */
-  void raytracing(rtx::Scene& scene, int threadsCount, GLTexture& texture) const;
+  void raytracing(rtx::Scene& scene, GLTexture& texture) const;
 
  private:
   std::vector<GLTexture> mImagesData;

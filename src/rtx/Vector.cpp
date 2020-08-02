@@ -1,6 +1,7 @@
 #include <rtx/Vector.h>
 
 #include <algorithm>
+#include <cassert>
 #include <cmath>
 #include <stdexcept>
 
@@ -158,10 +159,16 @@ Vector Vector::cross(const Vector& v) const {
 float Vector::norm() const { return x * x + y * y + z * z; }
 float Vector::length() const { return std::sqrt(norm()); }
 
+template <class T>
+const T& clamp(const T& v, const T& lo, const T& hi) {
+  assert(!(hi < lo));
+  return (v < lo) ? lo : (hi < v) ? hi : v;
+}
+
 Vector& Vector::saturate() {
-  r = std::clamp<float>(r, 0, 1);
-  g = std::clamp<float>(g, 0, 1);
-  b = std::clamp<float>(b, 0, 1);
+  r = clamp<float>(r, 0, 1);
+  g = clamp<float>(g, 0, 1);
+  b = clamp<float>(b, 0, 1);
   return *this;
 }
 

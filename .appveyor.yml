@@ -20,17 +20,6 @@ install:
   - sh: mkdir -p build
   - cd build
 
-  - sh: sudo add-apt-repository ppa:ubuntu-x-swat/updates 
-  - sh: sudo apt-get upgrade -y
-  - sh: sudo apt-get dist-upgrade -y
-  - sh: sudo apt-get install xorg-dev libx11-xcb-dev libxcb-render0-dev libxcb-render-util0-dev libgl-dev -y
-
-  - sh: sudo apt install software-properties-common
-  - sh: sudo add-apt-repository ppa:ubuntu-toolchain-r/test
-  - sh: sudo apt update
-  - sh: sudo apt install gcc-9 g++-9
-  - sh: sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90 --slave /usr/bin/g++ g++ /usr/bin/g++-9 --slave /usr/bin/gcov gcov /usr/bin/gcov-9
-
 for:
   - matrix:
       only:
