@@ -3,6 +3,7 @@
 #include <rtx/Scene.h>
 
 #include <algorithm>
+#include <cmath>
 #include <iostream>
 #include <limits>
 
