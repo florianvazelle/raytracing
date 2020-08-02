@@ -20,7 +20,7 @@ install:
   - sh: mkdir -p build
   - cd build
 
-  - sh: sudo apt install libxrandr-dev -y
+  - sh: sudo apt-get install xorg-dev libx11-xcb-dev libxcb-render0-dev libxcb-render-util0-dev libgl-dev -y
 
 for:
   - matrix:
