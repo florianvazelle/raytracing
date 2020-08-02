@@ -41,15 +41,10 @@ Windows : `setup.bat` # or double-click
 └── README.md
 ```
 
-### RTX
-
-- [Googletest](https://github.com/google/googletest) for unit tests.
-
-### Raytracer
-
 - [Nanogui](https://github.com/wjakob/nanogui) for user interface.
 - [Jsoncpp](https://github.com/open-source-parsers/jsoncpp) for scene parser.
 - [STB](https://github.com/nothings/stb) for write PNG/JPG images.
+- [Googletest](https://github.com/google/googletest) for unit tests.
 
 ##  Requirements
 
