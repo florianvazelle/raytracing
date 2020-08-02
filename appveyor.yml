@@ -20,6 +20,8 @@ install:
   - sh: mkdir -p build
   - cd build
 
+  - sh: sudo apt install libxrandr-dev
+
 for:
   - matrix:
       only:
