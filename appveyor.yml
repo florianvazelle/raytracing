@@ -20,7 +20,7 @@ install:
   - sh: mkdir -p build
   - cd build
 
-  - sh: sudo apt install libxrandr-dev
+  - sh: sudo apt install libxrandr-dev -y
 
 for:
   - matrix:
