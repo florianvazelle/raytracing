@@ -1,9 +1,9 @@
 # Raytracing
 ![Travis](https://img.shields.io/travis/florianvazelle/raytracing?style=flat&logo=travis) ![AppVeyor](https://img.shields.io/appveyor/build/florianvazelle/raytracing?style=flat&logo=appveyor) [![License MIT](https://img.shields.io/badge/license-MIT-green)](https://choosealicense.com/licenses/mit/)
 
-A CPU ray tracing library, written in C++, cross-platform, with a matrix representation of entities.
+A CPU ray tracing library, written in C++, cross-platform, with a matrix representation of entities.  
 There are two technical parts:
-- ray tracing with shadows, ambient, diffuse (Lambert), specular (Phong), reflections, refractions (Snell-Descartes) with Schlick-Fresnel approximation and simple ambient occlusion implementation.
+- Ray tracing with shadows, ambient, diffuse (Lambert), specular (Phong), reflections, refractions (Snell-Descartes) with Schlick-Fresnel approximation and simple ambient occlusion implementation.
 - C++ with super-sampling, gamma correction and multithreading image calculation.
 
 <h4 align="center">
@@ -22,27 +22,19 @@ Linux : `./setup.sh`
 
 Windows : `setup.bat` # or double-click
 
-
-## Externals
-
-- [Nanogui](https://github.com/wjakob/nanogui) for user interface.
-- [Jsoncpp](https://github.com/open-source-parsers/jsoncpp) for scene parser.
-- [STB](https://github.com/nothings/stb) for write PNG/JPG images.
-- [Googletest](https://github.com/google/googletest) for unit tests.
-
 ## Project Structure
 
-```
+<pre>
 .
 ├── assets
 │  ├── samples
 │  └── scenes
 ├── build                   # Compiled files
 ├── ext                     # Submodules
-│  ├── googletest
-│  ├── jsoncpp
-│  ├── nanogui
-│  └── stb
+│  ├── <a href="https://github.com/google/googletest">googletest</a>           # for unit tests
+│  ├── <a href="https://github.com/open-source-parsers/jsoncpp">jsoncpp</a>              # for scene parser
+│  ├── <a href="https://github.com/wjakob/nanogui">nanogui</a>              # for user interface
+│  └── <a href="https://github.com/nothings/stb">stb</a>                  # for write PNG/JPG images
 ├── include
 │  └── rtx
 ├── src                     # Source files
@@ -50,14 +42,14 @@ Windows : `setup.bat` # or double-click
 │  └── rtx                  # Raytracing library
 ├── test                    # Automated tests
 └── README.md
-```
+</pre>
 
-## Roadmap
+## Roadmap
 
 - Real-time image rendering
 - Texture with normal/bump mapping
 - Depth of field
-
+  
 - CUDA version
 - 3D models support
 
