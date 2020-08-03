@@ -49,7 +49,6 @@ Windows : `setup.bat` # or double-click
 - Real-time image rendering
 - Texture with normal/bump mapping
 - Depth of field
-  
 - CUDA version
 - 3D models support
 
