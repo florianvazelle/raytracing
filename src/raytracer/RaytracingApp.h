@@ -31,7 +31,7 @@ class RaytracingApp : public nanogui::Screen {
     imageWindow->setLayout(new GroupLayout());
 
     // On définie l'image a affiché
-    ImageView* imageView = new ImageView(imageWindow, NULL);
+    ImageView* imageView = new ImageView(imageWindow, 0);
     // imageView->setScaleCentered(0.5);
     imageView->setFixedSize(Vector2i(500, 500));
 

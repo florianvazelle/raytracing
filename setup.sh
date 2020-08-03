@@ -20,7 +20,7 @@ fi
 ###
 printf "== Autobuilding (smoke test)\n"
 
-if cmake --build . --config Release; then
+if cmake --build . --config Release --parallel $(nproc); then
   printf "== Autobuild was OK\n"
 else
   printf "== FAILED to Autobuild\n - Exiting\n"

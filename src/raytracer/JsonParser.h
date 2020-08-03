@@ -14,14 +14,12 @@
 
 #include <algorithm>
 #include <cstdio>
-#include <filesystem>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <memory>
 #include <stdexcept>
 #include <string>
-#include <thread>
 
 struct JsonParser {
   static rtx::Point toPoint(Json::Value point);
