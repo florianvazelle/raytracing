@@ -1,7 +1,7 @@
 # Raytracing
-![AppVeyor](https://img.shields.io/appveyor/build/florianvazelle/raytracing?style=flat&logo=appveyor) [![License MIT](https://img.shields.io/badge/license-MIT-green)](https://choosealicense.com/licenses/mit/)
+![Travis](https://img.shields.io/travis/florianvazelle/raytracing?style=flat&logo=travis) ![AppVeyor](https://img.shields.io/appveyor/build/florianvazelle/raytracing?style=flat&logo=appveyor) [![License MIT](https://img.shields.io/badge/license-MIT-green)](https://choosealicense.com/licenses/mit/)
 
-A from scratch C++ ray tracing library, cross-platform, with a matrix representation of entities.
+A from scratch ray tracing library written in C++, cross-platform, with a matrix representation of entities.
 
 <h4 align="center">
     <img src="https://florianvazelle.github.io/resources/images/raytracing/scene00000.png" width="15%"/> <img src="https://florianvazelle.github.io/resources/images/raytracing/scene00002.png" width="15%"/> <img src="https://florianvazelle.github.io/resources/images/raytracing/scene00004.png" width="15%"/> <img src="https://florianvazelle.github.io/resources/images/raytracing/scene00003.png" width="15%"/> <img src="https://florianvazelle.github.io/resources/images/raytracing/scene00005.png" width="15%"/> <img src="https://florianvazelle.github.io/resources/images/raytracing/scene00001.png" width="15%"/>

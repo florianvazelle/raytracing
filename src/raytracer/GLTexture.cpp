@@ -63,8 +63,9 @@ void GLTexture::update() const {
 }
 
 void GLTexture::save(char const* filename) const {
-  uint8_t pixels[size() * 4];
-  for (int i = 0; i < size(); ++i) {
+  int s = size();
+  uint8_t pixels[s * 4];
+  for (int i = 0; i < s; ++i) {
     int j = 4 * i;
     pixels[j + 0] = textureData[i].r * 255.0f;
     pixels[j + 1] = textureData[i].g * 255.0f;

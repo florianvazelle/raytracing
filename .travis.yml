@@ -27,13 +27,14 @@ jobs:
             - libx11-dev
             - cmake
       script:
-        - cmake --version
         - mkdir build && cd build
+        - cmake --version
         - cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-4.8 -DCMAKE_C_COMPILER=gcc-4.8
-        - cmake --build . --config Release --parallel $(nproc)
+        - make -j 2
     - os: osx
       compiler: clang
       script:
+        - mkdir build && cd build
         - cmake --version
-        - cmake
+        - cmake ..
         - make -j 2
