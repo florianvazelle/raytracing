@@ -7,7 +7,6 @@ branches:
     - master
 install:
   - git submodule update --init --recursive
-  - cinstall: python
 build_script:
   - echo Running cmake...
   - cd c:\projects\raytracing
