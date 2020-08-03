@@ -1,13 +1,12 @@
 language: cpp
 dist: trusty
-sudo: false
 
 # Only build master branch, other branches will have a Pull Request build.
 branches:
   only:
     - master
 
-matrix:
+jobs:
   include:
     - os: linux
       compiler: gcc-4.8
@@ -29,6 +28,7 @@ matrix:
             - cmake
       script:
         - cmake --version
+        - mkdir build && cd build
         - cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-4.8 -DCMAKE_C_COMPILER=gcc-4.8
         - cmake --build . --config Release --parallel $(nproc)
     - os: osx

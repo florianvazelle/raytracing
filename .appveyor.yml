@@ -1,7 +1,7 @@
 version: 1.0.{build}
 os: Visual Studio 2015
 test: off
-clone_folder: C:\projects\nanogui
+clone_folder: C:\projects\raytracing
 branches:
   only:
     - master
@@ -10,8 +10,8 @@ install:
   - cinstall: python
 build_script:
   - echo Running cmake...
-  - cd c:\projects\nanogui
+  - cd c:\projects\raytracing
   - cmake -G "Visual Studio 14 2015 Win64" .
   - set MSBuildLogger="C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
   - set MSBuildOptions=/v:m /p:Configuration=Release /logger:%MSBuildLogger%
-  - msbuild %MSBuildOptions% nanogui.sln
+  - msbuild %MSBuildOptions% raytracing.sln
