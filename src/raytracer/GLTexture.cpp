@@ -64,7 +64,8 @@ void GLTexture::update() const {
 
 void GLTexture::save(char const* filename) const {
   int s = size();
-  uint8_t pixels[s * 4];
+  std::vector<uint8_t> pixels;
+  pixels.resize(s * 4);
   for (int i = 0; i < s; ++i) {
     int j = 4 * i;
     pixels[j + 0] = textureData[i].r * 255.0f;
@@ -75,8 +76,8 @@ void GLTexture::save(char const* filename) const {
 
   const char* extension = get_filename_ext(filename);
   if (strcmp(extension, "png")) {
-    stbi_write_png(filename, width, height, 4, pixels, 4 * width);
+    stbi_write_png(filename, width, height, 4, pixels.data(), 4 * width);
   } else if (strcmp(extension, "jpg")) {
-    stbi_write_jpg(filename, width, height, 4, pixels, 100);
+    stbi_write_jpg(filename, width, height, 4, pixels.data(), 100);
   }
 }
