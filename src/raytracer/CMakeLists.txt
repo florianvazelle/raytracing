@@ -7,5 +7,5 @@ file(GLOB_RECURSE ${PROJECT_NAME}_SOURCES ${PROJECT_SOURCE_DIR}/*.cpp)
 
 add_executable(${PROJECT_NAME} ${${PROJECT_NAME}_SOURCES} ${${PROJECT_NAME}_HEADERS})
 
-target_link_libraries(${PROJECT_NAME} raytracing nanogui jsoncpp_lib)
+target_link_libraries(${PROJECT_NAME} raytracing nanogui jsoncpp_lib ${NANOGUI_EXTRA_LIBS})
 target_compile_options(${PROJECT_NAME} PRIVATE -Wall -O3 -g)
