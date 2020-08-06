@@ -10,7 +10,7 @@ add_executable(${PROJECT_NAME} ${${PROJECT_NAME}_SOURCES} ${${PROJECT_NAME}_HEAD
 target_link_libraries(${PROJECT_NAME} raytracing nanogui jsoncpp_lib ${NANOGUI_EXTRA_LIBS})
 
 if(MSVC)
-    target_compile_options(${PROJECT_NAME} PRIVATE /GL /W0)
+    target_compile_options(${PROJECT_NAME} PRIVATE /GL)
 elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU")
     target_compile_options(${PROJECT_NAME} PRIVATE -Wall -O3 -g)
 endif()
