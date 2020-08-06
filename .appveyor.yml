@@ -14,3 +14,5 @@ build_script:
   - set MSBuildLogger="C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
   - set MSBuildOptions=/v:m /p:Configuration=Release /logger:%MSBuildLogger%
   - msbuild %MSBuildOptions% raytracing.sln
+on_finish:
+  - tree

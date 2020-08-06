@@ -11,7 +11,7 @@ target_link_libraries(${PROJECT_NAME} raytracing nanogui jsoncpp_lib ${NANOGUI_E
 
 
 if(MSVC)
-    target_compile_options(${PROJECT_NAME} PRIVATE /GL /EHc)
+    target_compile_options(${PROJECT_NAME} PRIVATE /GL)
 elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU")
     target_compile_options(${PROJECT_NAME} PRIVATE -Wall -O3 -g)
 endif()
