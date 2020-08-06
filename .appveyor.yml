@@ -1,16 +1,31 @@
 version: 1.0.{build}
+
 os: Visual Studio 2015
-test: off
+
 clone_folder: C:\projects\raytracing
+
 branches:
   only:
     - master
+
+configuration:
+  - Debug
+  - Release
+
+platform:
+  - Win32
+  - x64
+  - ARM
+
 install:
   - git submodule update --init --recursive
+
 build_script:
-  - echo Running cmake...
-  - cd c:\projects\raytracing
-  - cmake -G "Visual Studio 14 2015 Win64" . -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE -DBUILD_SHARED_LIBS=TRUE
+  - cd C:\projects\raytracing
+  - cmake -G "Visual Studio 14 2015" -A %PLATFORM% . -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE -DBUILD_SHARED_LIBS=TRUE -DRTX_WITH_POST_BUILD_UNITTEST=OFF
   - set MSBuildLogger="C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
-  - set MSBuildOptions=/v:m /p:Configuration=Release /logger:%MSBuildLogger%
+  - set MSBuildOptions=/v:m /p:Configuration=%CONFIGURATION% /logger:%MSBuildLogger%
   - msbuild %MSBuildOptions% raytracing.sln
+
+test_script:
+  - C:\projects\raytracing\bin\%CONFIGURATION%\rtx_test.exe
