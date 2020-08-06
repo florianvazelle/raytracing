@@ -15,4 +15,4 @@ build_script:
   - set MSBuildOptions=/v:m /p:Configuration=Release /logger:%MSBuildLogger%
   - msbuild %MSBuildOptions% raytracing.sln
 on_finish:
-  - tree
+  - tree /f
