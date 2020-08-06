@@ -10,12 +10,12 @@ branches:
 
 configuration:
   - Debug
-  - Release
+  # - Release
 
 platform:
   - Win32
   - x64
-  - ARM
+  # - ARM
 
 install:
   - git submodule update --init --recursive
@@ -26,6 +26,13 @@ build_script:
   - set MSBuildLogger="C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
   - set MSBuildOptions=/v:m /p:Configuration=%CONFIGURATION% /logger:%MSBuildLogger%
   - msbuild %MSBuildOptions% raytracing.sln
+after_build:
+  - cd C:\projects\raytracing
+  - 7z a -r build.zip C:\projects\raytracing\bin\*
 
 test_script:
   - C:\projects\raytracing\bin\%CONFIGURATION%\rtx_test.exe
+
+artifacts:
+  - path: build.zip
+    name: Raytracing-%CONFIGURATION%-%PLATFORM%
