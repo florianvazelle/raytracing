@@ -10,7 +10,7 @@ branches:
 
 configuration:
   - Debug
-  - Release
+  # - Release
 
 platform:
   - Win32
@@ -22,7 +22,7 @@ install:
 
 build_script:
   - cd C:\projects\raytracing
-  - cmake -G "Visual Studio 14 2015" -A %PLATFORM% . -DCMAKE_BUILD_TYPE=%CONFIGURATION% -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE -DRTX_WITH_POST_BUILD_UNITTEST=OFF
+  - cmake -G "Visual Studio 14 2015" -A %PLATFORM% . -DCMAKE_BUILD_TYPE=%CONFIGURATION% -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE -DBUILD_SHARED_LIBS=TRUE -DRTX_WITH_POST_BUILD_UNITTEST=OFF
   - set MSBuildLogger="C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
   - set MSBuildOptions=/v:m /p:Configuration=%CONFIGURATION% /logger:%MSBuildLogger%
   - msbuild %MSBuildOptions% raytracing.sln
