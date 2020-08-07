@@ -7,7 +7,7 @@ namespace rtx {
 
 struct Sphere : public Object {
   Sphere();
-  Sphere(Material* mat) : Object(mat){};
+  Sphere(std::shared_ptr<Material> mat) : Object(mat){};
   virtual ~Sphere() {}
 
   Ray getNormal(const Point& p, const Point& o) const;

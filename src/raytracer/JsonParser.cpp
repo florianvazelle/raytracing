@@ -8,7 +8,7 @@ rtx::Color JsonParser::toColor(Json::Value color) {
   return rtx::Color(color["r"].asFloat(), color["g"].asFloat(), color["b"].asFloat());
 }
 
-rtx::Material* JsonParser::toMaterial(Json::Value material) {
+std::shared_ptr<rtx::Material> JsonParser::toMaterial(Json::Value material) {
   const std::string type = material["type"].asString();
 
   const rtx::Color ka = JsonParser::toColor(material["ka"]);
@@ -19,19 +19,19 @@ rtx::Material* JsonParser::toMaterial(Json::Value material) {
   const float reflectivity = material["reflectivity"].asFloat();
   const float refractivity = material["refractivity"].asFloat();
 
-  rtx::Material* mat;
+  std::shared_ptr<rtx::Material> mat;
 
   if (!type.empty()) {
     const float scale = material["scale"].asFloat();
     if (type == "Checkboard") {
-      mat = new rtx::Checkboard(ka, kd, ks, shininess, reflectivity, refractivity, scale);
+      mat = std::make_shared<rtx::Checkboard>(ka, kd, ks, shininess, reflectivity, refractivity, scale);
     } else if (type == "Line") {
-      mat = new rtx::Line(ka, kd, ks, shininess, reflectivity, refractivity, scale);
+      mat = std::make_shared<rtx::Line>(ka, kd, ks, shininess, reflectivity, refractivity, scale);
     } else {
       throw std::invalid_argument("Type not supported");
     }
   } else {
-    mat = new rtx::Material(ka, kd, ks, shininess, reflectivity, refractivity);
+    mat = std::make_shared<rtx::Material>(ka, kd, ks, shininess, reflectivity, refractivity);
   }
 
   return mat;
@@ -59,7 +59,7 @@ rtx::Scene JsonParser::openScene(const char* path) {
     rtx::Point pos = JsonParser::toPoint(obj["position"]);
     rtx::Point rot = JsonParser::toPoint(obj["rotation"]);
     float scale = obj["scale"].asFloat();
-    rtx::Material* mat = JsonParser::toMaterial(obj["material"]);
+    std::shared_ptr<rtx::Material> mat = JsonParser::toMaterial(obj["material"]);
 
     std::shared_ptr<rtx::Object> object;
 

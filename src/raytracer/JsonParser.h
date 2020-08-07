@@ -24,7 +24,7 @@
 struct JsonParser {
   static rtx::Point toPoint(Json::Value point);
   static rtx::Color toColor(Json::Value color);
-  static rtx::Material* toMaterial(Json::Value material);
+  static std::shared_ptr<rtx::Material> toMaterial(Json::Value material);
   static rtx::Scene openScene(const char* path);
 };
 

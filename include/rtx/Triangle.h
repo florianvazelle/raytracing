@@ -7,7 +7,7 @@ namespace rtx {
 
 struct Triangle : public Plan {
   Triangle();
-  Triangle(Material* mat) : Plan(mat){};
+  Triangle(std::shared_ptr<Material> mat) : Plan(mat){};
   virtual ~Triangle() {}
 
   bool intersect(const Ray& ray, Point& impact) const;

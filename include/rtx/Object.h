@@ -1,6 +1,8 @@
 #ifndef H_OBJECT
 #define H_OBJECT
 
+#include <memory>
+
 #include <rtx/Entity.h>
 #include <rtx/Material.h>
 #include <rtx/Ray.h>
@@ -15,10 +17,10 @@ namespace rtx {
  * Tous les Point, Vector et Ray sont exprimés dans le référentiel global.
  */
 struct Object : public Entity {
-  Material* material;
+  std::shared_ptr<Material> material;
 
   Object(){};
-  Object(Material* mat) : material(mat){};
+  Object(std::shared_ptr<Material> mat) : material(mat){};
   virtual ~Object(){};
 
   bool operator==(const Object& rhs) const {
