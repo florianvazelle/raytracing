@@ -29,12 +29,12 @@ jobs:
       script:
         - mkdir build && cd build
         - cmake --version
-        - cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-4.8 -DCMAKE_C_COMPILER=gcc-4.8
-        - make -j 2
+        - cmake -Bbuild -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-4.8 -DCMAKE_C_COMPILER=gcc-4.8
+        - cmake --build build
     - os: osx
       compiler: clang
       script:
         - mkdir build && cd build
         - cmake --version
-        - cmake ..
-        - make -j 2
+        - cmake -Bbuild
+        - cmake --build build
