@@ -28,11 +28,11 @@ jobs:
             - cmake
       script:
         - cmake --version
-        - cmake -Bbuild -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-4.8 -DCMAKE_C_COMPILER=gcc-4.8
+        - cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-4.8 -DCMAKE_C_COMPILER=gcc-4.8
         - cmake --build build
     - os: osx
       compiler: clang
       script:
         - cmake --version
-        - cmake -Bbuild
+        - cmake -B build
         - cmake --build build
