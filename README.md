@@ -35,17 +35,17 @@ Linux : `./setup.sh`
 │  ├── samples
 │  └── scenes
 ├── build                   # Compiled files
-├── ext                     # Submodules
-│  ├── <a href="https://github.com/google/cxxopts">cxxopts</a>           # for cli options
+├── external                # Submodules
+│  ├── <a href="https://github.com/google/cxxopts">cxxopts</a>              # for cli options
 │  ├── <a href="https://github.com/google/googletest">googletest</a>           # for unit tests
 │  ├── <a href="https://github.com/open-source-parsers/jsoncpp">jsoncpp</a>              # for scene parser
 │  ├── <a href="https://github.com/wjakob/nanogui">nanogui</a>              # for user interface
 │  └── <a href="https://github.com/nothings/stb">stb</a>                  # for write PNG/JPG images
 ├── include
-│  └── rtx
-├── src                     # Source files
-│  ├── raytracer            # Raytracer implementation
+│  ├── parser
 │  └── rtx                  # Raytracing library
+├── source                  # Source files
+│  └── parser                  
 ├── test                    # Automated tests
 └── README.md
 </pre>
