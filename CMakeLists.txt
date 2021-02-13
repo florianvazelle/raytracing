@@ -3,11 +3,14 @@
 # └──────────────────────────────────────────────────────────────────┘
 
 project("raytracing")
-cmake_minimum_required (VERSION 3.0.2)
+cmake_minimum_required(VERSION 3.0.2)
 
-option(RTX_WITH_RAYTRACER "Compile raytracer" ON)
-option(RTX_WITH_TESTS "Compile and run rtx test executables" ON)
-option(RTX_WITH_POST_BUILD_UNITTEST "Automatically run unit-tests as a post build step" ON)
+option(RTX_WITH_RAYTRACER "Compile app/raytracer" ON)
+option(RTX_WITH_COMPUTE "Compile app/compute" ON)
+option(RTX_WITH_TESTS "Compile rtx tests executable" ON)
+
+option(RTX_WITH_POST_BUILD_UNITTEST
+       "Automatically run unit-tests as a post build step" ON)
 
 set(CMAKE_CXX_STANDARD 11)
 
@@ -20,11 +23,12 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 # └──────────────────────────────────────────────────────────────────┘
 
 # Find source files
-file(GLOB_RECURSE ${PROJECT_NAME}_SOURCES ${PROJECT_SOURCE_DIR}/src/rtx/*.cpp)
+file(GLOB_RECURSE ${PROJECT_NAME}_SOURCES ${PROJECT_SOURCE_DIR}/source/*.cpp)
 file(GLOB_RECURSE ${PROJECT_NAME}_HEADERS ${PROJECT_SOURCE_DIR}/include/*.h)
 
 # Create shared library
-add_library(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES} ${${PROJECT_NAME}_HEADERS})
+add_library(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES}
+                                   ${${PROJECT_NAME}_HEADERS})
 
 # Include header files
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include)
@@ -34,22 +38,26 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include)
 # └──────────────────────────────────────────────────────────────────┘
 
 if(RTX_WITH_TESTS)
-    if (NOT IS_DIRECTORY "${CMAKE_SOURCE_DIR}/ext/googletest/googletest/include")
-      message(FATAL_ERROR "The ${dependency} dependency is missing! You probably did not "
-                          "clone the project with --recursive. It is possible to "
-                          "recover by calling\n"
-                          "git submodule update --init --recursive")
-    endif()
+  if(NOT IS_DIRECTORY
+     "${CMAKE_SOURCE_DIR}/external/googletest/googletest/include")
+    message(
+      FATAL_ERROR
+        "The ${dependency} dependency is missing! You probably did not "
+        "clone the project with --recursive. It is possible to "
+        "recover by calling\n" "git submodule update --init --recursive")
+  endif()
 
-    set(BUILD_GMOCK OFF CACHE BOOL " " FORCE)
+  set(BUILD_GMOCK
+      OFF
+      CACHE BOOL " " FORCE)
 
-    add_subdirectory(${PROJECT_SOURCE_DIR}/ext/googletest)
+  add_subdirectory(${PROJECT_SOURCE_DIR}/external/googletest)
 
-    enable_testing()
+  enable_testing()
 
-    include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
+  include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
-    add_subdirectory(test)
+  add_subdirectory(test)
 endif()
 
 # ┌──────────────────────────────────────────────────────────────────┐
@@ -57,46 +65,58 @@ endif()
 # └──────────────────────────────────────────────────────────────────┘
 
 if(RTX_WITH_RAYTRACER)
-    set(DEPENDENCIES "nanogui/include" "jsoncpp/include" stb)
-    foreach(dependency ${DEPENDENCIES})
-        if (NOT IS_DIRECTORY "${CMAKE_SOURCE_DIR}/ext/${dependency}")
-            message(FATAL_ERROR "The ${dependency} dependency is missing! You probably did not "
-                                "clone the project with --recursive. It is possible to "
-                                "recover by calling\n"
-                                "git submodule update --init --recursive")
-        endif()
-    endforeach()
+  set(DEPENDENCIES "nanogui/include" "jsoncpp/include" stb)
+  foreach(dependency ${DEPENDENCIES})
+    if(NOT IS_DIRECTORY "${CMAKE_SOURCE_DIR}/external/${dependency}")
+      message(
+        FATAL_ERROR
+          "The ${dependency} dependency is missing! You probably did not "
+          "clone the project with --recursive. It is possible to "
+          "recover by calling\n" "git submodule update --init --recursive")
+    endif()
+  endforeach()
 
-    # ┌──────────────────────────────────────────────────────────────────┐
-    # │  Load libraries                                                  │
-    # └──────────────────────────────────────────────────────────────────┘
+  # ┌──────────────────────────────────────────────────────────────────┐
+  # │  Load libraries                                                  │
+  # └──────────────────────────────────────────────────────────────────┘
 
-    # NanoGUI  ------
-    set(NANOGUI_BUILD_EXAMPLE OFF CACHE BOOL " " FORCE)
-    set(NANOGUI_BUILD_PYTHON  OFF CACHE BOOL " " FORCE)
-    set(NANOGUI_INSTALL       OFF CACHE BOOL " " FORCE)
+  # NanoGUI  ------
+  set(NANOGUI_BUILD_EXAMPLE
+      OFF
+      CACHE BOOL " " FORCE)
+  set(NANOGUI_BUILD_PYTHON
+      OFF
+      CACHE BOOL " " FORCE)
+  set(NANOGUI_INSTALL
+      OFF
+      CACHE BOOL " " FORCE)
 
-    # Add the configurations from nanogui
-    add_subdirectory(${PROJECT_SOURCE_DIR}/ext/nanogui)
+  # Add the configurations from nanogui
+  add_subdirectory(${PROJECT_SOURCE_DIR}/external/nanogui)
 
-    # For reliability of parallel build, make the NanoGUI targets dependencies
-    set_property(TARGET glfw glfw_objects nanogui PROPERTY FOLDER "dependencies")
+  # For reliability of parallel build, make the NanoGUI targets dependencies
+  set_property(TARGET glfw glfw_objects nanogui PROPERTY FOLDER "dependencies")
 
-    # On top of adding the path to nanogui/include, you may need extras
-    include_directories(SYSTEM ${PROJECT_SOURCE_DIR}/ext/nanogui/include)
-    include_directories(SYSTEM ${NANOGUI_EXTRA_INCS})
+  # On top of adding the path to nanogui/include, you may need extras
+  include_directories(SYSTEM ${PROJECT_SOURCE_DIR}/external/nanogui/include)
+  include_directories(SYSTEM ${NANOGUI_EXTRA_INCS})
 
-    # Various preprocessor definitions have been generated by NanoGUI
-    add_definitions(${NANOGUI_EXTRA_DEFS})
+  # Various preprocessor definitions have been generated by NanoGUI
+  add_definitions(${NANOGUI_EXTRA_DEFS})
 
-    # JsonCpp  ------
-    set(JSONCPP_WITH_TESTS OFF CACHE BOOL " " FORCE)
+  # JsonCpp  ------
+  set(JSONCPP_WITH_TESTS
+      OFF
+      CACHE BOOL " " FORCE)
 
-    add_subdirectory(${PROJECT_SOURCE_DIR}/ext/jsoncpp)
-    include_directories(SYSTEM ${PROJECT_SOURCE_DIR}/ext/jsoncpp/include)
+  add_subdirectory(${PROJECT_SOURCE_DIR}/external/jsoncpp)
+  include_directories(SYSTEM ${PROJECT_SOURCE_DIR}/external/jsoncpp/include)
 
-    # Stb  ------
-    include_directories(SYSTEM ${PROJECT_SOURCE_DIR}/ext/stb)
+  # Stb  ------
+  include_directories(SYSTEM ${PROJECT_SOURCE_DIR}/external/stb)
 
-    add_subdirectory(${PROJECT_SOURCE_DIR}/src/raytracer)
+  add_subdirectory(${PROJECT_SOURCE_DIR}/app/raytracer)
+
+  add_subdirectory(${PROJECT_SOURCE_DIR}/external/cxxopts)
+  add_subdirectory(${PROJECT_SOURCE_DIR}/app/compute)
 endif()

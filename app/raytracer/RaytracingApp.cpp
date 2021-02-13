@@ -12,7 +12,7 @@
 #include <stdexcept>
 #include <thread>
 
-#include "ThreadPool.h"
+#include "../common/ThreadPool.h"
 
 void RaytracingApp::raytracing(rtx::Scene& scene, GLTexture& texture) const {
   rtx::Camera cam(3.0f);

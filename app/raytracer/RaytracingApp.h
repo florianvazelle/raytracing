@@ -6,6 +6,7 @@
 #include <rtx/Object.h>
 #include <rtx/Scene.h>
 #include <rtx/Vector.h>
+#include <rtx/parser/JsonParser.h>
 
 #include <cstdio>
 #include <fstream>
@@ -13,8 +14,7 @@
 #include <memory>
 #include <string>
 
-#include "GLTexture.h"
-#include "JsonParser.h"
+#include "../common/GLTexture.h"
 
 class RaytracingApp : public nanogui::Screen {
  public:
@@ -156,7 +156,7 @@ class RaytracingApp : public nanogui::Screen {
       std::cout << "File dialog result: " << jsonPath << std::endl;
 
       if (jsonPath.size() > 1) {
-        rtx::Scene scene = JsonParser::openScene(jsonPath.c_str());
+        rtx::Scene scene = rtx::parser::parse_json(jsonPath.c_str());
         scenes.push_back(scene);
         mCurrentScene = scenes.size() - 1;
 

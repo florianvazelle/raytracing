@@ -21,11 +21,19 @@
 #include <stdexcept>
 #include <string>
 
-struct JsonParser {
-  static rtx::Point toPoint(Json::Value point);
-  static rtx::Color toColor(Json::Value color);
-  static std::shared_ptr<rtx::Material> toMaterial(Json::Value material);
-  static rtx::Scene openScene(const char* path);
-};
+namespace rtx {
+    namespace parser {
+
+        Scene parse_json(const char* path);
+            
+        struct JsonParser {
+            static Point toPoint(Json::Value point);
+            static Color toColor(Json::Value color);
+            static std::shared_ptr<Material> toMaterial(Json::Value material);
+        };
+
+    }
+}
+
 
 #endif
