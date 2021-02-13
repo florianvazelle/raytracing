@@ -36,7 +36,7 @@ Linux : `./setup.sh`
 │  └── scenes
 ├── build                   # Compiled files
 ├── external                # Submodules
-│  ├── <a href="https://github.com/google/cxxopts">cxxopts</a>              # for cli options
+│  ├── <a href="https://github.com/jarro2783/cxxopts">cxxopts</a>              # for cli options
 │  ├── <a href="https://github.com/google/googletest">googletest</a>           # for unit tests
 │  ├── <a href="https://github.com/open-source-parsers/jsoncpp">jsoncpp</a>              # for scene parser
 │  ├── <a href="https://github.com/wjakob/nanogui">nanogui</a>              # for user interface
