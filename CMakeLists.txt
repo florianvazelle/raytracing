@@ -32,6 +32,8 @@ add_library(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES}
 # Include header files
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include)
 
+target_link_libraries(${PROJECT_NAME} jsoncpp_lib)
+
 # ┌──────────────────────────────────────────────────────────────────┐
 # │  Tests                                                           │
 # └──────────────────────────────────────────────────────────────────┘
@@ -46,9 +48,7 @@ if(RTX_WITH_TESTS)
         "recover by calling\n" "git submodule update --init --recursive")
   endif()
 
-  set(BUILD_GMOCK
-      OFF
-      CACHE BOOL " " FORCE)
+  set(BUILD_GMOCK OFF CACHE BOOL " " FORCE)
 
   add_subdirectory(${PROJECT_SOURCE_DIR}/external/googletest)
 
@@ -60,32 +60,37 @@ if(RTX_WITH_TESTS)
 endif()
 
 # ┌──────────────────────────────────────────────────────────────────┐
-# │  Load raytracer                                                  │
+# │  Check submodules                                                │
 # └──────────────────────────────────────────────────────────────────┘
 
-if(RTX_WITH_APP)
-  if(NOT IS_DIRECTORY "${CMAKE_SOURCE_DIR}/external/stb}")
-    message(
-      FATAL_ERROR
-        "The dependency is missing! You probably did not "
-        "clone the project with --recursive. It is possible to "
-        "recover by calling\n" "git submodule update --init --recursive")
-  endif()
+find_package(Git QUIET)
+if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
+# Update submodules as needed
+    option(GIT_SUBMODULE "Check submodules during build" ON)
+    if(GIT_SUBMODULE)
+        message(STATUS "Submodule update")
+        execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
+                        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+                        RESULT_VARIABLE GIT_SUBMOD_RESULT)
+        if(NOT GIT_SUBMOD_RESULT EQUAL "0")
+            message(FATAL_ERROR "git submodule update --init failed with ${GIT_SUBMOD_RESULT}, please checkout submodules")
+        endif()
+    endif()
+endif()
 
+if(NOT EXISTS "${PROJECT_SOURCE_DIR}/external/jsoncpp/CMakeLists.txt")
+    message(FATAL_ERROR "The submodules were not downloaded! GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
+endif()
+
+if(RTX_WITH_APP)
   # ┌──────────────────────────────────────────────────────────────────┐
   # │  Load libraries                                                  │
   # └──────────────────────────────────────────────────────────────────┘
 
   # NanoGUI  ------
-  set(NANOGUI_BUILD_EXAMPLE
-      OFF
-      CACHE BOOL " " FORCE)
-  set(NANOGUI_BUILD_PYTHON
-      OFF
-      CACHE BOOL " " FORCE)
-  set(NANOGUI_INSTALL
-      OFF
-      CACHE BOOL " " FORCE)
+  set(NANOGUI_BUILD_EXAMPLE OFF CACHE BOOL " " FORCE)
+  set(NANOGUI_BUILD_PYTHON OFF CACHE BOOL " " FORCE)
+  set(NANOGUI_INSTALL OFF CACHE BOOL " " FORCE)
 
   # Add the configurations from nanogui
   add_subdirectory(${PROJECT_SOURCE_DIR}/external/nanogui)
@@ -101,9 +106,7 @@ if(RTX_WITH_APP)
   add_definitions(${NANOGUI_EXTRA_DEFS})
 
   # JsonCpp  ------
-  set(JSONCPP_WITH_TESTS
-      OFF
-      CACHE BOOL " " FORCE)
+  set(JSONCPP_WITH_TESTS OFF CACHE BOOL " " FORCE)
 
   add_subdirectory(${PROJECT_SOURCE_DIR}/external/jsoncpp)
   include_directories(SYSTEM ${PROJECT_SOURCE_DIR}/external/jsoncpp/include)
@@ -111,8 +114,16 @@ if(RTX_WITH_APP)
   # Stb  ------
   include_directories(SYSTEM ${PROJECT_SOURCE_DIR}/external/stb)
 
+  # Cxxopts  ------
+  add_subdirectory(${PROJECT_SOURCE_DIR}/external/cxxopts)
+
+  # ┌──────────────────────────────────────────────────────────────────┐
+  # │  Add apps                                                        │
+  # └──────────────────────────────────────────────────────────────────┘
+
+  # raytracer  ------
   add_subdirectory(${PROJECT_SOURCE_DIR}/app/raytracer)
 
-  add_subdirectory(${PROJECT_SOURCE_DIR}/external/cxxopts)
+  # compute  ------
   add_subdirectory(${PROJECT_SOURCE_DIR}/app/compute)
 endif()
