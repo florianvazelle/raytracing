@@ -5,8 +5,7 @@
 project("raytracing")
 cmake_minimum_required(VERSION 3.0.2)
 
-option(RTX_WITH_RAYTRACER "Compile app/raytracer" ON)
-option(RTX_WITH_COMPUTE "Compile app/compute" ON)
+option(RTX_WITH_APP "Compile apps" ON)
 option(RTX_WITH_TESTS "Compile rtx tests executable" ON)
 
 option(RTX_WITH_POST_BUILD_UNITTEST
@@ -64,17 +63,14 @@ endif()
 # │  Load raytracer                                                  │
 # └──────────────────────────────────────────────────────────────────┘
 
-if(RTX_WITH_RAYTRACER)
-  set(DEPENDENCIES "nanogui/include" "jsoncpp/include" stb)
-  foreach(dependency ${DEPENDENCIES})
-    if(NOT IS_DIRECTORY "${CMAKE_SOURCE_DIR}/external/${dependency}")
-      message(
-        FATAL_ERROR
-          "The ${dependency} dependency is missing! You probably did not "
-          "clone the project with --recursive. It is possible to "
-          "recover by calling\n" "git submodule update --init --recursive")
-    endif()
-  endforeach()
+if(RTX_WITH_APP)
+  if(NOT IS_DIRECTORY "${CMAKE_SOURCE_DIR}/external/stb}")
+    message(
+      FATAL_ERROR
+        "The dependency is missing! You probably did not "
+        "clone the project with --recursive. It is possible to "
+        "recover by calling\n" "git submodule update --init --recursive")
+  endif()
 
   # ┌──────────────────────────────────────────────────────────────────┐
   # │  Load libraries                                                  │
