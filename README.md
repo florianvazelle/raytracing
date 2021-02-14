@@ -34,7 +34,7 @@ Use the following command to build and run the executable target.
 
 ```bash
 cmake -Bbuild
-cmake --build build --parallel $(nproc)
+cmake --build build
 ./build/bin/compute --help  # or ./build/bin/raytracer
 ```
 
@@ -44,7 +44,7 @@ Use the following commands from the project's root directory to run the test sui
 
 ```bash
 cmake -Bbuild -DRTX_WITH_APP=OFF
-cmake --build build --parallel $(nproc)
+cmake --build build
 ./build/bin/rtx_test
 ```
 
