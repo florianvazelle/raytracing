@@ -1,7 +1,10 @@
-# Raytracing
-
 ![Travis](https://img.shields.io/travis/florianvazelle/raytracing?style=flat&logo=travis)
 ![AppVeyor](https://img.shields.io/appveyor/build/florianvazelle/raytracing?style=flat&logo=appveyor)
+![Platform](https://img.shields.io/badge/platform-windows%20%7C%20linux-blue) 
+[![License](https://img.shields.io/badge/license-Unlicense-blue.svg)](https://github.com/florianvazelle/raytracing/blob/master/LICENSE)
+[![Lines of Code](https://tokei.rs/b1/github/florianvazelle/raytracing?category=code)](https://tokei.rs)
+
+# Raytracing
 
 A CPU ray tracing library, written in C++, cross-platform, with a matrix representation of entities.  
 There are two technical parts:
@@ -22,6 +25,28 @@ git clone --recursive git@github.com:florianvazelle/raytracing.git
 ## Quickstart
 
 Linux : `./setup.sh`
+
+## Building
+
+### Build and run the standalone target
+
+Use the following command to build and run the executable target.
+
+```bash
+cmake -Bbuild
+cmake --build build --parallel $(nproc)
+./build/bin/compute --help  # or ./build/bin/raytracer
+```
+
+### Build and run test suite
+
+Use the following commands from the project's root directory to run the test suite.
+
+```bash
+cmake -Bbuild -DRTX_WITH_APP=OFF
+cmake --build build --parallel $(nproc)
+./build/bin/rtx_test
+```
 
 ## Project Structure
 
@@ -60,5 +85,8 @@ Linux : `./setup.sh`
 
 ## Requirements
 
-- C++11 compiler.
-- [CMake](https://cmake.org) for build system creation.
+- C++11 compiler
+  - gcc 5.0+
+  - clang 5.0+
+  - MSVC 2015+
+- [CMake](https://cmake.org) for build system creation (>= 3.0)

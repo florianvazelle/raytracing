@@ -9,7 +9,7 @@ branches:
 jobs:
   include:
     - os: linux
-      compiler: gcc-4.8
+      compiler: gcc-5.0
       addons:
         apt:
           sources:
@@ -17,7 +17,7 @@ jobs:
             - deadsnakes
             - kubuntu-backports
           packages:
-            - g++-4.8
+            - g++-5.0
             - libglu1-mesa-dev
             - libxxf86vm-dev
             - libxrandr-dev
@@ -29,7 +29,7 @@ jobs:
       script:
         - mkdir build && cd build
         - cmake --version
-        - cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-4.8 -DCMAKE_C_COMPILER=gcc-4.8
+        - cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-5.0 -DCMAKE_C_COMPILER=gcc-5.0
         - make -j 2
     - os: osx
       compiler: clang
