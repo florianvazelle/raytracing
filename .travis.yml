@@ -17,7 +17,7 @@ jobs:
             - deadsnakes
             - kubuntu-backports
           packages:
-            - g++-5.0
+            - g++-5
             - libglu1-mesa-dev
             - libxxf86vm-dev
             - libxrandr-dev
@@ -29,7 +29,7 @@ jobs:
       script:
         - mkdir build && cd build
         - cmake --version
-        - cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-5.0 -DCMAKE_C_COMPILER=gcc-5.0
+        - cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-5 -DCMAKE_C_COMPILER=gcc-5
         - make -j 2
     - os: osx
       compiler: clang
