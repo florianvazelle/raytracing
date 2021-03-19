@@ -15,7 +15,7 @@ if(MSVC)
     ${PROJECT_NAME}
     ${${PROJECT_NAME}_SOURCES} ${${PROJECT_NAME}_HEADERS}
     ${${PROJECT_NAME}_COMMON_HEADERS} ${${PROJECT_NAME}_COMMON_SOURCES}
-    ${PROJECT_SOURCE_DIR}/../external/nanogui/ext/glad/src/glad.c)
+    ${PROJECT_SOURCE_DIR}/../../external/nanogui/ext/glad/src/glad.c)
     
     target_compile_options(${PROJECT_NAME} PRIVATE /GL)
 else(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU")
