@@ -31,10 +31,11 @@ build_script:
 
 after_build:
   - cd C:\projects\raytracing
-  - 7z a -r build.zip C:\projects\raytracing\bin\*
+  - dir build
+  - 7z a -r build.zip C:\projects\raytracing\build\*
 
 test_script:
-  - C:\projects\raytracing\bin\%CONFIGURATION%\rtx_test.exe
+  - C:\projects\raytracing\build\bin\%CONFIGURATION%\rtx_test.exe
 
 artifacts:
   - path: build.zip
