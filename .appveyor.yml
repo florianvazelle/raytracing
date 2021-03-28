@@ -18,7 +18,7 @@ build_script:
   - cd C:\projects\raytracing
   - mkdir build
   - cd build
-  # Set up environment for VS 2017 x64 toolchain (https://docs.microsoft.com/en-us/cpp/build/building-on-the-command-line?view=vs-2017)
+  # Set up environment for VS 2017 x64 toolchain (https://docs.microsoft.com/en-us/cpp/build/building-on-the-command-line)
   - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" x64
   - cmake .. -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE -DBUILD_SHARED_LIBS=TRUE -DRTX_WITH_POST_BUILD_UNITTEST=OFF
   - cmake --build .

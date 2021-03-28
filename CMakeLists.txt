@@ -53,7 +53,7 @@ file(GLOB_RECURSE ${PROJECT_NAME}_SOURCES ${PROJECT_SOURCE_DIR}/source/*.cpp)
 file(GLOB_RECURSE ${PROJECT_NAME}_HEADERS ${PROJECT_SOURCE_DIR}/include/*.h)
 
 # Create shared library
-add_library(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES}
+add_library(${PROJECT_NAME} OBJECT ${${PROJECT_NAME}_SOURCES}
                                    ${${PROJECT_NAME}_HEADERS})
 
 # Include header files
