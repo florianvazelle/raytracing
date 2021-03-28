@@ -1,12 +1,11 @@
 ![Travis](https://img.shields.io/travis/florianvazelle/raytracing?style=flat&logo=travis)
-![AppVeyor](https://img.shields.io/appveyor/build/florianvazelle/raytracing?style=flat&logo=appveyor)
 ![Platform](https://img.shields.io/badge/platform-windows%20%7C%20linux-blue) 
 [![License](https://img.shields.io/badge/license-Unlicense-blue.svg)](https://github.com/florianvazelle/raytracing/blob/master/LICENSE)
 [![Lines of Code](https://tokei.rs/b1/github/florianvazelle/raytracing?category=code)](https://tokei.rs)
 
 # Raytracing
 
-A CPU ray tracing library, written in C++, cross-platform, with a matrix representation of entities.  
+A CPU ray tracing library, written in C++, with a matrix representation of entities.  
 There are two technical parts:
 
 - Ray tracing with shadows, ambient, diffuse (Lambert), specular (Phong), reflections, refractions (Snell-Descartes) with Schlick-Fresnel approximation and simple ambient occlusion implementation.
@@ -24,7 +23,9 @@ git clone --recursive git@github.com:florianvazelle/raytracing.git
 
 ## Quickstart
 
-Linux : `./setup.sh`
+```
+./setup.sh
+```
 
 ## Building
 
@@ -88,5 +89,4 @@ cmake --build build
 - C++11 compiler
   - gcc 5.0+
   - clang 5.0+
-  - MSVC 2015+
 - [CMake](https://cmake.org) for build system creation (>= 3.0)
