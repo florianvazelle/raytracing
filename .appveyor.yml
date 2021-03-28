@@ -10,7 +10,7 @@ branches:
 
 configuration:
   - Debug
-  # - Release
+  - Release
 
 platform:
   - Win32
@@ -30,9 +30,7 @@ build_script:
   - msbuild %MSBuildOptions% raytracing.sln
 
 after_build:
-  - cd C:\projects\raytracing
-  - dir build
-  - 7z a -r build.zip C:\projects\raytracing\build\*
+  - 7z a -r build.zip C:\projects\raytracing\build\bin\%CONFIGURATION%\*
 
 test_script:
   - C:\projects\raytracing\build\bin\%CONFIGURATION%\rtx_test.exe
