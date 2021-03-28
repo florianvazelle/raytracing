@@ -9,7 +9,7 @@ option(RTX_WITH_APP "Compile apps" ON)
 option(RTX_WITH_TESTS "Compile rtx tests executable" ON)
 option(RTX_WITH_POST_BUILD_UNITTEST "Automatically run unit-tests as a post build step" ON)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 11) 
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
