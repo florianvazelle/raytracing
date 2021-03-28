@@ -9,13 +9,11 @@ branches:
     - master
 
 configuration:
-  - Debug
-  # - Release
+  # - Debug
+  - Release
 
 platform:
-  - Win32
   - x64
-  # - ARM
 
 install:
   - choco install ninja --limit-output
