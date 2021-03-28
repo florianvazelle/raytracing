@@ -27,4 +27,4 @@ else(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU
   target_compile_options(${PROJECT_NAME} PRIVATE -Wall -O3 -g)
 endif()
 
-target_link_libraries(${PROJECT_NAME} raytracing nanogui ${NANOGUI_EXTRA_LIBS})
+target_link_libraries(${PROJECT_NAME} raytracing nanogui jsoncpp_lib ${NANOGUI_EXTRA_LIBS})

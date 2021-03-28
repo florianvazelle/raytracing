@@ -59,8 +59,6 @@ add_library(${PROJECT_NAME} OBJECT ${${PROJECT_NAME}_SOURCES}
 # Include header files
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include)
 
-target_link_libraries(${PROJECT_NAME} jsoncpp_lib)
-
 # ┌──────────────────────────────────────────────────────────────────┐
 # │  Tests                                                           │
 # └──────────────────────────────────────────────────────────────────┘
