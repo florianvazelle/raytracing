@@ -1,6 +1,6 @@
 version: 1.0.{build}
 
-os: Visual Studio 2015
+os: Visual Studio 2017
 
 clone_folder: C:\projects\raytracing
 
@@ -18,16 +18,20 @@ platform:
   # - ARM
 
 install:
+  - choco install ninja --limit-output
+
+before_build:
   - git submodule update --init --recursive
 
 build_script:
   - cd C:\projects\raytracing
   - mkdir build
   - cd build
-  - cmake -G "Visual Studio 14 2015" -A %PLATFORM% .. -DCMAKE_BUILD_TYPE=%CONFIGURATION% -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE -DBUILD_SHARED_LIBS=TRUE -DRTX_WITH_POST_BUILD_UNITTEST=OFF
-  - set MSBuildLogger="C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
-  - set MSBuildOptions=/v:m /p:Configuration=%CONFIGURATION% /logger:%MSBuildLogger%
-  - msbuild %MSBuildOptions% raytracing.sln
+  # Set up environment for VS 2017 x64 toolchain (https://docs.microsoft.com/en-us/cpp/build/building-on-the-command-line?view=vs-2017)
+  - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" x64
+  - cmake .. -G Ninja -A %PLATFORM% -DCMAKE_BUILD_TYPE=%CONFIGURATION% -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE -DBUILD_SHARED_LIBS=TRUE -DRTX_WITH_POST_BUILD_UNITTEST=OFF
+  - cmake --build .
+
 after_build:
   - cd C:\projects\raytracing
   - 7z a -r build.zip C:\projects\raytracing\bin\*
