@@ -1,0 +1,77 @@
+{
+  "objects": [
+    {
+      "type": "Sphere",
+      "position": { "x": -3, "y": 0, "z": -16 },
+      "rotation": { "x": 0, "y": 0, "z": 0 },
+      "scale": 2,
+      "material": {
+        "ka": { "r": 0.4, "g": 0.4, "b": 0.3 },
+        "kd": { "r": 0.5, "g": 0.5, "b": 0.4 },
+        "ks": { "r": 0.6, "g": 0.6, "b": 0.5 },
+        "shininess": 50,
+        "reflectivity": 0,
+        "refractivity": 0
+      }
+    },
+    {
+      "type": "Sphere",
+      "position": { "x": -1.0, "y": -1.5, "z": -12 },
+      "rotation": { "x": 0, "y": 0, "z": 0 },
+      "scale": 2,
+      "material": {
+        "ka": { "r": 0.3, "g": 0.1, "b": 0.1 },
+        "kd": { "r": 0.4, "g": 0.2, "b": 0.2 },
+        "ks": { "r": 0.3, "g": 0.3, "b": 0.3 },
+        "shininess": 10,
+        "reflectivity": 0,
+        "refractivity": 0
+      }
+    },
+    {
+      "type": "Sphere",
+      "position": { "x": 1.5, "y": -0.5, "z": -18 },
+      "rotation": { "x": 0, "y": 0, "z": 0 },
+      "scale": 3,
+      "material": {
+        "ka": { "r": 0.3, "g": 0.1, "b": 0.1 },
+        "kd": { "r": 0.4, "g": 0.2, "b": 0.2 },
+        "ks": { "r": 0.3, "g": 0.3, "b": 0.3 },
+        "shininess": 10,
+        "reflectivity": 0,
+        "refractivity": 0
+      }
+    },
+    {
+      "type": "Sphere",
+      "position": { "x": 7, "y": 5, "z": -18 },
+      "rotation": { "x": 0, "y": 0, "z": 0 },
+      "scale": 4,
+      "material": {
+        "ka": { "r": 0.4, "g": 0.4, "b": 0.3 },
+        "kd": { "r": 0.5, "g": 0.5, "b": 0.4 },
+        "ks": { "r": 0.6, "g": 0.6, "b": 0.5 },
+        "shininess": 50,
+        "reflectivity": 0,
+        "refractivity": 0
+      }
+    }
+  ],
+  "lights": [
+    {
+      "position": { "x": -20, "y": 20, "z": 20 },
+      "id": { "r": 0.5, "g": 0.5, "b": 0.5 },
+      "is": { "r": 0.5, "g": 0.5, "b": 0.5 }
+    },
+    {
+      "position": { "x": 30, "y": 50, "z": -25 },
+      "id": { "r": 0.8, "g": 0.8, "b": 0.8 },
+      "is": { "r": 0.8, "g": 0.8, "b": 0.8 }
+    },
+    {
+      "position": { "x": 30, "y": 20, "z": 30 },
+      "id": { "r": 0.7, "g": 0.7, "b": 0.7 },
+      "is": { "r": 0.7, "g": 0.7, "b": 0.7 }
+    }
+  ]
+}

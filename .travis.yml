@@ -1,0 +1,40 @@
+language: cpp
+dist: trusty
+
+# Only build master branch, other branches will have a Pull Request build.
+branches:
+  only:
+    - master
+
+jobs:
+  include:
+    - os: linux
+      compiler: gcc-5.0
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - deadsnakes
+            - kubuntu-backports
+          packages:
+            - g++-5
+            - libglu1-mesa-dev
+            - libxxf86vm-dev
+            - libxrandr-dev
+            - libxinerama-dev
+            - libxcursor-dev
+            - libxi-dev
+            - libx11-dev
+            - cmake
+      script:
+        - mkdir build && cd build
+        - cmake --version
+        - cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-5 -DCMAKE_C_COMPILER=gcc-5
+        - make -j 2
+    - os: osx
+      compiler: clang
+      script:
+        - mkdir build && cd build
+        - cmake --version
+        - cmake ..
+        - make -j 2

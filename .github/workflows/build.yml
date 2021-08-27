@@ -1,0 +1,35 @@
+name: build
+
+on: [push, pull_request]
+
+jobs:
+
+  linux:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install xorg-dev libglu1-mesa-dev -y
+
+    - name: Create Build Environment
+      run: cmake -E make_directory ${{ runner.workspace }}/build
+
+    - name: Configure CMake
+      shell: bash
+      working-directory: ${{ runner.workspace }}/build
+      env:
+        CXX: g++
+      run: cmake $GITHUB_WORKSPACE
+
+    - name: Build
+      working-directory: ${{ runner.workspace }}/build
+      shell: bash
+      run: cmake --build . --config Debug
+
+    - name: Run tests
+      working-directory: ${{ runner.workspace }}/build
+      run: bin/rtx_test
